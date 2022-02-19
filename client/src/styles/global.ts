@@ -28,6 +28,9 @@ const GlobalStyle = createGlobalStyle`
   body {
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    font-family: "Source Sans 3", "Open Sans", "Ubuntu", "sans-serif";
+    background-color: ${({ theme }) => theme.bg.main};
+    color: ${({ theme }) => theme.font.text};
   }
   /*
     6. Improve media defaults
@@ -53,9 +56,8 @@ const GlobalStyle = createGlobalStyle`
   */
   #root, .App {
     isolation: isolate;
-    font-family: "Source Sans 3", "Open Sans", "Ubuntu", "sans-serif";
-    background-color: ${({ theme }) => theme.bg.main};
-    color: ${({ theme }) => theme.font.text};
+    display: flex;
+    flex-direction: column;
     height: 100%;
     width: 100%;
   }
