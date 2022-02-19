@@ -1,3 +1,4 @@
+import "@fontsource/source-sans-3";
 import { createGlobalStyle, withTheme } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
@@ -50,8 +51,13 @@ const GlobalStyle = createGlobalStyle`
   /*
     9. Create a root stacking context
   */
-  #root, #root {
+  #root, .App {
     isolation: isolate;
+    font-family: "Source Sans 3", "Open Sans", "Ubuntu", "sans-serif";
+    background-color: ${({ theme }) => theme.bg.main};
+    color: ${({ theme }) => theme.font.text};
+    height: 100%;
+    width: 100%;
   }
 `;
 
