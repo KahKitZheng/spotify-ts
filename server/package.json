@@ -1,0 +1,20 @@
+{
+  "name": "spotify-ts-server",
+  "version": "0.1.0",
+  "description": "Spotify Auth using authorization code flow with ExpressJS",
+  "author": "Kah Kit Zheng | KKZ",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^0.26.0",
+    "connect-history-api-fallback": "^1.6.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "path": "^0.12.7",
+    "qs": "^6.10.3"
+  }
+}
