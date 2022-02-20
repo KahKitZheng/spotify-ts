@@ -10,6 +10,7 @@ const MainViewWrapper = ({ children }: Props) => {
 const ViewWrapper = styled.main`
   flex: 1;
   padding: 16px;
+  overflow: auto;
 `;
 
 export default MainViewWrapper;
