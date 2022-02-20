@@ -12,7 +12,7 @@ const darkTheme: DefaultTheme = {
   },
 
   bg: {
-    main: "#0f111f",
+    main: "#10111a",
   },
 
   font: {

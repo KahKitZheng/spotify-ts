@@ -41,11 +41,11 @@ const Tab = styled.div`
   font-size: 1.25rem;
 
   :first-of-type {
-    padding-left: 24px;
+    padding-left: 16px;
   }
 
   :last-of-type {
-    padding-right: 24px;
+    padding-right: 16px;
   }
 `;
 

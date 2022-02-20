@@ -1,15 +1,15 @@
 import axios from "axios";
-import { User } from "../types/SpotifyObjects";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PrivateUser } from "../types/SpotifyObjects";
 
 interface CurrentUserState {
-  user: User;
+  user: PrivateUser;
   status: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: CurrentUserState = {
-  user: {} as User,
+  user: {} as PrivateUser,
   status: "idle",
 };
 
@@ -26,19 +26,22 @@ export const currentUserSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getCurrentUser.pending, (state) => {
-      state.status = "loading";
-    });
-    builder.addCase(getCurrentUser.fulfilled, (state, action) => {
-      state.status = "succeeded";
-      state.user = action.payload;
-    });
-    builder.addCase(getCurrentUser.rejected, (state) => {
-      state.status = "failed";
-    });
+    builder
+      .addCase(getCurrentUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getCurrentUser.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+      })
+      .addCase(getCurrentUser.rejected, (state) => {
+        state.status = "failed";
+      });
   },
 });
 
-export const selectCurrentUser = (state: RootState) => state.currentUser.user;
+export const selectCurrentUser = (state: RootState) => {
+  return state.currentUser.user;
+};
 
 export default currentUserSlice.reducer;

@@ -55,7 +55,7 @@ const UserStats = styled.div`
   justify-content: space-between;
 `;
 
-const StatItem = styled.p`
+const StatItem = styled.small`
   text-transform: uppercase;
   margin-left: 8px;
   margin-right: 8px;
