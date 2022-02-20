@@ -5,7 +5,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface CurrentUserState {
   user: User;
-  status: "idle" | "loading" | "failed";
+  status: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: CurrentUserState = {
@@ -13,8 +13,8 @@ const initialState: CurrentUserState = {
   status: "idle",
 };
 
-export const fetchCurrentUser = createAsyncThunk(
-  "currentUser/fetchCurrentUser",
+export const getCurrentUser = createAsyncThunk(
+  "currentUser/getCurrentUser",
   async () => {
     const response = await axios.get(`/me`);
     return response.data;
@@ -26,14 +26,14 @@ export const currentUserSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchCurrentUser.pending, (state) => {
+    builder.addCase(getCurrentUser.pending, (state) => {
       state.status = "loading";
     });
-    builder.addCase(fetchCurrentUser.fulfilled, (state, action) => {
-      state.status = "idle";
+    builder.addCase(getCurrentUser.fulfilled, (state, action) => {
+      state.status = "succeeded";
       state.user = action.payload;
     });
-    builder.addCase(fetchCurrentUser.rejected, (state) => {
+    builder.addCase(getCurrentUser.rejected, (state) => {
       state.status = "failed";
     });
   },
