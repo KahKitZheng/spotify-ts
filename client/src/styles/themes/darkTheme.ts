@@ -17,7 +17,7 @@ const darkTheme: DefaultTheme = {
 
   font: {
     text: TEXT,
-    title: WHITE,
+    title: "#fff",
   },
 };
 
