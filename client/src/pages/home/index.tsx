@@ -80,6 +80,8 @@ const HomePage = () => {
     recentTracksStatus,
     topItemsStatus,
     dispatch,
+    recommendArtistStatus,
+    topArtists.items,
   ]);
 
   return (
