@@ -70,7 +70,7 @@ const HomePage = () => {
       dispatch(getTopArtists({ limit: 10 }));
       dispatch(getTopTracks({ limit: 10 }));
     }
-    if (recommendArtistStatus === "idle" && topArtists !== null) {
+    if (recommendArtistStatus === "idle" && topArtists.items?.length > 0) {
       const artistSeed = topArtists.items[0].id;
       dispatch(getArtistRecommendation({ seed: artistSeed, limit: 10 }));
     }
@@ -81,8 +81,6 @@ const HomePage = () => {
     topItemsStatus,
     dispatch,
   ]);
-
-  console.log(recommendArtists);
 
   return (
     <div>
@@ -138,14 +136,14 @@ const HomePage = () => {
         ))}
       </Collection>
 
-      {topArtists?.items.length > 0 && (
+      {topArtists.items?.length > 0 && (
         <Collection title={`Similiar to ${topArtists?.items[0].name}`}>
           {recommendArtists.tracks?.map((track) => (
             <Card
               key={track.id}
-              imgSource={track.album?.images[0].url}
+              imgSource={track.album.images[0].url}
               title={track.name}
-              undertitle={`By ${track?.artists[0].name}`}
+              undertitle={`By ${track.artists[0].name}`}
             />
           ))}
         </Collection>
