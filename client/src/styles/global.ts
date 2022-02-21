@@ -64,6 +64,13 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     width: 100%;
   }
+
+  /*
+    Other overrides
+  */
+  h1, h2, h3, h4, h5, h6 {
+    color: ${({ theme }) => theme.font.title};
+  }
 `;
 
 export default withTheme(GlobalStyle);

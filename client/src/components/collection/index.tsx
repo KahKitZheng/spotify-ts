@@ -21,10 +21,7 @@ const CollectionWrapper = styled.div`
   margin-top: 32px;
 `;
 
-const CollectionTitle = styled.p`
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 24px;
-  font-weight: 700;
+const CollectionTitle = styled.h2`
   margin-bottom: 8px;
 `;
 

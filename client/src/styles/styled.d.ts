@@ -13,6 +13,7 @@ declare module "styled-components" {
 
     font: {
       text: string;
+      title: string;
     };
   }
 }

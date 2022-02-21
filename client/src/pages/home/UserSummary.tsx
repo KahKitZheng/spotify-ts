@@ -45,7 +45,6 @@ const UserImage = styled.img`
 `;
 
 const UserName = styled.h1`
-  color: ${({ theme }) => theme.colors.white};
   margin-top: 16px;
 `;
 
