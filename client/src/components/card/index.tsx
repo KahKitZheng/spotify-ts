@@ -24,8 +24,7 @@ const CardWrapper = styled.div`
 `;
 
 const CardCover = styled.img`
-  height: 144px;
-  width: 144px;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
@@ -37,6 +36,7 @@ const CardTitle = styled.p`
   text-overflow: ellipsis;
   overflow: hidden;
   font-weight: 600;
+  font-size: 14px;
   color: ${({ theme }) => theme.colors.white};
 `;
 
