@@ -22,6 +22,11 @@ const CardWrapper = styled.div`
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s cubic-bezier(0.47, 0, 0.745, 0.715);
+
+  &:hover {
+    background-color: #33344d;
+  }
 `;
 
 const CardCover = styled.img<{ $isArtist: boolean }>`
