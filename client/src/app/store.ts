@@ -6,6 +6,7 @@ import recentTracksReducer from "../slices/recentTrackSlice";
 import topItemsReducer from "../slices/topItemsSlice";
 import recommendationSlice from "../slices/recommendationSlice";
 import categoriesSlice from "../slices/categoriesSlice";
+import searchResultSlice from "../slices/searchResultSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     topItems: topItemsReducer,
     recommendations: recommendationSlice,
     categories: categoriesSlice,
+    searchResults: searchResultSlice,
     counter: counterReducer,
   },
 });
