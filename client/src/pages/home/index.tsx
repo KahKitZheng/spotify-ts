@@ -139,16 +139,16 @@ const HomePage = () => {
         ))}
       </Collection>
 
-      {topArtists.items?.length > 0 && (
+      {recommendArtists.tracks?.length > 0 && (
         <Collection title={`Similiar to ${topArtists?.items[0].name}`}>
-          {recommendArtists.tracks?.map((track, index) => {
+          {recommendArtists.tracks?.map((track, index) => (
             <Card
               key={track.id + "-" + index}
               imgSource={track.album.images[0].url}
               title={track.name}
               undertitle={`By ${track.artists[0].name}`}
-            />;
-          })}
+            />
+          ))}
         </Collection>
       )}
     </div>
