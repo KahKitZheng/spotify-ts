@@ -1,36 +1,56 @@
 import React from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import { HiHome } from "react-icons/hi";
-import { IoSearch } from "react-icons/io5";
-import { MdLibraryMusic } from "react-icons/md";
+import { NavLink, useLocation } from "react-router-dom";
+import { HiOutlineHome, HiHome } from "react-icons/hi";
+import { IoSearchOutline, IoSearch } from "react-icons/io5";
+import { MdOutlineLibraryMusic, MdLibraryMusic } from "react-icons/md";
 
 const BottomTabs = () => {
+  const location = useLocation();
+
   return (
     <BottomTabsWrapper>
       <TabLink to={`/`}>
-        <TabIcon>
-          <HiHome />
-        </TabIcon>
+        {location.pathname === "/" ? (
+          <TabIcon>
+            <HiHome />
+          </TabIcon>
+        ) : (
+          <TabIcon>
+            <HiOutlineHome />
+          </TabIcon>
+        )}
         <span>Home</span>
       </TabLink>
       <TabLink to={`/search`}>
-        <TabIcon>
-          <IoSearch />
-        </TabIcon>
+        {location.pathname === "/search" ? (
+          <TabIcon>
+            <IoSearch />
+          </TabIcon>
+        ) : (
+          <TabIcon>
+            <IoSearchOutline />
+          </TabIcon>
+        )}
         <span>Search</span>
       </TabLink>
       <TabLink to={`/library`}>
-        <TabIcon>
-          <MdLibraryMusic />
-        </TabIcon>
+        {location.pathname === "/library" ? (
+          <TabIcon>
+            <MdLibraryMusic />
+          </TabIcon>
+        ) : (
+          <TabIcon>
+            <MdOutlineLibraryMusic />
+          </TabIcon>
+        )}
         <span>Your Library</span>
       </TabLink>
     </BottomTabsWrapper>
   );
 };
 
-const BottomTabsWrapper = styled.div`
+const BottomTabsWrapper = styled.footer`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
@@ -38,7 +58,7 @@ const BottomTabsWrapper = styled.div`
   padding: 12px 24px;
 `;
 
-const TabLink = styled(Link)`
+const TabLink = styled(NavLink)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,11 +68,15 @@ const TabLink = styled(Link)`
   text-decoration: none;
   margin: auto;
   width: fit-content;
+
+  &.active {
+    color: #27dc89;
+  }
 `;
 
 const TabIcon = styled.div`
   font-size: 1.25rem;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 `;
 
 export default BottomTabs;
