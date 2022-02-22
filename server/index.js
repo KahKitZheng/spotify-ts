@@ -141,7 +141,7 @@ app.get("/callback", function (req, res) {
           refresh_token: refreshToken,
         },
       })
-        .then((response) => {
+        .then(() => {
           res.redirect(
             `${FRONTEND_URI}/#${qs.stringify({
               access_token: accessToken,
@@ -165,7 +165,7 @@ app.get("/refresh_token", function (req, res) {
     method: "post",
     params: {
       grant_type: "refresh_token",
-      refresh_token: refresh_token,
+      refresh_token: req.query.refresh_token,
     },
     headers: {
       Accept: "application/json",
@@ -175,8 +175,8 @@ app.get("/refresh_token", function (req, res) {
       username: CLIENT_ID,
       password: CLIENT_SECRET,
     },
-  }).then((res) => {
-    const access_token = body.access_token;
+  }).then((response) => {
+    const access_token = response.data.access_token;
     res.send({ access_token: access_token });
   });
 });
