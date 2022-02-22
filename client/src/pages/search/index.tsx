@@ -16,6 +16,7 @@ import {
 const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const tabContainer = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
   const searchResults = useAppSelector(selectAllSearchResults);
@@ -50,6 +51,12 @@ const SearchPage = () => {
     dispatch(startSearch());
   }
 
+  function resetScroll() {
+    if (tabContainer.current !== null) {
+      tabContainer.current.scrollTop = 0;
+    }
+  }
+
   return (
     <PageWrapper>
       <SearchHeader>
@@ -69,14 +76,14 @@ const SearchPage = () => {
           <TabFilterList
             $isSearching={searchResultStatus === "succeeded" || query !== ""}
           >
-            <FilterTab>Artist</FilterTab>
-            <FilterTab>Album</FilterTab>
-            <FilterTab>Track</FilterTab>
-            <FilterTab>Playlist</FilterTab>
+            <FilterTab onClick={resetScroll}>Artist</FilterTab>
+            <FilterTab onClick={resetScroll}>Album</FilterTab>
+            <FilterTab onClick={resetScroll}>Track</FilterTab>
+            <FilterTab onClick={resetScroll}>Playlist</FilterTab>
           </TabFilterList>
         )}
       </SearchHeader>
-      <Container $isSearching={isSearching || query !== ""}>
+      <Container ref={tabContainer} $isSearching={isSearching || query !== ""}>
         {isSearching || query !== "" ? (
           /**
            * Difficult to split TabPanels into a separate component, a temporary
