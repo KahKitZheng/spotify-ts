@@ -95,9 +95,9 @@ const HomePage = () => {
       />
 
       <Collection title="Your playlists">
-        {userPlaylists.items?.map((playlist) => (
+        {userPlaylists.items?.map((playlist, index) => (
           <Card
-            key={playlist.id}
+            key={playlist.id + "-" + index}
             imgSource={playlist.images[0].url}
             title={playlist.name}
             undertitle={`By ${playlist.owner?.display_name}`}
@@ -106,9 +106,9 @@ const HomePage = () => {
       </Collection>
 
       <Collection title="Recently played">
-        {recentTracks.items?.map((item) => (
+        {recentTracks.items?.map((item, index) => (
           <Card
-            key={item.track.id}
+            key={item.track.id + "-" + index}
             imgSource={item.track?.album.images[0].url}
             title={item.track.name}
             undertitle={item.track.artists[0].name}
@@ -117,9 +117,9 @@ const HomePage = () => {
       </Collection>
 
       <Collection title="Top artists">
-        {topArtists.items?.map((artist) => (
+        {topArtists.items?.map((artist, index) => (
           <Card
-            key={artist.id}
+            key={artist.id + "-" + index}
             imgSource={artist.images[0].url}
             title={artist.name}
             undertitle={artist.type}
@@ -128,9 +128,9 @@ const HomePage = () => {
       </Collection>
 
       <Collection title="Top tracks">
-        {topTracks.items?.map((track) => (
+        {topTracks.items?.map((track, index) => (
           <Card
-            key={track.id}
+            key={track.id + "-" + index}
             imgSource={track.album.images[0].url}
             title={track.name}
             undertitle={track.artists[0].name}
@@ -140,14 +140,14 @@ const HomePage = () => {
 
       {topArtists.items?.length > 0 && (
         <Collection title={`Similiar to ${topArtists?.items[0].name}`}>
-          {recommendArtists.tracks?.map((track) => (
+          {recommendArtists.tracks?.map((track, index) => {
             <Card
-              key={track.id}
+              key={track.id + "-" + index}
               imgSource={track.album.images[0].url}
               title={track.name}
               undertitle={`By ${track.artists[0].name}`}
-            />
-          ))}
+            />;
+          })}
         </Collection>
       )}
     </div>
