@@ -37,7 +37,7 @@ function setLocalRefreshToken(token: string) {
 async function refreshAccessToken() {
   try {
     const { data } = await axios.get(
-      `/refresh_token?refresh_token=${getLocalRefreshToken()}`
+      `http://localhost:8888/refresh_token?refresh_token=${getLocalRefreshToken()}`
     );
     const { access_token } = data;
     setLocalAccessToken(access_token);
