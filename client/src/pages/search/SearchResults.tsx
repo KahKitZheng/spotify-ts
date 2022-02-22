@@ -28,6 +28,7 @@ const SearchResults = (props: Props) => {
                 imgSource={artist.images[0]?.url}
                 title={artist.name}
                 undertitle={artist.type}
+                isArtist
               />
             ))}
         </CardGrid>

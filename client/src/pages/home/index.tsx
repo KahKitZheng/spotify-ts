@@ -123,6 +123,7 @@ const HomePage = () => {
             imgSource={artist.images[0].url}
             title={artist.name}
             undertitle={artist.type}
+            isArtist
           />
         ))}
       </Collection>

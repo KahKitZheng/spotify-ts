@@ -32,6 +32,7 @@ const CategoriesGrid = styled.div`
 const CategoryCard = styled.div<{ bgColor: string }>`
   border-radius: 4px;
   background-color: ${(props) => `${props.bgColor}`};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   position: relative;
   padding: 16px 12px;
   height: 5rem;

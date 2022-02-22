@@ -5,28 +5,30 @@ type Props = {
   imgSource: string;
   title?: string;
   undertitle: string;
+  isArtist?: boolean;
 };
 
-const Card = (props: Props) => {
+const Card = ({ imgSource, title, undertitle, isArtist = false }: Props) => {
   return (
     <CardWrapper>
-      <CardCover src={props.imgSource} alt="" />
-      <CardTitle>{props.title}</CardTitle>
-      <CardUndertitle>{props.undertitle}</CardUndertitle>
+      <CardCover src={imgSource} alt="" $isArtist={isArtist} />
+      <CardTitle>{title}</CardTitle>
+      <CardUndertitle>{undertitle}</CardUndertitle>
     </CardWrapper>
   );
 };
 const CardWrapper = styled.div`
-  background-color: #1b1b26;
+  background-color: #1d1e2d;
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
-const CardCover = styled.img`
+const CardCover = styled.img<{ $isArtist: boolean }>`
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: ${({ $isArtist }) => $isArtist && "50%"};
 `;
 
 const CardTitle = styled.p`

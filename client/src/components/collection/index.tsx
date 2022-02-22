@@ -33,8 +33,7 @@ const CollectionGrid = styled.div`
   overflow-x: auto;
   margin-left: -16px;
   margin-right: -16px;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding: 4px 16px 8px;
 
   &::-webkit-scrollbar {
     width: 0;
