@@ -146,7 +146,7 @@ const HomePage = () => {
               key={track.id + "-" + index}
               imgSource={track.album.images[0].url}
               title={track.name}
-              undertitle={`By ${track.artists[0].name}`}
+              undertitle={track.artists[0].name}
             />
           ))}
         </Collection>
