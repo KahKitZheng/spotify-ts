@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import BrowseCategories from "./BrowseCategories";
+import SearchResults from "./SearchResults";
+import { Tab, Tabs, TabList } from "react-tabs";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -51,50 +53,38 @@ const SearchPage = () => {
   return (
     <PageWrapper>
       <SearchHeader>
-        <SearchTitle isSearching={isSearching || query !== ""}>
+        <SearchTitle $isSearching={isSearching || query !== ""}>
           Search
         </SearchTitle>
-        <SearchBar
+        <SearchInput
           type="text"
           value={query}
           placeholder="Artists, tracks or podcasts"
           onBlur={() => setIsSearching(false)}
           onFocus={() => setIsSearching(true)}
           onChange={(e) => handleOnChange(e)}
-          isSearching={isSearching || query !== ""}
+          $isSearching={isSearching || query !== ""}
         />
-        <ButtonGroup
-          isSearching={searchResultStatus === "succeeded" || query !== ""}
-        >
-          <Button>Artist</Button>
-          <Button>Album</Button>
-          <Button>Track</Button>
-          <Button>Playlist</Button>
-        </ButtonGroup>
+        {query !== "" && (
+          <TabFilterList
+            $isSearching={searchResultStatus === "succeeded" || query !== ""}
+          >
+            <FilterTab>Artist</FilterTab>
+            <FilterTab>Album</FilterTab>
+            <FilterTab>Track</FilterTab>
+            <FilterTab>Playlist</FilterTab>
+          </TabFilterList>
+        )}
       </SearchHeader>
-      <Container>
+      <Container $isSearching={isSearching || query !== ""}>
         {isSearching || query !== "" ? (
-          query === "" ? (
-            <NoResult>
-              <MessageLarge>Play what you love</MessageLarge>
-              <small>Search for artists, albums, tracks or playlists.</small>
-            </NoResult>
-          ) : (
-            <div>
-              {searchResults.artists &&
-                searchResults.artists.items.map((artist) => (
-                  <div key={artist.id}>
-                    <img
-                      src={artist.images[0]?.url}
-                      height={32}
-                      width={32}
-                      alt=""
-                    />
-                    <p>{artist.name}</p>
-                  </div>
-                ))}
-            </div>
-          )
+          /**
+           * Difficult to split TabPanels into a separate component, a temporary
+           * workaround to render the component is to use it as a function.
+           *
+           * src: https://github.com/reactjs/react-tabs/issues/253
+           */
+          SearchResults({ query, searchResults })
         ) : (
           <BrowseCategories />
         )}
@@ -103,7 +93,7 @@ const SearchPage = () => {
   );
 };
 
-const PageWrapper = styled.div`
+const PageWrapper = styled(Tabs)`
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -113,17 +103,18 @@ const SearchHeader = styled.div`
   position: relative;
 `;
 
-const SearchTitle = styled.h1<{ isSearching: boolean }>`
-  visibility: ${({ isSearching }) => isSearching && "hidden"};
-  transform: ${({ isSearching }) => isSearching && `translateY(-100%)`};
-  opacity: ${({ isSearching }) => isSearching && 0};
+const SearchTitle = styled.h1<{ $isSearching: boolean }>`
+  visibility: ${({ $isSearching }) => $isSearching && "hidden"};
+  transform: ${({ $isSearching }) => $isSearching && `translateY(-100%)`};
+  opacity: ${({ $isSearching }) => $isSearching && 0};
   transition: visibility 0.6s ease-in-out,
     opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
     transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 `;
 
-const SearchBar = styled.input<{ isSearching: boolean }>`
-  position: relative;
+const SearchInput = styled.input<{ $isSearching: boolean }>`
+  position: ${({ $isSearching }) => $isSearching && "sticky"};
+  top: 16px;
   z-index: 10;
   width: 100%;
   margin-top: 4px;
@@ -131,11 +122,11 @@ const SearchBar = styled.input<{ isSearching: boolean }>`
   border-radius: 4px;
   border: 0;
   font-weight: 600;
-  transform: ${({ isSearching }) => isSearching && `translateY(-100%)`};
+  transform: ${({ $isSearching }) => $isSearching && `translateY(-100%)`};
   transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 `;
 
-const ButtonGroup = styled.div<{ isSearching: boolean }>`
+const TabFilterList = styled(TabList)<{ $isSearching: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -143,50 +134,50 @@ const ButtonGroup = styled.div<{ isSearching: boolean }>`
   position: absolute;
   top: 32px;
   width: 100%;
-  visibility: ${({ isSearching }) => (isSearching ? `visible` : `hidden`)};
-  transform: ${({ isSearching }) => isSearching && `translateY(32px)`};
-  opacity: ${({ isSearching }) => isSearching && 1};
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  visibility: ${({ $isSearching }) => ($isSearching ? `visible` : `hidden`)};
+  transform: ${({ $isSearching }) => $isSearching && `translateY(32px)`};
+  opacity: ${({ $isSearching }) => $isSearching && 1};
   transition: visibility 0.2s ease-in-out,
     opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
     transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 `;
 
-const Button = styled.button`
+const FilterTab = styled(Tab)`
   flex: 1;
   background-color: transparent;
-  border: 1px solid currentColor;
-  border-radius: 24px;
+  border: 1px solid ${({ theme }) => theme.colors.white};
+  border-radius: 6px;
   padding: 2px 12px;
   font-size: 14px;
-  color: currentColor;
+  color: ${({ theme }) => theme.colors.white};
+  text-align: center;
 
-  :not(:first-of-type) {
+  &:not(:first-of-type) {
     margin-left: 8px;
+  }
+
+  &.react-tabs__tab--selected {
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.black};
+    border-color: ${({ theme }) => theme.colors.white};
+    background-color: ${({ theme }) => theme.colors.white};
+    color: white;
+    border-color: #12ce66;
+    background-color: #128454;
   }
 `;
 
-const Container = styled.div`
+const Container = styled.div<{ $isSearching: boolean }>`
   display: flex;
   flex-direction: column;
-  margin-top: 32px;
+  margin-top: 16px;
+  margin-bottom: -16px;
+  padding-bottom: 16px;
+  overflow: ${({ $isSearching }) => $isSearching && "auto"};
   flex: 1;
-`;
-
-const NoResult = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  margin-top: -32px;
-`;
-
-const MessageLarge = styled.p`
-  color: ${({ theme }) => theme.colors.white};
-  font-weight: 600;
-  font-size: 20px;
-  text-align: center;
-  margin-bottom: 4px;
 `;
 
 export default SearchPage;
