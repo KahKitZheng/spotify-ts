@@ -71,6 +71,15 @@ const GlobalStyle = createGlobalStyle`
   h1, h2, h3, h4, h5, h6 {
     color: ${({ theme }) => theme.font.title};
   }
+
+  a {
+    color: ${({ theme }) => theme.font.link};
+    text-decoration: none;
+
+    :hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export default withTheme(GlobalStyle);
