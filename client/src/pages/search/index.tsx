@@ -168,9 +168,6 @@ const FilterTab = styled(Tab)`
 
   &.react-tabs__tab--selected {
     font-weight: 600;
-    color: ${({ theme }) => theme.colors.black};
-    border-color: ${({ theme }) => theme.colors.white};
-    background-color: ${({ theme }) => theme.colors.white};
     color: white;
     border-color: #12ce66;
     background-color: #128454;

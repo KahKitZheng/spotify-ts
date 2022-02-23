@@ -6,6 +6,8 @@ import recentTracksReducer from "../slices/recentTrackSlice";
 import topItemsReducer from "../slices/topItemsSlice";
 import recommendationSlice from "../slices/recommendationSlice";
 import categoriesSlice from "../slices/categoriesSlice";
+import userSavedArtistsSlice from "../slices/userSavedArtistsSlice";
+import userSavedAlbumsSlice from "../slices/userSavedAlbumsSlice";
 import searchResultSlice from "../slices/searchResultSlice";
 
 export const store = configureStore({
@@ -17,6 +19,8 @@ export const store = configureStore({
     recommendations: recommendationSlice,
     categories: categoriesSlice,
     searchResults: searchResultSlice,
+    userSavedArtists: userSavedArtistsSlice,
+    userSavedAlbums: userSavedAlbumsSlice,
     counter: counterReducer,
   },
 });
