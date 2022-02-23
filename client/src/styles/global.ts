@@ -79,6 +79,10 @@ const GlobalStyle = createGlobalStyle`
     :hover {
       text-decoration: underline;
     }
+
+    :focus {
+      text-decoration: none;
+    }
   }
 `;
 

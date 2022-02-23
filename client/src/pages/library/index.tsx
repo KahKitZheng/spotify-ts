@@ -48,15 +48,8 @@ const LibraryPage = () => {
     }
     if (savedPlaylistsStatus === "idle") {
       dispatch(getCurrentUserPlaylists());
-      console.log(savedPlaylists);
     }
-  }, [
-    dispatch,
-    savedAlbumsStatus,
-    savedArtistsStatus,
-    savedPlaylists,
-    savedPlaylistsStatus,
-  ]);
+  }, [dispatch, savedAlbumsStatus, savedArtistsStatus, savedPlaylistsStatus]);
 
   return (
     <TabsWrapper>

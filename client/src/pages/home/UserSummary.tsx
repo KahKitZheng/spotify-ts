@@ -18,13 +18,13 @@ const UserSummary = (props: Props) => {
       <UserName>{name}</UserName>
       <UserStats>
         <StatItem>
-          <StatValue>{followerCount}</StatValue> followers
+          <StatValue>{followerCount ? followerCount : 0}</StatValue> followers
         </StatItem>
         <StatItem>
-          <StatValue>{followingCount}</StatValue> following
+          <StatValue>{followingCount ? followingCount : 0}</StatValue> following
         </StatItem>
         <StatItem>
-          <StatValue>{playlistCount}</StatValue> playlists
+          <StatValue>{playlistCount ? playlistCount : 0}</StatValue> playlists
         </StatItem>
       </UserStats>
     </UserSummaryWrapper>

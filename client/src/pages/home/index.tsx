@@ -27,7 +27,10 @@ import {
   getArtistRecommendation,
   selectArtistRecommendation,
 } from "../../slices/recommendationSlice";
-import { selectUserSavedArtists } from "../../slices/userSavedArtistsSlice";
+import {
+  getUserSavedArtists,
+  selectUserSavedArtists,
+} from "../../slices/userSavedArtistsSlice";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -44,6 +47,9 @@ const HomePage = () => {
   );
   const userPlaylistsStatus = useSelector(
     (state: RootState) => state.currentUserPlaylists.status
+  );
+  const userSavedArtistsStatus = useSelector(
+    (state: RootState) => state.userSavedArtists.status
   );
   const recentTracksStatus = useSelector(
     (state: RootState) => state.recentTracks.status
@@ -76,14 +82,18 @@ const HomePage = () => {
       const artistSeed = topArtists.items[0].id;
       dispatch(getArtistRecommendation({ seed: artistSeed, limit: 10 }));
     }
+    if (userSavedArtistsStatus === "idle") {
+      dispatch(getUserSavedArtists({ type: "artist" }));
+    }
   }, [
-    userStatus,
-    userPlaylistsStatus,
-    recentTracksStatus,
-    topItemsStatus,
     dispatch,
+    recentTracksStatus,
     recommendArtistStatus,
     topArtists.items,
+    topItemsStatus,
+    userPlaylistsStatus,
+    userSavedArtistsStatus,
+    userStatus,
   ]);
 
   return (
@@ -92,8 +102,8 @@ const HomePage = () => {
         image={user.images && user.images[0].url}
         name={user.display_name || "Not Available"}
         followerCount={user.followers?.total}
-        followingCount={userPlaylists.total}
-        playlistCount={savedArtists.artists.total}
+        followingCount={savedArtists.artists?.total}
+        playlistCount={userPlaylists?.total}
       />
 
       <Collection title="Your playlists">
