@@ -27,10 +27,12 @@ import {
   getArtistRecommendation,
   selectArtistRecommendation,
 } from "../../slices/recommendationSlice";
+import { selectUserSavedArtists } from "../../slices/userSavedArtistsSlice";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
+  const savedArtists = useAppSelector(selectUserSavedArtists);
   const userPlaylists = useAppSelector(selectCurrentUserPlaylists);
   const recentTracks = useAppSelector(selectRecentTracks);
   const topArtists = useAppSelector(selectTopArtists);
@@ -90,8 +92,8 @@ const HomePage = () => {
         image={user.images && user.images[0].url}
         name={user.display_name || "Not Available"}
         followerCount={user.followers?.total}
-        followingCount={0}
-        playlistCount={0}
+        followingCount={userPlaylists.total}
+        playlistCount={savedArtists.artists.total}
       />
 
       <Collection title="Your playlists">

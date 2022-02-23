@@ -4,9 +4,9 @@ import styled from "styled-components";
 type Props = {
   image: string;
   name: string;
-  followerCount: number;
-  followingCount: number;
-  playlistCount: number;
+  followerCount?: number;
+  followingCount?: number;
+  playlistCount?: number;
 };
 
 const UserSummary = (props: Props) => {
