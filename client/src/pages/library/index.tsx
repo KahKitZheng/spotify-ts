@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import styled from "styled-components";
 import Card from "../../components/card";
+import styled from "styled-components";
+import { overflowNoScrollbar } from "../../styles/utils";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -148,6 +149,7 @@ const TabPanelWrapper = styled.div`
   overflow: auto;
   margin-bottom: -16px;
   padding-bottom: 16px;
+  ${overflowNoScrollbar}
 `;
 
 const CardGrid = styled.div`

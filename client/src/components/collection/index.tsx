@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { overflowNoScrollbar } from "../../styles/utils";
 
 type Props = {
   title: string;
@@ -34,10 +35,7 @@ const CollectionGrid = styled.div`
   margin-left: -16px;
   margin-right: -16px;
   padding: 4px 16px 8px;
-
-  &::-webkit-scrollbar {
-    width: 0;
-  }
+  ${overflowNoScrollbar}
 `;
 
 export default Collection;
