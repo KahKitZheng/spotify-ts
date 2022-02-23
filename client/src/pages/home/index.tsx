@@ -100,7 +100,11 @@ const HomePage = () => {
             key={playlist.id + "-" + index}
             imgSource={playlist.images[0].url}
             title={playlist.name}
-            undertitle={`By ${playlist.owner?.display_name}`}
+            undertitle={
+              playlist.description
+                ? playlist.description
+                : `By ${playlist.owner?.display_name}`
+            }
           />
         ))}
       </Collection>

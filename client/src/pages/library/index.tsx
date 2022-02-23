@@ -99,7 +99,12 @@ const LibraryPage = () => {
               <Card
                 key={playlist.id}
                 imgSource={playlist.images[0]?.url}
-                undertitle={playlist.name}
+                title={playlist.name}
+                undertitle={
+                  playlist.description
+                    ? playlist.description
+                    : `By ${playlist.owner.display_name}`
+                }
               />
             ))}
           </CardGrid>

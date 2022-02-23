@@ -13,7 +13,9 @@ const Card = ({ imgSource, title, undertitle, isArtist = false }: Props) => {
     <CardWrapper>
       <CardCover src={imgSource} alt="" $isArtist={isArtist} />
       <CardTitle>{title}</CardTitle>
-      <CardUndertitle>{undertitle}</CardUndertitle>
+      <CardUndertitle
+        dangerouslySetInnerHTML={{ __html: undertitle }}
+      ></CardUndertitle>
     </CardWrapper>
   );
 };
