@@ -44,7 +44,7 @@ const CardTitle = styled.p`
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   color: ${({ theme }) => theme.colors.white};
 `;
@@ -62,6 +62,10 @@ const CardUndertitle = styled.small`
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+  }
+
+  a {
+    color: currentColor;
   }
 `;
 
