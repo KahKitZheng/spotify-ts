@@ -3,6 +3,7 @@ import styled from "styled-components";
 import BrowseCategories from "./BrowseCategories";
 import SearchResults from "./SearchResults";
 import { Tab, Tabs, TabList } from "react-tabs";
+import { resetScroll } from "../../utils";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -51,12 +52,6 @@ const SearchPage = () => {
     dispatch(startSearch());
   }
 
-  function resetScroll() {
-    if (tabContainer.current !== null) {
-      tabContainer.current.scrollTop = 0;
-    }
-  }
-
   return (
     <PageWrapper>
       <SearchHeader>
@@ -76,10 +71,18 @@ const SearchPage = () => {
           <TabFilterList
             $isSearching={searchResultStatus === "succeeded" || query !== ""}
           >
-            <FilterTab onClick={resetScroll}>Artist</FilterTab>
-            <FilterTab onClick={resetScroll}>Album</FilterTab>
-            <FilterTab onClick={resetScroll}>Track</FilterTab>
-            <FilterTab onClick={resetScroll}>Playlist</FilterTab>
+            <FilterTab onClick={() => resetScroll(tabContainer)}>
+              Artist
+            </FilterTab>
+            <FilterTab onClick={() => resetScroll(tabContainer)}>
+              Album
+            </FilterTab>
+            <FilterTab onClick={() => resetScroll(tabContainer)}>
+              Track
+            </FilterTab>
+            <FilterTab onClick={() => resetScroll(tabContainer)}>
+              Playlist
+            </FilterTab>
           </TabFilterList>
         )}
       </SearchHeader>

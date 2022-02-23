@@ -21,7 +21,7 @@ import {
 
 const LibraryPage = () => {
   const dispatch = useAppDispatch();
-  const containerRef = useRef(null);
+  const tabContainer = useRef<HTMLDivElement>(null);
 
   const savedArtists = useAppSelector(selectUserSavedArtists);
   const savedArtistsStatus = useSelector(
@@ -60,13 +60,13 @@ const LibraryPage = () => {
   return (
     <TabsWrapper>
       <TabFilterList>
-        <TabButton onClick={() => resetScroll(containerRef)}>Artists</TabButton>
-        <TabButton onClick={() => resetScroll(containerRef)}>Albums</TabButton>
-        <TabButton onClick={() => resetScroll(containerRef)}>
+        <TabButton onClick={() => resetScroll(tabContainer)}>Artists</TabButton>
+        <TabButton onClick={() => resetScroll(tabContainer)}>Albums</TabButton>
+        <TabButton onClick={() => resetScroll(tabContainer)}>
           Playlists
         </TabButton>
       </TabFilterList>
-      <TabPanelWrapper ref={containerRef}>
+      <TabPanelWrapper ref={tabContainer}>
         <TabPanel>
           <CardGrid>
             {savedArtists.artists?.items.map((artist) => (

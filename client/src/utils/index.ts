@@ -23,7 +23,6 @@ export const stringToHSL = (value: string): string => {
  */
 export const resetScroll = (htmlElement: RefObject<HTMLElement>) => {
   if (htmlElement.current) {
-    console.log(htmlElement);
     return (htmlElement.current.scrollTop = 0);
   }
 };
