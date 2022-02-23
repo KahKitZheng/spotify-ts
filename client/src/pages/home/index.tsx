@@ -106,21 +106,6 @@ const HomePage = () => {
         playlistCount={userPlaylists?.total}
       />
 
-      <Collection title="Your playlists">
-        {userPlaylists.items?.slice(0, 10).map((playlist, index) => (
-          <Card
-            key={playlist.id + "-" + index}
-            imgSource={playlist.images[0].url}
-            title={playlist.name}
-            undertitle={
-              playlist.description
-                ? playlist.description
-                : `By ${playlist.owner?.display_name}`
-            }
-          />
-        ))}
-      </Collection>
-
       <Collection title="Recently played">
         {recentTracks.items?.slice(0, 10).map((item, index) => (
           <Card
@@ -151,6 +136,21 @@ const HomePage = () => {
             imgSource={track.album.images[0].url}
             title={track.name}
             undertitle={track.artists[0].name}
+          />
+        ))}
+      </Collection>
+
+      <Collection title="Your playlists">
+        {userPlaylists.items?.slice(0, 10).map((playlist, index) => (
+          <Card
+            key={playlist.id + "-" + index}
+            imgSource={playlist.images[0].url}
+            title={playlist.name}
+            undertitle={
+              playlist.description
+                ? playlist.description
+                : `By ${playlist.owner?.display_name}`
+            }
           />
         ))}
       </Collection>
