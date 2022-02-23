@@ -69,6 +69,11 @@ const TabLink = styled(NavLink)`
   margin: auto;
   width: fit-content;
 
+  :hover {
+    color: #27dc89;
+    text-decoration: none;
+  }
+
   &.active {
     color: #27dc89;
   }
