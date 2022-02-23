@@ -21,55 +21,51 @@ const SearchResults = (props: Props) => {
     <>
       <TabPanel>
         <CardGrid>
-          {searchResults.artists &&
-            searchResults.artists.items.map((artist) => (
-              <Card
-                key={artist.id}
-                imgSource={artist.images[0]?.url}
-                title={artist.name}
-                undertitle={artist.type}
-                isArtist
-              />
-            ))}
+          {searchResults.artists?.items.map((artist) => (
+            <Card
+              key={artist.id}
+              imgSource={artist.images[0]?.url}
+              title={artist.name}
+              undertitle={artist.type}
+              isArtist
+            />
+          ))}
         </CardGrid>
       </TabPanel>
       <TabPanel>
         <CardGrid>
-          {searchResults.albums &&
-            searchResults.albums.items.map((album) => (
-              <Card
-                key={album.id}
-                imgSource={album.images[0]?.url}
-                title={album.name}
-                undertitle={`By ${album.artists[0].name}`}
-              />
-            ))}
+          {searchResults.albums?.items.map((album) => (
+            <Card
+              key={album.id}
+              imgSource={album.images[0]?.url}
+              title={album.name}
+              undertitle={`By ${album.artists[0].name}`}
+            />
+          ))}
         </CardGrid>
       </TabPanel>
       <TabPanel>
         <CardGrid>
-          {searchResults.tracks &&
-            searchResults.tracks.items.map((track) => (
-              <Card
-                key={track.id}
-                imgSource={track.album.images[0]?.url}
-                title={track.name}
-                undertitle={`By ${track.artists[0].name}`}
-              />
-            ))}
+          {searchResults.tracks?.items.map((track) => (
+            <Card
+              key={track.id}
+              imgSource={track.album.images[0]?.url}
+              title={track.name}
+              undertitle={`By ${track.artists[0].name}`}
+            />
+          ))}
         </CardGrid>
       </TabPanel>
       <TabPanel>
         <CardGrid>
-          {searchResults.playlists &&
-            searchResults.playlists.items.map((playlist) => (
-              <Card
-                key={playlist.id}
-                imgSource={playlist.images[0]?.url}
-                title={playlist.name}
-                undertitle={`By ${playlist.owner.display_name}`}
-              />
-            ))}
+          {searchResults.playlists?.items.map((playlist) => (
+            <Card
+              key={playlist.id}
+              imgSource={playlist.images[0]?.url}
+              title={playlist.name}
+              undertitle={`By ${playlist.owner.display_name}`}
+            />
+          ))}
         </CardGrid>
       </TabPanel>
     </>
