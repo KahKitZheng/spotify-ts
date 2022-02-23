@@ -107,7 +107,7 @@ const HomePage = () => {
       />
 
       <Collection title="Your playlists">
-        {userPlaylists.items?.map((playlist, index) => (
+        {userPlaylists.items?.slice(0, 10).map((playlist, index) => (
           <Card
             key={playlist.id + "-" + index}
             imgSource={playlist.images[0].url}
@@ -122,7 +122,7 @@ const HomePage = () => {
       </Collection>
 
       <Collection title="Recently played">
-        {recentTracks.items?.map((item, index) => (
+        {recentTracks.items?.slice(0, 10).map((item, index) => (
           <Card
             key={item.track.id + "-" + index}
             imgSource={item.track?.album.images[0].url}
@@ -133,7 +133,7 @@ const HomePage = () => {
       </Collection>
 
       <Collection title="Top artists">
-        {topArtists.items?.map((artist, index) => (
+        {topArtists.items?.slice(0, 10).map((artist, index) => (
           <Card
             key={artist.id + "-" + index}
             imgSource={artist.images[0].url}
@@ -145,7 +145,7 @@ const HomePage = () => {
       </Collection>
 
       <Collection title="Top tracks">
-        {topTracks.items?.map((track, index) => (
+        {topTracks.items?.slice(0, 10).map((track, index) => (
           <Card
             key={track.id + "-" + index}
             imgSource={track.album.images[0].url}
@@ -157,7 +157,7 @@ const HomePage = () => {
 
       {recommendArtists.tracks?.length > 0 && (
         <Collection title={`Similiar to ${topArtists?.items[0].name}`}>
-          {recommendArtists.tracks?.map((track, index) => (
+          {recommendArtists.tracks?.slice(0, 10).map((track, index) => (
             <Card
               key={track.id + "-" + index}
               imgSource={track.album.images[0].url}
