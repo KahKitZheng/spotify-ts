@@ -81,7 +81,7 @@ const LibraryPage = () => {
                 key={item.album.id}
                 imgSource={item.album.images[0]?.url}
                 title={item.album.name}
-                undertitle={item.album.type}
+                undertitle={item.album.artists[0].name}
               />
             ))}
           </CardGrid>
