@@ -37,12 +37,13 @@ const PlaylistPage = () => {
 
   // Fetch again if the tracklist is incomplete
   useEffect(() => {
-    // Check if the tracklist is empty and can fetch batch of tracks to prevent spamming calls
-    if (playlist.tracks?.items.length > 0 && playlist.tracks?.next !== null) {
+    // Check if the tracklist is not empty before fetching next batch of tracks and
+    // has items to count the playlist duration
+    if (playlist.tracks?.items.length > 0) {
       dispatch(countPlaylistDuration());
 
-      // Making sure that only one request is dispatch to the API
-      if (offsetStatus === "idle") {
+      // Make sure that only one request is dispatched to the API at a time
+      if (offsetStatus === "idle" && playlist.tracks?.next !== null) {
         dispatch(getPlaylistWithOffset({ url: playlist.tracks?.next }));
       }
     }
