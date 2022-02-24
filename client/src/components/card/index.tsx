@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { textOverflow } from "../../styles/utils";
 
 type Props = {
   imgSource: string;
@@ -39,28 +40,17 @@ const CardCover = styled.img<{ $isArtist: boolean }>`
 const CardTitle = styled.p`
   display: block;
   margin-top: 16px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
   font-weight: 700;
   font-size: 14px;
   color: ${({ theme }) => theme.colors.white};
+  ${textOverflow(1)};
 `;
 
 const CardUndertitle = styled.small`
   display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
-  overflow: hidden;
-
-  @supports (-webkit-line-clamp: 2) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: initial;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
+  ${textOverflow(2)};
 
   a {
     color: currentColor;
