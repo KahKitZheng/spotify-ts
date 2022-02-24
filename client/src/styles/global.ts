@@ -84,6 +84,11 @@ const GlobalStyle = createGlobalStyle`
       text-decoration: none;
     }
   }
+
+  span.bull {
+    margin-left: 4px;
+    margin-right: 4px;
+  }
 `;
 
 export default withTheme(GlobalStyle);

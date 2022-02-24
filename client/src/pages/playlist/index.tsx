@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import styled from "styled-components";
-import { textOverflow } from "../../styles/utils";
-import { useParams } from "react-router-dom";
+import * as H from "../../styles/components/headers";
+import * as T from "../../styles/components/track";
+import { Link, useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import { useSelector } from "react-redux";
@@ -58,67 +59,51 @@ const PlaylistPage = () => {
 
   return id === playlist.id ? (
     <div>
-      <PlaylistHeader $bgGradient={gradient}>
-        <PlaylistCover src={playlist.images && playlist.images[0].url} alt="" />
+      <H.HeaderWrapper $bgGradient={gradient}>
+        <H.Thumbnail src={playlist.images && playlist.images[0].url} alt="" />
         <PlaylistOwner>
           By <span>{playlist.owner?.display_name}</span>
         </PlaylistOwner>
-        <PlaylistName>{playlist.name?.split("/").join("/ ")}</PlaylistName>
+        <H.HeaderName>{playlist.name?.split("/").join("/ ")}</H.HeaderName>
         {playlist.description && (
           <PlaylistDescription
             dangerouslySetInnerHTML={{ __html: playlist.description }}
           />
         )}
-        <PlaylistStats>
+        <H.HeaderStats>
           {playlist.followers?.total.toLocaleString()} likes
-          <Bull> &bull; </Bull>
+          <span className="bull">&bull;</span>
           {playlist.tracks?.total} songs,{" "}
           {formatDuration(playlistDuration, "long")}
-        </PlaylistStats>
-      </PlaylistHeader>
-      <TracklistWrapper>
-        {playlist.tracks?.items.map((item, index) => {
+        </H.HeaderStats>
+      </H.HeaderWrapper>
+
+      <T.TracklistWrapper>
+        {playlist.tracks?.items.map((item) => {
           return "track" in item.track ? (
-            <Track key={item.track.id + "-" + index}>
-              <AlbumCover src={item.track.album?.images[0].url} alt="" />
-              <TrackInfo>
-                <TrackName>{item.track.name}</TrackName>
-                <TrackArtists>
-                  {item.track.explicit && <Explicit>E</Explicit>}
-                  {item.track.artists.map((artist, i, arr) => (
-                    <>
-                      <a href="#" key={artist.id}>
-                        {artist.name}
-                      </a>
-                      <span>{i !== arr.length - 1 ? ", " : ""}</span>
-                    </>
+            <T.Track key={item.track.id}>
+              <T.TrackAlbumCover src={item.track.album?.images[0].url} alt="" />
+              <T.TrackInfo>
+                <T.TrackName>{item.track.name}</T.TrackName>
+                <T.TrackArtists>
+                  {item.track.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+                  {item.track.artists.map((artist, index, arr) => (
+                    <Fragment key={artist.id}>
+                      <Link to={`/artist/${artist.id}`}>{artist.name}</Link>
+                      {index !== arr.length - 1 && <span>, </span>}
+                    </Fragment>
                   ))}
-                </TrackArtists>
-              </TrackInfo>
-            </Track>
+                </T.TrackArtists>
+              </T.TrackInfo>
+            </T.Track>
           ) : null;
         })}
-      </TracklistWrapper>
+      </T.TracklistWrapper>
     </div>
   ) : null;
 };
 
-const PlaylistHeader = styled.div<{ $bgGradient: string }>`
-  margin: -16px;
-  padding: 16px;
-  background: ${({ theme }) => theme.bg.main};
-  background: ${({ theme, $bgGradient }) =>
-    `linear-gradient(180deg, ${$bgGradient}, ${theme.bg.main} 90%)`};
-`;
-
-const PlaylistCover = styled.img`
-  height: 160px;
-  width: 160px;
-  margin: 24px auto 32px;
-  box-shadow: 0 0 32px rgba(0, 0, 0, 0.5);
-`;
-
-const PlaylistOwner = styled.p`
+export const PlaylistOwner = styled.p`
   font-size: 14px;
 
   span {
@@ -126,75 +111,10 @@ const PlaylistOwner = styled.p`
   }
 `;
 
-const PlaylistName = styled.h1`
-  font-size: 22px;
-  line-height: 1.2;
-  margin-top: 4px;
-`;
-
-const PlaylistDescription = styled.p`
+export const PlaylistDescription = styled.p`
   font-size: 14px;
   margin-top: 8px;
-  margin-bottom: 4px;
   opacity: 0.8;
-`;
-
-const PlaylistStats = styled.small`
-  opacity: 0.8;
-`;
-
-const Bull = styled.span`
-  margin-left: 4px;
-  margin-right: 4px;
-`;
-
-const TracklistWrapper = styled.div`
-  margin-top: 32px;
-`;
-
-const Track = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 16px;
-  margin-bottom: 16px;
-`;
-const AlbumCover = styled.img`
-  aspect-ratio: 1 / 1;
-  height: 48px;
-  width: 48px;
-  object-fit: cover;
-`;
-
-const TrackInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 16px;
-`;
-
-const TrackName = styled.p`
-  color: ${({ theme }) => theme.font.title};
-  ${textOverflow(1)};
-`;
-
-const TrackArtists = styled.p`
-  line-height: 1.3;
-  ${textOverflow(1)};
-
-  a {
-    color: #979da4;
-  }
-`;
-
-const Explicit = styled.span`
-  border-radius: 2px;
-  background-color: #979da4;
-  color: ${({ theme }) => theme.bg.main};
-  font-weight: 600;
-  font-size: 11px;
-  display: inline-block;
-  transform: translateY(-2px);
-  margin-right: 6px;
-  padding: 0 4px;
 `;
 
 export default PlaylistPage;
