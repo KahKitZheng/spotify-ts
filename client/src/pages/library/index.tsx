@@ -44,10 +44,10 @@ const LibraryPage = () => {
       dispatch(getUserSavedArtists({ type: "artist" }));
     }
     if (savedAlbumsStatus === "idle") {
-      dispatch(getUserSavedAlbums());
+      dispatch(getUserSavedAlbums({ limit: 50 }));
     }
     if (savedPlaylistsStatus === "idle") {
-      dispatch(getCurrentUserPlaylists());
+      dispatch(getCurrentUserPlaylists({ limit: 50 }));
     }
   }, [dispatch, savedAlbumsStatus, savedArtistsStatus, savedPlaylistsStatus]);
 
@@ -80,6 +80,7 @@ const LibraryPage = () => {
               <Card
                 key={item.album.id}
                 imgSource={item.album.images[0]?.url}
+                link={`/album/${item.album.id}`}
                 title={item.album.name}
                 undertitle={item.album.artists[0].name}
               />

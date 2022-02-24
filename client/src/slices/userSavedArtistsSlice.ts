@@ -28,6 +28,9 @@ export const getUserSavedArtists = createAsyncThunk(
         `/me/following?type=${type}&limit=${limit}`
       );
       return response.data;
+    } else {
+      const response = await axios.get(`/me/following?type=artist&limit=20`);
+      return response.data;
     }
   }
 );
