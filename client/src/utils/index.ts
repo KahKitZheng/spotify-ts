@@ -26,3 +26,29 @@ export const resetScroll = (htmlElement: RefObject<HTMLElement>) => {
     return (htmlElement.current.scrollTop = 0);
   }
 };
+
+/**
+ * Format milliseconds into either HH:MM or MM:SS
+ */
+export const formatDuration = (
+  duration: number,
+  formatType: "long" | "short"
+) => {
+  const seconds = Math.floor((duration / 1000) % 60);
+  const minutes = Math.floor((duration / (1000 * 60)) % 60);
+  const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+  // hours = hours < 10 ? hours : hours;
+  // minutes = minutes < 10 ? minutes : minutes;
+  // seconds = seconds < 10 ? "0" + seconds : seconds;
+
+  if (formatType === "long") {
+    if (hours >= 1) {
+      return `${hours} hr ${minutes} min`;
+    } else {
+      return `${minutes} min ${seconds < 10 ? "0" + seconds : seconds} sec`;
+    }
+  } else {
+    return `${minutes}:${seconds}`;
+  }
+};

@@ -6,6 +6,7 @@ import BottomTabs from "./navigation/BottomTabs";
 import HomePage from "../pages/home";
 import SearchPage from "../pages/search";
 import LibraryPage from "../pages/library";
+import PlaylistPage from "../pages/playlist";
 import PageNotFound from "../pages/404";
 
 const AppRouter = () => {
@@ -16,6 +17,7 @@ const AppRouter = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/library" element={<LibraryPage />} />
+          <Route path="/playlist/:id" element={<PlaylistPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </MainViewWrapper>

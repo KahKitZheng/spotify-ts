@@ -1,6 +1,6 @@
 import { DefaultTheme } from "styled-components";
 
-const WHITE = "#d7d7d7";
+const WHITE = "#f3f3f3";
 const BLACK = "#000";
 
 const TEXT = "lightsteelblue";
@@ -17,8 +17,8 @@ const darkTheme: DefaultTheme = {
 
   font: {
     text: TEXT,
-    title: "#fff",
-    link: "#fff",
+    title: WHITE,
+    link: WHITE,
   },
 };
 
