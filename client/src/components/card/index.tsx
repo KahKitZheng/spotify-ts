@@ -66,6 +66,7 @@ const CardUndertitle = styled.small`
   display: block;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color: ${({ theme }) => theme.font.text};
   ${textOverflow(2)};
 
   a {
