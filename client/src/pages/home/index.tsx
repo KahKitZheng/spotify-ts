@@ -145,6 +145,7 @@ const HomePage = () => {
           <Card
             key={playlist.id + "-" + index}
             imgSource={playlist.images[0].url}
+            link={`/playlist/${playlist.id}`}
             title={playlist.name}
             undertitle={
               playlist.description

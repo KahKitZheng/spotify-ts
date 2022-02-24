@@ -24,33 +24,33 @@ const PlaylistPage = () => {
   const playlist = useAppSelector(selectPlaylist);
   const playlistDuration = useAppSelector(selectPlaylistDuration);
 
-  const playlistStatus = useSelector(
-    (state: RootState) => state.playlist.status
-  );
   const offsetStatus = useSelector(
     (state: RootState) => state.playlist.offsetStatus
   );
 
+  // Fetch playlist for initial render
   useEffect(() => {
-    // Fetch playlist
-    if (playlistStatus === "idle" && id) {
+    if (id) {
       dispatch(getPlaylist({ playlist_id: id }));
     }
-    // Fetch again if the initial fetch received an incomplete tracklist
-    if (playlist.tracks?.items.length > 0) {
+  }, [dispatch, id]);
+
+  // Fetch again if the tracklist is incomplete
+  useEffect(() => {
+    // Check if the tracklist is empty and can fetch batch of tracks to prevent spamming calls
+    if (playlist.tracks?.items.length > 0 && playlist.tracks?.next !== null) {
       dispatch(countPlaylistDuration());
 
-      if (offsetStatus === "idle" && playlist.tracks?.next !== null) {
+      // Making sure that only one request is dispatch to the API
+      if (offsetStatus === "idle") {
         dispatch(getPlaylistWithOffset({ url: playlist.tracks?.next }));
       }
     }
   }, [
     dispatch,
-    id,
     offsetStatus,
     playlist.tracks?.items.length,
     playlist.tracks?.next,
-    playlistStatus,
   ]);
 
   useEffect(() => {

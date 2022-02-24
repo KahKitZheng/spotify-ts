@@ -1,24 +1,40 @@
 import React from "react";
 import styled from "styled-components";
 import { textOverflow } from "../../styles/utils";
+import { Link } from "react-router-dom";
 
 type Props = {
   imgSource: string;
   title?: string;
   undertitle: string;
   isArtist?: boolean;
+  link?: string;
 };
 
-const Card = ({ imgSource, title, undertitle, isArtist = false }: Props) => {
+const Card = (props: Props) => {
+  const { imgSource, title, undertitle, isArtist = false, link } = props;
+
   return (
-    <CardWrapper>
-      <CardCover src={imgSource} alt="" $isArtist={isArtist} />
-      <CardTitle>{title}</CardTitle>
-      <CardUndertitle dangerouslySetInnerHTML={{ __html: undertitle }} />
-    </CardWrapper>
+    <LinkWrapper to={link || ""}>
+      <CardWrapper>
+        <CardCover src={imgSource} alt="" $isArtist={isArtist} />
+        <CardTitle>{title}</CardTitle>
+        <CardUndertitle dangerouslySetInnerHTML={{ __html: undertitle }} />
+      </CardWrapper>
+    </LinkWrapper>
   );
 };
+
+const LinkWrapper = styled(Link)`
+  :hover,
+  :focus,
+  :active {
+    text-decoration: none;
+  }
+`;
+
 const CardWrapper = styled.div`
+  height: 100%;
   background-color: #1d1e2d;
   padding: 16px;
   border-radius: 8px;

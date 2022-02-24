@@ -92,6 +92,7 @@ const LibraryPage = () => {
               <Card
                 key={playlist.id}
                 imgSource={playlist.images[0]?.url}
+                link={`/playlist/${playlist.id}`}
                 title={playlist.name}
                 undertitle={
                   playlist.description
