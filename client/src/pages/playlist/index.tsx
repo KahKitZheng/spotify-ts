@@ -41,6 +41,7 @@ const PlaylistPage = () => {
     // has items to count the playlist duration
     if (playlist.tracks?.items.length > 0) {
       dispatch(countPlaylistDuration());
+      setGradient(stringToHSL(playlist.name));
 
       // Make sure that only one request is dispatched to the API at a time
       if (offsetStatus === "idle" && playlist.tracks?.next !== null) {
@@ -50,17 +51,12 @@ const PlaylistPage = () => {
   }, [
     dispatch,
     offsetStatus,
+    playlist.name,
     playlist.tracks?.items.length,
     playlist.tracks?.next,
   ]);
 
-  useEffect(() => {
-    if (playlist.name) {
-      setGradient(stringToHSL(playlist.name));
-    }
-  }, [playlist.name]);
-
-  return (
+  return id === playlist.id ? (
     <div>
       <PlaylistHeader $bgGradient={gradient}>
         <PlaylistCover src={playlist.images && playlist.images[0].url} alt="" />
@@ -104,7 +100,7 @@ const PlaylistPage = () => {
         })}
       </TracklistWrapper>
     </div>
-  );
+  ) : null;
 };
 
 const PlaylistHeader = styled.div<{ $bgGradient: string }>`
