@@ -44,4 +44,12 @@ export const selectCurrentUser = (state: RootState) => {
   return state.currentUser.user;
 };
 
+export const selectCurrentUserStatus = (state: RootState) => {
+  return state.currentUser.status;
+};
+
+export const selectCurrentUserCountry = (state: RootState) => {
+  return state.currentUser.user.country;
+};
+
 export default currentUserSlice.reducer;
