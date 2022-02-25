@@ -9,6 +9,7 @@ import LibraryPage from "../pages/library";
 import PlaylistPage from "../pages/playlist";
 import AlbumPage from "../pages/album";
 import PageNotFound from "../pages/404";
+import ArtistPage from "../pages/artist";
 
 const AppRouter = () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/playlist/:id" element={<PlaylistPage />} />
           <Route path="/album/:id" element={<AlbumPage />} />
+          <Route path="/artist/:id" element={<ArtistPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </MainViewWrapper>
