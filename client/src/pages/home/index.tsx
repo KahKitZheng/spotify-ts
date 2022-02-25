@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import * as S from "../../styles/components/section";
 import UserSummary from "./UserSummary";
 import Collection from "../../components/collection";
 import Card from "../../components/card";
@@ -8,6 +9,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   getCurrentUser,
   selectCurrentUser,
+  selectCurrentUserStatus,
 } from "../../slices/currentUserSlice";
 import {
   getCurrentUserPlaylists,
@@ -35,6 +37,7 @@ import {
 const HomePage = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
+  const userStatus = useAppSelector(selectCurrentUserStatus);
   const savedArtists = useAppSelector(selectUserSavedArtists);
   const userPlaylists = useAppSelector(selectCurrentUserPlaylists);
   const recentTracks = useAppSelector(selectRecentTracks);
@@ -42,9 +45,6 @@ const HomePage = () => {
   const topTracks = useAppSelector(selectTopTracks);
   const recommendArtists = useAppSelector(selectArtistRecommendation);
 
-  const userStatus = useSelector(
-    (state: RootState) => state.currentUser.status
-  );
   const userPlaylistsStatus = useSelector(
     (state: RootState) => state.currentUserPlaylists.status
   );
@@ -105,60 +105,41 @@ const HomePage = () => {
         followingCount={savedArtists.artists?.total}
         playlistCount={userPlaylists?.total}
       />
+      <S.Section>
+        <S.SectionName>Recently played</S.SectionName>
+        <Collection colSize={10}>
+          {recentTracks.items?.slice(0, 10).map((item, index) => (
+            <Card
+              key={item.track.id + "-" + index}
+              imgSource={item.track?.album.images[0].url}
+              link={`/album/${item.track.album.id}`}
+              title={item.track.name}
+              undertitle={item.track.artists[0].name}
+            />
+          ))}
+        </Collection>
+      </S.Section>
 
-      <Collection title="Recently played">
-        {recentTracks.items?.slice(0, 10).map((item, index) => (
-          <Card
-            key={item.track.id + "-" + index}
-            imgSource={item.track?.album.images[0].url}
-            title={item.track.name}
-            undertitle={item.track.artists[0].name}
-          />
-        ))}
-      </Collection>
+      <S.Section>
+        <S.SectionName>Top artists</S.SectionName>
+        <Collection colSize={10}>
+          {topArtists.items?.slice(0, 10).map((artist, index) => (
+            <Card
+              key={artist.id + "-" + index}
+              imgSource={artist.images[0].url}
+              link={`/artist/${artist.id}`}
+              title={artist.name}
+              undertitle="Artist"
+              isArtist
+            />
+          ))}
+        </Collection>
+      </S.Section>
 
-      <Collection title="Top artists">
-        {topArtists.items?.slice(0, 10).map((artist, index) => (
-          <Card
-            key={artist.id + "-" + index}
-            imgSource={artist.images[0].url}
-            title={artist.name}
-            undertitle={artist.type}
-            isArtist
-          />
-        ))}
-      </Collection>
-
-      <Collection title="Top tracks">
-        {topTracks.items?.slice(0, 10).map((track, index) => (
-          <Card
-            key={track.id + "-" + index}
-            imgSource={track.album.images[0].url}
-            title={track.name}
-            undertitle={track.artists[0].name}
-          />
-        ))}
-      </Collection>
-
-      <Collection title="Your playlists">
-        {userPlaylists.items?.slice(0, 10).map((playlist, index) => (
-          <Card
-            key={playlist.id + "-" + index}
-            imgSource={playlist.images[0].url}
-            link={`/playlist/${playlist.id}`}
-            title={playlist.name}
-            undertitle={
-              playlist.description
-                ? playlist.description
-                : `By ${playlist.owner?.display_name}`
-            }
-          />
-        ))}
-      </Collection>
-
-      {recommendArtists.tracks?.length > 0 && (
-        <Collection title={`Similiar to ${topArtists?.items[0].name}`}>
-          {recommendArtists.tracks?.slice(0, 10).map((track, index) => (
+      <S.Section>
+        <S.SectionName>Top tracks</S.SectionName>
+        <Collection colSize={10}>
+          {topTracks.items?.slice(0, 10).map((track, index) => (
             <Card
               key={track.id + "-" + index}
               imgSource={track.album.images[0].url}
@@ -167,6 +148,41 @@ const HomePage = () => {
             />
           ))}
         </Collection>
+      </S.Section>
+
+      <S.Section>
+        <S.SectionName>Your playlists</S.SectionName>
+        <Collection colSize={10}>
+          {userPlaylists.items?.slice(0, 10).map((playlist, index) => (
+            <Card
+              key={playlist.id + "-" + index}
+              imgSource={playlist.images[0].url}
+              link={`/playlist/${playlist.id}`}
+              title={playlist.name}
+              undertitle={
+                playlist.description
+                  ? playlist.description
+                  : `By ${playlist.owner?.display_name}`
+              }
+            />
+          ))}
+        </Collection>
+      </S.Section>
+
+      {recommendArtists.tracks?.length > 0 && (
+        <S.Section>
+          <S.SectionName>{`Similiar to ${topArtists?.items[0].name}`}</S.SectionName>
+          <Collection colSize={10}>
+            {recommendArtists.tracks?.slice(0, 10).map((track, index) => (
+              <Card
+                key={track.id + "-" + index}
+                imgSource={track.album.images[0].url}
+                title={track.name}
+                undertitle={track.artists[0].name}
+              />
+            ))}
+          </Collection>
+        </S.Section>
       )}
     </div>
   );

@@ -3,39 +3,33 @@ import styled from "styled-components";
 import { overflowNoScrollbar } from "../../styles/utils";
 
 type Props = {
-  title: string;
   children: React.ReactNode;
+  colSize: number;
 };
 
 const Collection = (props: Props) => {
   return (
-    <CollectionWrapper>
-      <CollectionTitle>{props.title}</CollectionTitle>
-      <CollectionGrid>{props.children}</CollectionGrid>
-    </CollectionWrapper>
+    <CollectionGrid $colSize={props.colSize}>{props.children}</CollectionGrid>
   );
 };
 
-const CollectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 32px;
-`;
+const CollectionGrid = styled.div<{ $colSize: number }>`
+  --colSize: ${({ $colSize }) => $colSize};
 
-const CollectionTitle = styled.h2`
-  margin-bottom: 8px;
-`;
-
-const CollectionGrid = styled.div`
   display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: repeat(10, minmax(11rem, 1fr));
+  grid-template-columns: ${({ $colSize }) =>
+    $colSize && `repeat(${$colSize}, minmax(11rem, 1fr))`};
   grid-gap: 16px;
   overflow-x: auto;
   margin-left: -16px;
   margin-right: -16px;
   padding: 4px 16px 8px;
-  ${overflowNoScrollbar}
+  ${overflowNoScrollbar};
+
+  /* Hide all items on the grid with a higher index than colSize */
+  a:nth-child(1n + ${(props) => props.$colSize + 1}) {
+    display: none;
+  }
 `;
 
 export default Collection;

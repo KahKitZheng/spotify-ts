@@ -8,15 +8,16 @@ export const TracklistWrapper = styled.div`
 export const Track = styled.div`
   display: flex;
   align-items: center;
+  margin-bottom: 16px;
 
-  :not(:first-of-type) {
-    margin-top: 16px;
+  :last-of-type {
+    margin-bottom: 0;
   }
 `;
-export const TrackAlbumCover = styled.img`
+export const TrackAlbumCover = styled.img<{ $small?: boolean }>`
   aspect-ratio: 1 / 1;
-  height: 48px;
-  width: 48px;
+  height: ${({ $small }) => ($small ? "32px" : "48px")};
+  width: ${({ $small }) => ($small ? "32px" : "48px")};
   object-fit: cover;
   margin-right: 16px;
 `;
@@ -32,6 +33,7 @@ export const TrackName = styled.p`
 `;
 
 export const TrackArtists = styled.p`
+  font-size: 14px;
   line-height: 1.3;
   ${textOverflow(1)};
 

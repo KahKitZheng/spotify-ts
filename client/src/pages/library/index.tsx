@@ -67,8 +67,9 @@ const LibraryPage = () => {
               <Card
                 key={artist.id}
                 imgSource={artist.images[0]?.url}
+                link={`/artist/${artist.id}`}
                 title={artist.name}
-                undertitle={artist.type}
+                undertitle="Artist"
                 isArtist
               />
             ))}
