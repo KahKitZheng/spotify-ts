@@ -31,6 +31,14 @@ const AlbumPage = () => {
     }
   }, [album.name, album.tracks?.items.length, dispatch, id]);
 
+  function renderCopyright(type: string, text: string) {
+    if (type === "C") {
+      return `© ${text}`;
+    } else if (type === "P") {
+      return `℗ ${text}`;
+    }
+  }
+
   return id === album.id ? (
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
@@ -70,6 +78,14 @@ const AlbumPage = () => {
           </T.Track>
         ))}
       </T.TracklistWrapper>
+
+      <CopyrightWrapper>
+        {album.copyrights.map((copyright, index) => (
+          <Copyright key={index}>
+            {renderCopyright(copyright.type, copyright.text)}
+          </Copyright>
+        ))}
+      </CopyrightWrapper>
     </div>
   ) : null;
 };
@@ -77,6 +93,15 @@ const AlbumPage = () => {
 const AlbumType = styled.span`
   font-size: 14px;
   text-transform: capitalize;
+`;
+
+const CopyrightWrapper = styled.div`
+  margin-top: 32px;
+`;
+
+const Copyright = styled.small`
+  display: block;
+  color: #979da4;
 `;
 
 export default AlbumPage;
