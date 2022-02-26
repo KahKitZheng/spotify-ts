@@ -80,106 +80,118 @@ const ArtistPage = () => {
         </H.HeaderStats>
       </H.HeaderWrapper>
 
-      <S.Section>
-        <S.SectionName>Popular</S.SectionName>
-        <TrackGrid>
-          {topTracks.tracks?.map((track) => (
-            <T.Track key={track.id}>
-              <T.TrackAlbumCover
-                src={track.album?.images[0].url}
-                alt=""
-                $small
-              />
-              <T.TrackInfo>
-                <T.TrackName>{track.name}</T.TrackName>
-              </T.TrackInfo>
-            </T.Track>
-          ))}
-        </TrackGrid>
-      </S.Section>
+      {topTracks.tracks?.length > 0 && (
+        <S.Section>
+          <S.SectionName>Popular</S.SectionName>
+          <TrackGrid>
+            {topTracks.tracks?.map((track) => (
+              <T.Track key={track.id}>
+                <T.TrackAlbumCover
+                  src={track.album?.images[0].url}
+                  alt=""
+                  $small
+                />
+                <T.TrackInfo>
+                  <T.TrackName>{track.name}</T.TrackName>
+                </T.TrackInfo>
+              </T.Track>
+            ))}
+          </TrackGrid>
+        </S.Section>
+      )}
 
-      <S.Section>
-        <S.SectionName>Albums</S.SectionName>
-        <CollectionOverflow colSize={albums?.length < 10 ? albums.length : 10}>
-          {albums?.map((album) => (
-            <Card
-              key={album.id}
-              imgSource={album.images && album.images[0].url}
-              link={`/album/${album.id}`}
-              title={album.name}
-              undertitle={`
+      {albums?.length > 0 && (
+        <S.Section>
+          <S.SectionName>Albums</S.SectionName>
+          <CollectionOverflow
+            colSize={albums?.length < 10 ? albums.length : 10}
+          >
+            {albums?.map((album) => (
+              <Card
+                key={album.id}
+                imgSource={album.images && album.images[0].url}
+                link={`/album/${album.id}`}
+                title={album.name}
+                undertitle={`
                 ${album.release_date?.slice(0, 4)} 
                 <span class="bull">&bull;</span>
                 Album
               `}
-            />
-          ))}
-        </CollectionOverflow>
-      </S.Section>
+              />
+            ))}
+          </CollectionOverflow>
+        </S.Section>
+      )}
 
-      <S.Section>
-        <S.SectionName>Singles and EPs</S.SectionName>
-        <CollectionOverflow
-          colSize={singles?.length < 10 ? singles.length : 10}
-        >
-          {singles?.map((album) => (
-            <Card
-              key={album.id}
-              imgSource={album.images && album.images[0].url}
-              link={`/album/${album.id}`}
-              title={album.name}
-              undertitle={`
+      {singles?.length > 0 && (
+        <S.Section>
+          <S.SectionName>Singles and EPs</S.SectionName>
+          <CollectionOverflow
+            colSize={singles?.length < 10 ? singles.length : 10}
+          >
+            {singles?.map((album) => (
+              <Card
+                key={album.id}
+                imgSource={album.images && album.images[0].url}
+                link={`/album/${album.id}`}
+                title={album.name}
+                undertitle={`
                 ${album.release_date?.slice(0, 4)} 
                 <span class="bull">&bull;</span>
                 ${album.total_tracks > 2 ? "EP" : "Single"}
               `}
-            />
-          ))}
-        </CollectionOverflow>
-      </S.Section>
+              />
+            ))}
+          </CollectionOverflow>
+        </S.Section>
+      )}
 
-      <S.Section>
-        <S.SectionName>Appears On</S.SectionName>
-        <CollectionOverflow
-          colSize={appearsOn?.length < 10 ? appearsOn.length : 10}
-        >
-          {appearsOn?.map((album) => (
-            <Card
-              key={album.id}
-              imgSource={album.images && album.images[0].url}
-              link={`/album/${album.id}`}
-              title={album.name}
-              undertitle={`
+      {appearsOn?.length > 0 && (
+        <S.Section>
+          <S.SectionName>Appears On</S.SectionName>
+          <CollectionOverflow
+            colSize={appearsOn?.length < 10 ? appearsOn.length : 10}
+          >
+            {appearsOn?.map((album) => (
+              <Card
+                key={album.id}
+                imgSource={album.images && album.images[0].url}
+                link={`/album/${album.id}`}
+                title={album.name}
+                undertitle={`
                 ${album.release_date?.slice(0, 4)} 
                 <span class="bull">&bull;</span>
                 Album
               `}
-            />
-          ))}
-        </CollectionOverflow>
-      </S.Section>
+              />
+            ))}
+          </CollectionOverflow>
+        </S.Section>
+      )}
 
-      <S.Section>
-        <S.SectionName>Fans also like</S.SectionName>
-        <CollectionOverflow
-          colSize={
-            relatedArtists.artists?.length < 10
-              ? relatedArtists.artists?.length
-              : 10
-          }
-        >
-          {relatedArtists.artists?.map((artist) => (
-            <Card
-              key={artist.id}
-              imgSource={artist.images && artist.images[0].url}
-              link={`/artist/${artist.id}`}
-              title={artist.name}
-              undertitle="Artist"
-              isArtist
-            />
-          ))}
-        </CollectionOverflow>
-      </S.Section>
+      {relatedArtists.artists?.length > 0 && (
+        <S.Section>
+          <S.SectionName>Fans also like</S.SectionName>
+          <CollectionOverflow
+            colSize={
+              relatedArtists.artists?.length < 10
+                ? relatedArtists.artists?.length
+                : 10
+            }
+          >
+            {relatedArtists.artists?.map((artist) => (
+              <Card
+                key={artist.id}
+                imgSource={artist.images && artist.images[0].url}
+                link={`/artist/${artist.id}`}
+                title={artist.name}
+                undertitle="Artist"
+                isArtist
+              />
+            ))}
+          </CollectionOverflow>
+        </S.Section>
+      )}
     </div>
   ) : null;
 };
