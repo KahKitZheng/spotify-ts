@@ -33,6 +33,7 @@ import {
   getUserSavedArtists,
   selectUserSavedArtists,
 } from "../../slices/userSavedArtistsSlice";
+import styled from "styled-components";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -44,6 +45,7 @@ const HomePage = () => {
   const topArtists = useAppSelector(selectTopArtists);
   const topTracks = useAppSelector(selectTopTracks);
   const recommendArtists = useAppSelector(selectArtistRecommendation);
+  const seedArtist = topArtists.items && topArtists.items[0];
 
   const userPlaylistsStatus = useSelector(
     (state: RootState) => state.currentUserPlaylists.status
@@ -121,7 +123,7 @@ const HomePage = () => {
       </S.Section>
 
       <S.Section>
-        <S.SectionName>Top artists</S.SectionName>
+        <S.SectionName>Your top artists</S.SectionName>
         <CollectionOverflow colSize={10}>
           {topArtists.items?.slice(0, 10).map((artist, index) => (
             <Card
@@ -137,7 +139,7 @@ const HomePage = () => {
       </S.Section>
 
       <S.Section>
-        <S.SectionName>Top tracks</S.SectionName>
+        <S.SectionName>Your top tracks</S.SectionName>
         <CollectionOverflow colSize={10}>
           {topTracks.items?.slice(0, 10).map((track, index) => (
             <Card
@@ -172,7 +174,16 @@ const HomePage = () => {
 
       {recommendArtists.tracks?.length > 0 && (
         <S.Section>
-          <S.SectionName>{`Similiar to ${topArtists?.items[0].name}`}</S.SectionName>
+          <SeedArtist>
+            <SeedArtistCover
+              src={seedArtist.images && seedArtist.images[0].url}
+              alt=""
+            />
+            <SeedArtistInfo>
+              <SeedArtistDescription>Based on</SeedArtistDescription>
+              <SeedArtistName>{seedArtist.name}</SeedArtistName>
+            </SeedArtistInfo>
+          </SeedArtist>
           <CollectionOverflow colSize={10}>
             {recommendArtists.tracks?.slice(0, 10).map((track, index) => (
               <Card
@@ -188,5 +199,36 @@ const HomePage = () => {
     </div>
   );
 };
+
+const SeedArtist = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const SeedArtistCover = styled.img`
+  aspect-ratio: 1;
+  max-height: 54px;
+  object-fit: cover;
+  border-radius: 50%;
+`;
+
+const SeedArtistInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 8px;
+`;
+
+const SeedArtistDescription = styled.span`
+  font-size: 0.75rem;
+  text-transform: uppercase;
+`;
+
+const SeedArtistName = styled.span`
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: ${({ theme }) => theme.font.title};
+`;
 
 export default HomePage;
