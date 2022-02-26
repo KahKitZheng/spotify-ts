@@ -143,6 +143,7 @@ const HomePage = () => {
             <Card
               key={track.id + "-" + index}
               imgSource={track.album.images[0].url}
+              link={`/album/${track.album.id}`}
               title={track.name}
               undertitle={track.artists[0].name}
             />

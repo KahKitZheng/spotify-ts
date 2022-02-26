@@ -31,7 +31,7 @@ const AlbumPage = () => {
     }
   }, [album.name, album.tracks?.items.length, dispatch, id]);
 
-  return (
+  return id === album.id ? (
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
         <H.Thumbnail src={album.images && album.images[0].url} alt="" />
@@ -71,7 +71,7 @@ const AlbumPage = () => {
         ))}
       </T.TracklistWrapper>
     </div>
-  );
+  ) : null;
 };
 
 const AlbumType = styled.span`
