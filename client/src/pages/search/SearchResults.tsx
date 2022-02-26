@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Card from "../../components/card";
 import { TabPanel } from "react-tabs";
 import { SearchResponse } from "../../types/SpotifyResponses";
+import { CollectionGrid } from "../../components/collection";
 
 type Props = {
   query: string;
@@ -20,7 +21,7 @@ const SearchResults = (props: Props) => {
   ) : (
     <>
       <TabPanel>
-        <CardGrid>
+        <CollectionGrid>
           {searchResults.artists?.items.map((artist) => (
             <Card
               key={artist.id}
@@ -30,10 +31,10 @@ const SearchResults = (props: Props) => {
               isArtist
             />
           ))}
-        </CardGrid>
+        </CollectionGrid>
       </TabPanel>
       <TabPanel>
-        <CardGrid>
+        <CollectionGrid>
           {searchResults.albums?.items.map((album) => (
             <Card
               key={album.id}
@@ -42,10 +43,10 @@ const SearchResults = (props: Props) => {
               undertitle={`By ${album.artists[0].name}`}
             />
           ))}
-        </CardGrid>
+        </CollectionGrid>
       </TabPanel>
       <TabPanel>
-        <CardGrid>
+        <CollectionGrid>
           {searchResults.tracks?.items.map((track) => (
             <Card
               key={track.id}
@@ -54,10 +55,10 @@ const SearchResults = (props: Props) => {
               undertitle={`By ${track.artists[0].name}`}
             />
           ))}
-        </CardGrid>
+        </CollectionGrid>
       </TabPanel>
       <TabPanel>
-        <CardGrid>
+        <CollectionGrid>
           {searchResults.playlists?.items.map((playlist) => (
             <Card
               key={playlist.id}
@@ -66,7 +67,7 @@ const SearchResults = (props: Props) => {
               undertitle={`By ${playlist.owner.display_name}`}
             />
           ))}
-        </CardGrid>
+        </CollectionGrid>
       </TabPanel>
     </>
   );

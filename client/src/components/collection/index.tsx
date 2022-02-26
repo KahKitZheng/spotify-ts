@@ -2,58 +2,72 @@ import React from "react";
 import styled from "styled-components";
 import { overflowNoScrollbar } from "../../styles/utils";
 
-type Props = {
+interface Props {
   children: React.ReactNode;
+}
+
+interface OverflowProps extends Props {
   colSize: number;
-};
+}
 
-const Collection = (props: Props) => {
-  return (
-    <CollectionGrid $colSize={props.colSize}>{props.children}</CollectionGrid>
-  );
-};
+export const CollectionGrid = (props: Props) => (
+  <CollectionGridWrapper>{props.children}</CollectionGridWrapper>
+);
 
-const CollectionGrid = styled.div<{ $colSize: number }>`
-  --colWidth: calc((100% / 2) - var(--gap));
+export const CollectionOverflow = (props: OverflowProps) => (
+  <CollectionOverflowWrapper $cols={props.colSize}>
+    {props.children}
+  </CollectionOverflowWrapper>
+);
+
+const CollectionBase = styled.div`
   --gap: 16px;
-  display: grid;
-  grid-template-columns: ${({ $colSize }) =>
-    $colSize && `repeat(${$colSize}, minmax(var(--colWidth), 1fr))`};
-  grid-gap: var(--gap);
-  overflow-x: auto;
-  margin-left: calc(var(--gap) * -1);
-  margin-right: calc(var(--gap) * -1);
-  padding: 4px var(--gap) 8px;
-  ${overflowNoScrollbar};
+  --columns: 2;
+  --colWidth: calc((100% / var(--columns)) - var(--gap));
 
-  /* Hide all items on the grid with a higher index than colSize */
-  a:nth-child(1n + ${(props) => props.$colSize + 1}) {
-    display: none;
-  }
+  display: grid;
+  grid-gap: var(--gap);
 
   @media (min-width: 560px) {
-    --colWidth: calc((100% / 3) - var(--gap));
+    --columns: 3;
   }
 
   @media (min-width: 680px) {
-    --colWidth: calc((100% / 4) - var(--gap));
+    --columns: 4;
   }
 
   @media (min-width: 950px) {
-    --colWidth: calc((100% / 5) - var(--gap));
+    --columns: 5;
   }
 
   @media (min-width: 1080px) {
-    --colWidth: calc((100% / 6) - var(--gap));
+    --columns: 6;
   }
 
   @media (min-width: 1300px) {
-    --colWidth: calc((100% / 7) - var(--gap));
+    --columns: 7;
   }
 
   @media (min-width: 14000px) {
-    --colWidth: calc((100% / 8) - var(--gap));
+    --columns: 8;
   }
 `;
 
-export default Collection;
+const CollectionGridWrapper = styled(CollectionBase)`
+  grid-template-columns: repeat(var(--columns), minmax(var(--colWidth), 1fr));
+`;
+
+const CollectionOverflowWrapper = styled(CollectionBase)<{ $cols: number }>`
+  grid-template-columns: ${({ $cols }) =>
+    `repeat(${$cols}, minmax(var(--colWidth), 1fr))`};
+  margin-left: calc(var(--gap) * -1);
+  margin-right: calc(var(--gap) * -1);
+  padding: 4px var(--gap) 8px;
+  overflow-x: auto;
+  ${overflowNoScrollbar};
+
+  /* Hide all items on the grid with a higher index than colSize */
+  a:nth-child(1n + ${(props) => props.$cols + 1}) {
+    display: none;
+  }
+`;

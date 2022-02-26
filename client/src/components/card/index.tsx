@@ -48,6 +48,7 @@ const CardWrapper = styled.div`
 
 const CardCover = styled.img<{ $isArtist: boolean }>`
   aspect-ratio: 1 / 1;
+  width: 100%;
   object-fit: cover;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   border-radius: ${({ $isArtist }) => $isArtist && "50%"};

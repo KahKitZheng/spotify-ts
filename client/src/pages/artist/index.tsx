@@ -1,11 +1,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
+import Card from "../../components/card";
 import * as H from "../../styles/components/headers";
 import * as S from "../../styles/components/section";
 import * as T from "../../styles/components/track";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { Tab, Tabs, TabList } from "react-tabs";
+import { stringToHSL } from "../../utils";
+import { CollectionOverflow } from "../../components/collection";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
 import {
   getArtist,
   getArtistAlbums,
@@ -13,26 +16,20 @@ import {
   getRelatedArtists,
   selectArtist,
   selectArtistAlbum,
-  selectArtistStatus,
   selectArtistTopTracks,
   selectRelatedArtists,
 } from "../../slices/artistSlice";
-import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
-import { stringToHSL } from "../../utils";
-import Collection from "../../components/collection";
-import Card from "../../components/card";
 
 const ArtistPage = () => {
   const { id } = useParams();
   const [gradient, setGradient] = useState("");
 
   const dispatch = useDispatch();
+  const country = useSelector(selectCurrentUserCountry);
   const artist = useSelector(selectArtist);
   const discography = useSelector(selectArtistAlbum);
   const topTracks = useSelector(selectArtistTopTracks);
   const relatedArtists = useSelector(selectRelatedArtists);
-  const artistStatus = useSelector(selectArtistStatus);
-  const country = useSelector(selectCurrentUserCountry);
 
   const albums = discography.items?.filter(
     (album) => album.album_group === "album"
@@ -66,8 +63,6 @@ const ArtistPage = () => {
 
     fetchTopTracks();
   }, [country, dispatch, id]);
-
-  console.log(albums);
 
   return id === artist.id ? (
     <div>
@@ -105,7 +100,7 @@ const ArtistPage = () => {
 
       <S.Section>
         <S.SectionName>Albums</S.SectionName>
-        <Collection colSize={albums?.length < 10 ? albums.length : 10}>
+        <CollectionOverflow colSize={albums?.length < 10 ? albums.length : 10}>
           {albums?.map((album) => (
             <Card
               key={album.id}
@@ -119,12 +114,14 @@ const ArtistPage = () => {
               `}
             />
           ))}
-        </Collection>
+        </CollectionOverflow>
       </S.Section>
 
       <S.Section>
         <S.SectionName>Singles and EPs</S.SectionName>
-        <Collection colSize={singles?.length < 10 ? singles.length : 10}>
+        <CollectionOverflow
+          colSize={singles?.length < 10 ? singles.length : 10}
+        >
           {singles?.map((album) => (
             <Card
               key={album.id}
@@ -138,12 +135,14 @@ const ArtistPage = () => {
               `}
             />
           ))}
-        </Collection>
+        </CollectionOverflow>
       </S.Section>
 
       <S.Section>
         <S.SectionName>Appears On</S.SectionName>
-        <Collection colSize={appearsOn?.length < 10 ? appearsOn.length : 10}>
+        <CollectionOverflow
+          colSize={appearsOn?.length < 10 ? appearsOn.length : 10}
+        >
           {appearsOn?.map((album) => (
             <Card
               key={album.id}
@@ -157,12 +156,12 @@ const ArtistPage = () => {
               `}
             />
           ))}
-        </Collection>
+        </CollectionOverflow>
       </S.Section>
 
       <S.Section>
         <S.SectionName>Fans also like</S.SectionName>
-        <Collection
+        <CollectionOverflow
           colSize={
             relatedArtists.artists?.length < 10
               ? relatedArtists.artists?.length
@@ -179,7 +178,7 @@ const ArtistPage = () => {
               isArtist
             />
           ))}
-        </Collection>
+        </CollectionOverflow>
       </S.Section>
     </div>
   ) : null;

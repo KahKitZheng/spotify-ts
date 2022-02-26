@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import * as S from "../../styles/components/section";
 import UserSummary from "./UserSummary";
-import Collection from "../../components/collection";
+import { CollectionOverflow } from "../../components/collection";
 import Card from "../../components/card";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
@@ -107,7 +107,7 @@ const HomePage = () => {
       />
       <S.Section>
         <S.SectionName>Recently played</S.SectionName>
-        <Collection colSize={10}>
+        <CollectionOverflow colSize={10}>
           {recentTracks.items?.slice(0, 10).map((item, index) => (
             <Card
               key={item.track.id + "-" + index}
@@ -117,12 +117,12 @@ const HomePage = () => {
               undertitle={item.track.artists[0].name}
             />
           ))}
-        </Collection>
+        </CollectionOverflow>
       </S.Section>
 
       <S.Section>
         <S.SectionName>Top artists</S.SectionName>
-        <Collection colSize={10}>
+        <CollectionOverflow colSize={10}>
           {topArtists.items?.slice(0, 10).map((artist, index) => (
             <Card
               key={artist.id + "-" + index}
@@ -133,12 +133,12 @@ const HomePage = () => {
               isArtist
             />
           ))}
-        </Collection>
+        </CollectionOverflow>
       </S.Section>
 
       <S.Section>
         <S.SectionName>Top tracks</S.SectionName>
-        <Collection colSize={10}>
+        <CollectionOverflow colSize={10}>
           {topTracks.items?.slice(0, 10).map((track, index) => (
             <Card
               key={track.id + "-" + index}
@@ -147,12 +147,12 @@ const HomePage = () => {
               undertitle={track.artists[0].name}
             />
           ))}
-        </Collection>
+        </CollectionOverflow>
       </S.Section>
 
       <S.Section>
         <S.SectionName>Your playlists</S.SectionName>
-        <Collection colSize={10}>
+        <CollectionOverflow colSize={10}>
           {userPlaylists.items?.slice(0, 10).map((playlist, index) => (
             <Card
               key={playlist.id + "-" + index}
@@ -166,13 +166,13 @@ const HomePage = () => {
               }
             />
           ))}
-        </Collection>
+        </CollectionOverflow>
       </S.Section>
 
       {recommendArtists.tracks?.length > 0 && (
         <S.Section>
           <S.SectionName>{`Similiar to ${topArtists?.items[0].name}`}</S.SectionName>
-          <Collection colSize={10}>
+          <CollectionOverflow colSize={10}>
             {recommendArtists.tracks?.slice(0, 10).map((track, index) => (
               <Card
                 key={track.id + "-" + index}
@@ -181,7 +181,7 @@ const HomePage = () => {
                 undertitle={track.artists[0].name}
               />
             ))}
-          </Collection>
+          </CollectionOverflow>
         </S.Section>
       )}
     </div>

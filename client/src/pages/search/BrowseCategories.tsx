@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import * as S from "../../styles/components/section";
 import { stringToHSL } from "../../utils";
 import { useAppSelector } from "../../app/hooks";
 import { selectCategories } from "../../slices/categoriesSlice";

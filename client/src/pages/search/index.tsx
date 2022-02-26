@@ -40,7 +40,7 @@ const SearchPage = () => {
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       if (searchResultStatus === "idle" && query !== "") {
-        dispatch(getAllSearchResults({ q: query, limit: 10 }));
+        dispatch(getAllSearchResults({ q: query, limit: 30 }));
       }
     }, 600);
 

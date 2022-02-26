@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import Card from "../../components/card";
 import styled from "styled-components";
+import Card from "../../components/card";
+import { CollectionGrid } from "../../components/collection";
 import { overflowNoScrollbar } from "../../styles/utils";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
@@ -62,7 +63,7 @@ const LibraryPage = () => {
       </TabFilterList>
       <TabPanelWrapper ref={tabContainer}>
         <TabPanel>
-          <CardGrid>
+          <CollectionGrid>
             {savedArtists.artists?.items.map((artist) => (
               <Card
                 key={artist.id}
@@ -73,10 +74,10 @@ const LibraryPage = () => {
                 isArtist
               />
             ))}
-          </CardGrid>
+          </CollectionGrid>
         </TabPanel>
         <TabPanel>
-          <CardGrid>
+          <CollectionGrid>
             {savedAlbums.items?.map((item) => (
               <Card
                 key={item.album.id}
@@ -86,10 +87,10 @@ const LibraryPage = () => {
                 undertitle={item.album.artists[0].name}
               />
             ))}
-          </CardGrid>
+          </CollectionGrid>
         </TabPanel>
         <TabPanel>
-          <CardGrid>
+          <CollectionGrid>
             {savedPlaylists.items?.map((playlist) => (
               <Card
                 key={playlist.id}
@@ -103,7 +104,7 @@ const LibraryPage = () => {
                 }
               />
             ))}
-          </CardGrid>
+          </CollectionGrid>
         </TabPanel>
       </TabPanelWrapper>
     </TabsWrapper>
