@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
-import * as S from "../../styles/components/section";
-import UserSummary from "./UserSummary";
-import { CollectionOverflow } from "../../components/collection";
+import styled from "styled-components";
 import Card from "../../components/card";
+import UserSummary from "./UserSummary";
+import * as S from "../../styles/components/section";
+import { Link } from "react-router-dom";
+import { CollectionOverflow } from "../../components/collection";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
@@ -33,7 +35,6 @@ import {
   getUserSavedArtists,
   selectUserSavedArtists,
 } from "../../slices/userSavedArtistsSlice";
-import styled from "styled-components";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -175,13 +176,17 @@ const HomePage = () => {
       {recommendArtists.tracks?.length > 0 && (
         <S.Section>
           <SeedArtist>
-            <SeedArtistCover
-              src={seedArtist.images && seedArtist.images[0].url}
-              alt=""
-            />
+            <Link to={`/artist/${seedArtist.id}`}>
+              <SeedArtistCover
+                src={seedArtist.images && seedArtist.images[0].url}
+                alt=""
+              />
+            </Link>
             <SeedArtistInfo>
               <SeedArtistDescription>Based on</SeedArtistDescription>
-              <SeedArtistName>{seedArtist.name}</SeedArtistName>
+              <SeedArtistName to={`/artist/${seedArtist.id}`}>
+                {seedArtist.name}
+              </SeedArtistName>
             </SeedArtistInfo>
           </SeedArtist>
           <CollectionOverflow colSize={10}>
@@ -205,6 +210,7 @@ const SeedArtist = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 8px;
+  width: fit-content;
 `;
 
 const SeedArtistCover = styled.img`
@@ -225,7 +231,7 @@ const SeedArtistDescription = styled.span`
   text-transform: uppercase;
 `;
 
-const SeedArtistName = styled.span`
+const SeedArtistName = styled(Link)`
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 1.3;

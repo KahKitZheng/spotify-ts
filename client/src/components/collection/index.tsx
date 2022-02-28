@@ -48,8 +48,16 @@ const CollectionBase = styled.div`
     --columns: 7;
   }
 
-  @media (min-width: 14000px) {
+  @media (min-width: 1400px) {
     --columns: 8;
+  }
+
+  @media (min-width: 1500px) {
+    --columns: 9;
+  }
+
+  @media (min-width: 1600px) {
+    --columns: 10;
   }
 `;
 
