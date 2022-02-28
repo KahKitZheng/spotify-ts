@@ -105,17 +105,7 @@ const ArtistPage = () => {
           <S.SectionName>Albums</S.SectionName>
           <CollectionOverflow>
             {albums?.slice(0, 10).map((album) => (
-              <Card
-                key={album.id}
-                imgSource={album.images && album.images[0].url}
-                link={`/album/${album.id}`}
-                title={album.name}
-                undertitle={`
-                ${album.release_date?.slice(0, 4)} 
-                <span class="bull">&bull;</span>
-                Album
-              `}
-              />
+              <Card key={album.id} variant="album-discography" item={album} />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -126,17 +116,7 @@ const ArtistPage = () => {
           <S.SectionName>Singles and EPs</S.SectionName>
           <CollectionOverflow>
             {singles?.slice(0, 10).map((album) => (
-              <Card
-                key={album.id}
-                imgSource={album.images && album.images[0].url}
-                link={`/album/${album.id}`}
-                title={album.name}
-                undertitle={`
-                ${album.release_date?.slice(0, 4)} 
-                <span class="bull">&bull;</span>
-                ${album.total_tracks > 2 ? "EP" : "Single"}
-              `}
-              />
+              <Card key={album.id} variant="album-discography" item={album} />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -147,17 +127,7 @@ const ArtistPage = () => {
           <S.SectionName>Appears On</S.SectionName>
           <CollectionOverflow>
             {appearsOn?.slice(0, 10).map((album) => (
-              <Card
-                key={album.id}
-                imgSource={album.images && album.images[0].url}
-                link={`/album/${album.id}`}
-                title={album.name}
-                undertitle={`
-                ${album.release_date?.slice(0, 4)} 
-                <span class="bull">&bull;</span>
-                Album
-              `}
-              />
+              <Card key={album.id} variant="album-discography" item={album} />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -168,14 +138,7 @@ const ArtistPage = () => {
           <S.SectionName>Fans also like</S.SectionName>
           <CollectionOverflow>
             {relatedArtists.artists?.slice(0, 10).map((artist) => (
-              <Card
-                key={artist.id}
-                imgSource={artist.images && artist.images[0].url}
-                link={`/artist/${artist.id}`}
-                title={artist.name}
-                undertitle="Artist"
-                isArtist
-              />
+              <Card key={artist.id} variant="artist" item={artist} />
             ))}
           </CollectionOverflow>
         </S.Section>

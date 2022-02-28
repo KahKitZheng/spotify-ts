@@ -3,7 +3,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 import {
   GetArtistAlbumsResponse,
-  GetArtistsResponse,
   GetArtistTopTracksResponse,
   GetRelatedArtistsResponse,
 } from "../types/SpotifyResponses";

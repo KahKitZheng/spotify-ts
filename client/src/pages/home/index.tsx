@@ -114,13 +114,7 @@ const HomePage = () => {
         </S.SectionLink>
         <CollectionOverflow>
           {recentTracks.items?.slice(0, 10).map((item, index) => (
-            <Card
-              key={item.track.id + "-" + index}
-              imgSource={item.track?.album.images[0].url}
-              link={`/album/${item.track.album.id}`}
-              title={item.track.name}
-              undertitle={item.track.artists[0].name}
-            />
+            <Card key={index} variant="recently-played" item={item} />
           ))}
         </CollectionOverflow>
       </S.Section>
@@ -128,15 +122,8 @@ const HomePage = () => {
       <S.Section>
         <S.SectionName>Your top artists</S.SectionName>
         <CollectionOverflow>
-          {topArtists.items?.slice(0, 10).map((artist, index) => (
-            <Card
-              key={artist.id + "-" + index}
-              imgSource={artist.images[0].url}
-              link={`/artist/${artist.id}`}
-              title={artist.name}
-              undertitle="Artist"
-              isArtist
-            />
+          {topArtists.items?.slice(0, 10).map((artist) => (
+            <Card key={artist.id} variant="artist" item={artist} />
           ))}
         </CollectionOverflow>
       </S.Section>
@@ -144,14 +131,8 @@ const HomePage = () => {
       <S.Section>
         <S.SectionName>Your top tracks</S.SectionName>
         <CollectionOverflow>
-          {topTracks.items?.slice(0, 10).map((track, index) => (
-            <Card
-              key={track.id + "-" + index}
-              imgSource={track.album.images[0].url}
-              link={`/album/${track.album.id}`}
-              title={track.name}
-              undertitle={track.artists[0].name}
-            />
+          {topTracks.items?.slice(0, 10).map((track) => (
+            <Card key={track.id} variant="track" item={track} />
           ))}
         </CollectionOverflow>
       </S.Section>
@@ -159,18 +140,8 @@ const HomePage = () => {
       <S.Section>
         <S.SectionLink to="/library">Your playlists</S.SectionLink>
         <CollectionOverflow>
-          {userPlaylists.items?.slice(0, 10).map((playlist, index) => (
-            <Card
-              key={playlist.id + "-" + index}
-              imgSource={playlist.images[0].url}
-              link={`/playlist/${playlist.id}`}
-              title={playlist.name}
-              undertitle={
-                playlist.description
-                  ? playlist.description
-                  : `By ${playlist.owner?.display_name}`
-              }
-            />
+          {userPlaylists.items?.slice(0, 10).map((playlist) => (
+            <Card key={playlist.id} variant="playlist" item={playlist} />
           ))}
         </CollectionOverflow>
       </S.Section>
@@ -192,14 +163,8 @@ const HomePage = () => {
             </SeedArtistInfo>
           </SeedArtist>
           <CollectionOverflow>
-            {recommendArtists.tracks?.slice(0, 10).map((track, index) => (
-              <Card
-                key={track.id + "-" + index}
-                imgSource={track.album.images[0].url}
-                link={`/album/${track.album.id}`}
-                title={track.name}
-                undertitle={track.artists[0].name}
-              />
+            {recommendArtists.tracks?.slice(0, 10).map((track) => (
+              <Card key={track.id} variant="track" item={track} />
             ))}
           </CollectionOverflow>
         </S.Section>

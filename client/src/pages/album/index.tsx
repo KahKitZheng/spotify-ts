@@ -99,20 +99,16 @@ const AlbumPage = () => {
         ))}
       </CopyrightWrapper>
 
-      <S.Section>
-        <S.SectionName>More by {album.artists[0].name}</S.SectionName>
-        <CollectionOverflow>
-          {albumDiscography.items?.map((album) => (
-            <Card
-              key={album.id}
-              imgSource={album?.images[0].url}
-              link={`/album/${album.id}`}
-              title={album.name}
-              undertitle={album?.release_date.slice(0, 4)}
-            />
-          ))}
-        </CollectionOverflow>
-      </S.Section>
+      {albumDiscography.items?.length > 0 && (
+        <S.Section>
+          <S.SectionName>More by {album.artists[0].name}</S.SectionName>
+          <CollectionOverflow>
+            {albumDiscography.items?.map((album) => (
+              <Card key={album.id} variant="album" item={album} />
+            ))}
+          </CollectionOverflow>
+        </S.Section>
+      )}
     </div>
   ) : null;
 };

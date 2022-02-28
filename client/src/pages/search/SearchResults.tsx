@@ -23,49 +23,28 @@ const SearchResults = (props: Props) => {
       <TabPanel>
         <CollectionGrid>
           {searchResults.artists?.items.map((artist) => (
-            <Card
-              key={artist.id}
-              imgSource={artist.images[0]?.url}
-              title={artist.name}
-              undertitle={artist.type}
-              isArtist
-            />
+            <Card key={artist.id} variant="artist" item={artist} />
           ))}
         </CollectionGrid>
       </TabPanel>
       <TabPanel>
         <CollectionGrid>
           {searchResults.albums?.items.map((album) => (
-            <Card
-              key={album.id}
-              imgSource={album.images[0]?.url}
-              title={album.name}
-              undertitle={`By ${album.artists[0].name}`}
-            />
+            <Card key={album.id} variant="album" item={album} />
           ))}
         </CollectionGrid>
       </TabPanel>
       <TabPanel>
         <CollectionGrid>
           {searchResults.tracks?.items.map((track) => (
-            <Card
-              key={track.id}
-              imgSource={track.album.images[0]?.url}
-              title={track.name}
-              undertitle={`By ${track.artists[0].name}`}
-            />
+            <Card key={track.id} variant="track" item={track} />
           ))}
         </CollectionGrid>
       </TabPanel>
       <TabPanel>
         <CollectionGrid>
           {searchResults.playlists?.items.map((playlist) => (
-            <Card
-              key={playlist.id}
-              imgSource={playlist.images[0]?.url}
-              title={playlist.name}
-              undertitle={`By ${playlist.owner.display_name}`}
-            />
+            <Card key={playlist.id} variant="playlist" item={playlist} />
           ))}
         </CollectionGrid>
       </TabPanel>

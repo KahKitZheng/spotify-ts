@@ -20,14 +20,8 @@ const RecentlyPlayedPage = () => {
     <div>
       <PageTitle>Recently played</PageTitle>
       <CollectionGrid>
-        {recentlyPlayed.items?.map((track) => (
-          <Card
-            key={track.track.id}
-            imgSource={track.track.album?.images[0].url}
-            link={`/album/${track.track.album?.id}`}
-            title={track.track.album?.name}
-            undertitle={track.track.album?.artists[0].name}
-          />
+        {recentlyPlayed.items?.map((track, index) => (
+          <Card key={index} variant="recently-played" item={track} />
         ))}
       </CollectionGrid>
     </div>

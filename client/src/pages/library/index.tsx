@@ -63,44 +63,21 @@ const LibraryPage = () => {
         <TabPanel>
           <CollectionGrid>
             {savedPlaylists.items?.map((playlist) => (
-              <Card
-                key={playlist.id}
-                imgSource={playlist.images[0]?.url}
-                link={`/playlist/${playlist.id}`}
-                title={playlist.name}
-                undertitle={
-                  playlist.description
-                    ? playlist.description
-                    : `By ${playlist.owner.display_name}`
-                }
-              />
+              <Card key={playlist.id} variant="playlist" item={playlist} />
             ))}
           </CollectionGrid>
         </TabPanel>
         <TabPanel>
           <CollectionGrid>
             {savedArtists.artists?.items.map((artist) => (
-              <Card
-                key={artist.id}
-                imgSource={artist.images[0]?.url}
-                link={`/artist/${artist.id}`}
-                title={artist.name}
-                undertitle="Artist"
-                isArtist
-              />
+              <Card key={artist.id} variant="artist" item={artist} />
             ))}
           </CollectionGrid>
         </TabPanel>
         <TabPanel>
           <CollectionGrid>
             {savedAlbums.items?.map((item) => (
-              <Card
-                key={item.album.id}
-                imgSource={item.album.images[0]?.url}
-                link={`/album/${item.album.id}`}
-                title={item.album.name}
-                undertitle={item.album.artists[0].name}
-              />
+              <Card key={item.album.id} variant="album-saved" item={item} />
             ))}
           </CollectionGrid>
         </TabPanel>
