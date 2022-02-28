@@ -101,7 +101,7 @@ const AlbumPage = () => {
 
       {albumDiscography.items?.length > 0 && (
         <S.Section>
-          <S.SectionName>More by {album.artists[0].name}</S.SectionName>
+          <DiscoverMore>More by {album.artists[0].name}</DiscoverMore>
           <CollectionOverflow>
             {albumDiscography.items?.map((album) => (
               <Card key={album.id} variant="album" item={album} />
@@ -125,6 +125,10 @@ const CopyrightWrapper = styled.div`
 const Copyright = styled.small`
   display: block;
   color: #979da4;
+`;
+
+const DiscoverMore = styled(S.SectionName)`
+  font-size: 20px;
 `;
 
 export default AlbumPage;
