@@ -84,7 +84,7 @@ const ArtistPage = () => {
         <S.Section>
           <S.SectionName>Popular</S.SectionName>
           <TrackGrid>
-            {topTracks.tracks?.map((track) => (
+            {topTracks.tracks?.slice(0, 10).map((track) => (
               <T.Track key={track.id}>
                 <T.TrackAlbumCover
                   src={track.album?.images[0].url}
@@ -103,10 +103,8 @@ const ArtistPage = () => {
       {albums?.length > 0 && (
         <S.Section>
           <S.SectionName>Albums</S.SectionName>
-          <CollectionOverflow
-            colSize={albums?.length < 10 ? albums.length : 10}
-          >
-            {albums?.map((album) => (
+          <CollectionOverflow>
+            {albums?.slice(0, 10).map((album) => (
               <Card
                 key={album.id}
                 imgSource={album.images && album.images[0].url}
@@ -126,10 +124,8 @@ const ArtistPage = () => {
       {singles?.length > 0 && (
         <S.Section>
           <S.SectionName>Singles and EPs</S.SectionName>
-          <CollectionOverflow
-            colSize={singles?.length < 10 ? singles.length : 10}
-          >
-            {singles?.map((album) => (
+          <CollectionOverflow>
+            {singles?.slice(0, 10).map((album) => (
               <Card
                 key={album.id}
                 imgSource={album.images && album.images[0].url}
@@ -149,10 +145,8 @@ const ArtistPage = () => {
       {appearsOn?.length > 0 && (
         <S.Section>
           <S.SectionName>Appears On</S.SectionName>
-          <CollectionOverflow
-            colSize={appearsOn?.length < 10 ? appearsOn.length : 10}
-          >
-            {appearsOn?.map((album) => (
+          <CollectionOverflow>
+            {appearsOn?.slice(0, 10).map((album) => (
               <Card
                 key={album.id}
                 imgSource={album.images && album.images[0].url}
@@ -172,14 +166,8 @@ const ArtistPage = () => {
       {relatedArtists.artists?.length > 0 && (
         <S.Section>
           <S.SectionName>Fans also like</S.SectionName>
-          <CollectionOverflow
-            colSize={
-              relatedArtists.artists?.length < 10
-                ? relatedArtists.artists?.length
-                : 10
-            }
-          >
-            {relatedArtists.artists?.map((artist) => (
+          <CollectionOverflow>
+            {relatedArtists.artists?.slice(0, 10).map((artist) => (
               <Card
                 key={artist.id}
                 imgSource={artist.images && artist.images[0].url}

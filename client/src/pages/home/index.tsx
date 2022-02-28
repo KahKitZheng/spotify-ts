@@ -109,8 +109,10 @@ const HomePage = () => {
         playlistCount={userPlaylists?.total}
       />
       <S.Section>
-        <S.SectionName>Recently played</S.SectionName>
-        <CollectionOverflow colSize={10}>
+        <S.SectionLink to="/genre/recently-played">
+          Recently played
+        </S.SectionLink>
+        <CollectionOverflow>
           {recentTracks.items?.slice(0, 10).map((item, index) => (
             <Card
               key={item.track.id + "-" + index}
@@ -125,7 +127,7 @@ const HomePage = () => {
 
       <S.Section>
         <S.SectionName>Your top artists</S.SectionName>
-        <CollectionOverflow colSize={10}>
+        <CollectionOverflow>
           {topArtists.items?.slice(0, 10).map((artist, index) => (
             <Card
               key={artist.id + "-" + index}
@@ -141,7 +143,7 @@ const HomePage = () => {
 
       <S.Section>
         <S.SectionName>Your top tracks</S.SectionName>
-        <CollectionOverflow colSize={10}>
+        <CollectionOverflow>
           {topTracks.items?.slice(0, 10).map((track, index) => (
             <Card
               key={track.id + "-" + index}
@@ -155,8 +157,8 @@ const HomePage = () => {
       </S.Section>
 
       <S.Section>
-        <S.SectionName>Your playlists</S.SectionName>
-        <CollectionOverflow colSize={10}>
+        <S.SectionLink to="/library">Your playlists</S.SectionLink>
+        <CollectionOverflow>
           {userPlaylists.items?.slice(0, 10).map((playlist, index) => (
             <Card
               key={playlist.id + "-" + index}
@@ -189,7 +191,7 @@ const HomePage = () => {
               </SeedArtistName>
             </SeedArtistInfo>
           </SeedArtist>
-          <CollectionOverflow colSize={10}>
+          <CollectionOverflow>
             {recommendArtists.tracks?.slice(0, 10).map((track, index) => (
               <Card
                 key={track.id + "-" + index}

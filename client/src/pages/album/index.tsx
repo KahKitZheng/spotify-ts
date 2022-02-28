@@ -101,14 +101,14 @@ const AlbumPage = () => {
 
       <S.Section>
         <S.SectionName>More by {album.artists[0].name}</S.SectionName>
-        <CollectionOverflow colSize={10}>
+        <CollectionOverflow>
           {albumDiscography.items?.map((album) => (
             <Card
               key={album.id}
               imgSource={album?.images[0].url}
               link={`/album/${album.id}`}
               title={album.name}
-              undertitle={album?.artists[0].name}
+              undertitle={album?.release_date.slice(0, 4)}
             />
           ))}
         </CollectionOverflow>
