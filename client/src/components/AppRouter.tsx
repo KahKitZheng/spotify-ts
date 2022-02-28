@@ -8,8 +8,9 @@ import SearchPage from "../pages/search";
 import LibraryPage from "../pages/library";
 import PlaylistPage from "../pages/playlist";
 import AlbumPage from "../pages/album";
-import PageNotFound from "../pages/404";
 import ArtistPage from "../pages/artist";
+import RecentlyPlayedPage from "../pages/recently-played";
+import PageNotFound from "../pages/404";
 
 const AppRouter = () => {
   return (
@@ -22,6 +23,10 @@ const AppRouter = () => {
           <Route path="/playlist/:id" element={<PlaylistPage />} />
           <Route path="/album/:id" element={<AlbumPage />} />
           <Route path="/artist/:id" element={<ArtistPage />} />
+          <Route
+            path="/genre/recently-played"
+            element={<RecentlyPlayedPage />}
+          />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </MainViewWrapper>

@@ -29,7 +29,7 @@ export const getRecentTracks = createAsyncThunk(
       );
       return response.data;
     } else {
-      const response = await axios.get(`/me/playlists?limit=20`);
+      const response = await axios.get(`/me/player/recently-played?limit=20`);
       return response.data;
     }
   }
@@ -56,6 +56,10 @@ export const recentTracksSlice = createSlice({
 
 export const selectRecentTracks = (state: RootState) => {
   return state.recentTracks.recentTracks;
+};
+
+export const selectRecentTracksStatus = (state: RootState) => {
+  return state.recentTracks.status;
 };
 
 export default recentTracksSlice.reducer;

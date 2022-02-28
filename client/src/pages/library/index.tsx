@@ -23,7 +23,7 @@ import {
 
 const LibraryPage = () => {
   const dispatch = useAppDispatch();
-  const tabContainer = useRef<HTMLDivElement>(null);
+  const tabWrapper = useRef<HTMLDivElement>(null);
 
   const savedArtists = useAppSelector(selectUserSavedArtists);
   const savedArtistsStatus = useSelector(
@@ -55,13 +55,28 @@ const LibraryPage = () => {
   return (
     <TabsWrapper>
       <TabFilterList>
-        <TabButton onClick={() => resetScroll(tabContainer)}>Artists</TabButton>
-        <TabButton onClick={() => resetScroll(tabContainer)}>Albums</TabButton>
-        <TabButton onClick={() => resetScroll(tabContainer)}>
-          Playlists
-        </TabButton>
+        <TabButton onClick={() => resetScroll(tabWrapper)}>Playlists</TabButton>
+        <TabButton onClick={() => resetScroll(tabWrapper)}>Artists</TabButton>
+        <TabButton onClick={() => resetScroll(tabWrapper)}>Albums</TabButton>
       </TabFilterList>
-      <TabPanelWrapper ref={tabContainer}>
+      <TabPanelWrapper ref={tabWrapper}>
+        <TabPanel>
+          <CollectionGrid>
+            {savedPlaylists.items?.map((playlist) => (
+              <Card
+                key={playlist.id}
+                imgSource={playlist.images[0]?.url}
+                link={`/playlist/${playlist.id}`}
+                title={playlist.name}
+                undertitle={
+                  playlist.description
+                    ? playlist.description
+                    : `By ${playlist.owner.display_name}`
+                }
+              />
+            ))}
+          </CollectionGrid>
+        </TabPanel>
         <TabPanel>
           <CollectionGrid>
             {savedArtists.artists?.items.map((artist) => (
@@ -85,23 +100,6 @@ const LibraryPage = () => {
                 link={`/album/${item.album.id}`}
                 title={item.album.name}
                 undertitle={item.album.artists[0].name}
-              />
-            ))}
-          </CollectionGrid>
-        </TabPanel>
-        <TabPanel>
-          <CollectionGrid>
-            {savedPlaylists.items?.map((playlist) => (
-              <Card
-                key={playlist.id}
-                imgSource={playlist.images[0]?.url}
-                link={`/playlist/${playlist.id}`}
-                title={playlist.name}
-                undertitle={
-                  playlist.description
-                    ? playlist.description
-                    : `By ${playlist.owner.display_name}`
-                }
               />
             ))}
           </CollectionGrid>
