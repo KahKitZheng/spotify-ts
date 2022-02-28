@@ -1,16 +1,21 @@
 import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
+import Card from "../../components/card";
 import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
+import * as S from "../../styles/components/section";
+import { CollectionOverflow } from "../../components/collection";
 import { Link, useParams } from "react-router-dom";
+import { formatDuration, stringToHSL } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
 import {
   countAlbumDuration,
   getAlbum,
+  getAlbumDiscography,
   selectAlbum,
+  selectAlbumDiscography,
   selectAlbumDuration,
 } from "../../slices/albumSlice";
-import { formatDuration, stringToHSL } from "../../utils";
 
 const AlbumPage = () => {
   const { id } = useParams();
@@ -19,6 +24,7 @@ const AlbumPage = () => {
   const dispatch = useDispatch();
   const album = useSelector(selectAlbum);
   const albumDuration = useSelector(selectAlbumDuration);
+  const albumDiscography = useSelector(selectAlbumDiscography);
 
   useEffect(() => {
     if (id) {
@@ -30,6 +36,12 @@ const AlbumPage = () => {
       setGradient(stringToHSL(album.name));
     }
   }, [album.name, album.tracks?.items.length, dispatch, id]);
+
+  useEffect(() => {
+    if (album.artists) {
+      dispatch(getAlbumDiscography({ id: album.artists[0].id }));
+    }
+  }, [album, dispatch]);
 
   function renderCopyright(type: string, text: string) {
     if (type === "C") {
@@ -86,6 +98,21 @@ const AlbumPage = () => {
           </Copyright>
         ))}
       </CopyrightWrapper>
+
+      <S.Section>
+        <S.SectionName>More by {album.artists[0].name}</S.SectionName>
+        <CollectionOverflow colSize={10}>
+          {albumDiscography.items?.map((album) => (
+            <Card
+              key={album.id}
+              imgSource={album?.images[0].url}
+              link={`/album/${album.id}`}
+              title={album.name}
+              undertitle={album?.artists[0].name}
+            />
+          ))}
+        </CollectionOverflow>
+      </S.Section>
     </div>
   ) : null;
 };

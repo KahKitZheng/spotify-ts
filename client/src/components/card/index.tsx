@@ -35,14 +35,14 @@ const LinkWrapper = styled(Link)`
 
 const CardWrapper = styled.div`
   height: 100%;
-  background-color: #1d1e2d;
+  background-color: #1d1d25;
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s cubic-bezier(0.47, 0, 0.745, 0.715);
 
   &:hover {
-    background-color: #33344d;
+    background-color: #272c33;
   }
 `;
 

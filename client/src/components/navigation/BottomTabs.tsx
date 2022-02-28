@@ -54,7 +54,7 @@ const BottomTabsWrapper = styled.footer`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
-  background-color: #1c1f2f;
+  background-color: #22242f;
   padding: 12px 24px;
 `;
 
