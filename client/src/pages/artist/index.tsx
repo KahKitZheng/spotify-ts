@@ -88,7 +88,7 @@ const ArtistPage = () => {
             {topTracks.tracks?.slice(0, 10).map((track, index) => (
               <Track
                 key={track.id}
-                variant="popular-artist"
+                variant="popular-tracks"
                 item={track}
                 index={index}
               />

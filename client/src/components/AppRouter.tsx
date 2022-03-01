@@ -4,13 +4,14 @@ import MainViewWrapper from "./MainViewWrapper";
 import BottomTabs from "./navigation/BottomTabs";
 
 import HomePage from "../pages/home";
+import PageNotFound from "../pages/404";
 import SearchPage from "../pages/search";
 import LibraryPage from "../pages/library";
 import PlaylistPage from "../pages/playlist";
 import AlbumPage from "../pages/album";
 import ArtistPage from "../pages/artist";
-import RecentlyPlayedPage from "../pages/recently-played";
-import PageNotFound from "../pages/404";
+import RecentTracksPage from "../pages/recent-tracks";
+import { TopArtistsPage, TopTracksPage } from "../pages/top-items/";
 
 const AppRouter = () => {
   return (
@@ -23,10 +24,9 @@ const AppRouter = () => {
           <Route path="/playlist/:id" element={<PlaylistPage />} />
           <Route path="/album/:id" element={<AlbumPage />} />
           <Route path="/artist/:id" element={<ArtistPage />} />
-          <Route
-            path="/genre/recently-played"
-            element={<RecentlyPlayedPage />}
-          />
+          <Route path="/top-artists" element={<TopArtistsPage />} />
+          <Route path="/top-tracks" element={<TopTracksPage />} />
+          <Route path="/genre/recently-played" element={<RecentTracksPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </MainViewWrapper>

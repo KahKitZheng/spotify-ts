@@ -46,7 +46,7 @@ const HomePage = () => {
   const topArtists = useAppSelector(selectTopArtists);
   const topTracks = useAppSelector(selectTopTracks);
   const recommendArtists = useAppSelector(selectArtistRecommendation);
-  const seedArtist = topArtists.items && topArtists.items[0];
+  const seedArtist = topArtists.short_term?.items[0];
 
   const userPlaylistsStatus = useSelector(
     (state: RootState) => state.currentUserPlaylists.status
@@ -56,9 +56,6 @@ const HomePage = () => {
   );
   const recentTracksStatus = useSelector(
     (state: RootState) => state.recentTracks.status
-  );
-  const topItemsStatus = useSelector(
-    (state: RootState) => state.topItems.status
   );
   const recommendArtistStatus = useSelector(
     (state: RootState) => state.recommendations.status
@@ -77,12 +74,11 @@ const HomePage = () => {
     if (recentTracksStatus === "idle") {
       dispatch(getRecentTracks({ limit: 10 }));
     }
-    if (topItemsStatus === "idle") {
-      dispatch(getTopArtists({ limit: 10 }));
-      dispatch(getTopTracks({ limit: 10 }));
-    }
-    if (recommendArtistStatus === "idle" && topArtists.items?.length > 0) {
-      const artistSeed = topArtists.items[0].id;
+    if (
+      recommendArtistStatus === "idle" &&
+      topArtists.short_term?.items.length > 0
+    ) {
+      const artistSeed = topArtists.short_term.items[0].id;
       dispatch(getArtistRecommendation({ seed: artistSeed, limit: 10 }));
     }
     if (userSavedArtistsStatus === "idle") {
@@ -92,12 +88,20 @@ const HomePage = () => {
     dispatch,
     recentTracksStatus,
     recommendArtistStatus,
-    topArtists.items,
-    topItemsStatus,
+    topArtists.short_term?.items,
     userPlaylistsStatus,
     userSavedArtistsStatus,
     userStatus,
   ]);
+
+  useEffect(() => {
+    if (topArtists.short_term === undefined) {
+      dispatch(getTopArtists({ limit: 10, time_range: "short_term" }));
+    }
+    if (topTracks.short_term === undefined) {
+      dispatch(getTopTracks({ limit: 10, time_range: "short_term" }));
+    }
+  }, [dispatch, topArtists.short_term, topTracks.short_term]);
 
   return (
     <div>
@@ -120,18 +124,18 @@ const HomePage = () => {
       </S.Section>
 
       <S.Section>
-        <S.SectionName>Your top artists</S.SectionName>
+        <S.SectionLink to="/top-artists">Your top artists</S.SectionLink>
         <CollectionOverflow>
-          {topArtists.items?.slice(0, 10).map((artist) => (
+          {topArtists.short_term?.items?.slice(0, 10).map((artist) => (
             <Card key={artist.id} variant="artist" item={artist} />
           ))}
         </CollectionOverflow>
       </S.Section>
 
       <S.Section>
-        <S.SectionName>Your top tracks</S.SectionName>
+        <S.SectionLink to="/top-tracks">Your top tracks</S.SectionLink>
         <CollectionOverflow>
-          {topTracks.items?.slice(0, 10).map((track) => (
+          {topTracks.short_term?.items?.slice(0, 10).map((track) => (
             <Card key={track.id} variant="track" item={track} />
           ))}
         </CollectionOverflow>

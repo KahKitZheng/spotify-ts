@@ -8,7 +8,7 @@ import {
 } from "../../types/SpotifyObjects";
 
 interface Props {
-  variant: "album" | "popular-artist" | "playlist";
+  variant: "album" | "popular-tracks" | "playlist" | "user-top";
   item: Track | SimplifiedTrack;
   index: number;
 }
@@ -19,10 +19,12 @@ const TrackComponent = (props: Props) => {
   switch (variant) {
     case "album":
       return <AlbumTrack item={item as SimplifiedTrack} index={index} />;
-    case "popular-artist":
+    case "popular-tracks":
       return <PopularArtistTrack item={item as Track} index={index} />;
     case "playlist":
       return <PlaylistTrack item={item as Track} index={index} />;
+    case "user-top":
+      return <UserTopTrack item={item as Track} index={index} />;
   }
 };
 
@@ -72,6 +74,25 @@ const PopularArtistTrack = (props: { item: Track; index: number }) => {
 
 // Album Cover + Track Name + Track Artists
 const PlaylistTrack = (props: { item: Track; index: number }) => {
+  const { index, item } = props;
+
+  return (
+    <T.Track>
+      <T.TrackIndex>{index + 1}</T.TrackIndex>
+      <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+      <T.TrackInfo>
+        <T.TrackName>{item.name}</T.TrackName>
+        <T.TrackArtists>
+          {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+          {renderArtists(item.artists)}
+        </T.TrackArtists>
+      </T.TrackInfo>
+    </T.Track>
+  );
+};
+
+// Album Cover + Track Name + Track Artists
+const UserTopTrack = (props: { item: Track; index: number }) => {
   const { index, item } = props;
 
   return (

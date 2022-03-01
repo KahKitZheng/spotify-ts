@@ -8,7 +8,7 @@ import {
   selectRecentTracks,
 } from "../../slices/recentTrackSlice";
 
-const RecentlyPlayedPage = () => {
+const RecentTracksPage = () => {
   const dispatch = useDispatch();
   const recentlyPlayed = useSelector(selectRecentTracks);
 
@@ -32,4 +32,4 @@ const PageTitle = styled.h1`
   margin-bottom: 16px;
 `;
 
-export default RecentlyPlayedPage;
+export default RecentTracksPage;
