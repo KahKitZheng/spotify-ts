@@ -5,11 +5,11 @@ import UserSummary from "./UserSummary";
 import * as S from "../../styles/components/section";
 import { Link } from "react-router-dom";
 import { CollectionOverflow } from "../../components/collection";
+import { random } from "../../utils";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
-  getCurrentUser,
   selectCurrentUser,
   selectCurrentUserStatus,
 } from "../../slices/currentUserSlice";
@@ -46,7 +46,7 @@ const HomePage = () => {
   const topArtists = useAppSelector(selectTopArtists);
   const topTracks = useAppSelector(selectTopTracks);
   const recommendArtists = useAppSelector(selectArtistRecommendation);
-  const seedArtist = topArtists.short_term?.items[0];
+  const seedArtist = topArtists.short_term?.items[random(0, 11)];
 
   const userPlaylistsStatus = useSelector(
     (state: RootState) => state.currentUserPlaylists.status

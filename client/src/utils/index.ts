@@ -48,3 +48,10 @@ export const formatDuration = (
     return `${minutes} min ${seconds < 10 ? "0" + seconds : seconds} sec`;
   }
 };
+
+/**
+ * Get a random number between two values inlusive the min but not the max
+ */
+export const random = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min)) + min;
+};
