@@ -19,7 +19,8 @@ interface Props {
     | "playlist"
     | "album"
     | "album-saved"
-    | "album-discography";
+    | "album-discography"
+    | "category";
   item:
     | PlayHistory
     | Artist
@@ -51,6 +52,8 @@ const NewCard = (props: Props) => {
       return (
         <AlbumDiscographyCard item={item as SimplifiedAlbum} to={navigate} />
       );
+    case "category":
+      return <CategoryCard item={item as SimplifiedPlaylist} to={navigate} />;
     default:
       return null;
   }
@@ -181,6 +184,27 @@ const AlbumDiscographyCard = (props: {
           <span className="bull">&bull;</span>
           {item.total_tracks <= 2 ? "Single" : "EP"}
         </C.CardDescription>
+      )}
+    </C.CardWrapper>
+  );
+};
+
+const CategoryCard = (props: {
+  item: SimplifiedPlaylist;
+  to: NavigateFunction;
+}) => {
+  const { to, item } = props;
+
+  return (
+    <C.CardWrapper onClick={() => to(`/playlist/${item.id}`)}>
+      <C.CardCover src={item.images[0].url} alt="" />
+      <C.CardTitle to={`/playlist/${item.id}`}>{item.name}</C.CardTitle>
+      {item.description ? (
+        <C.CardDescription
+          dangerouslySetInnerHTML={{ __html: item.description }}
+        />
+      ) : (
+        <C.CardDescription>By {item.owner.display_name}</C.CardDescription>
       )}
     </C.CardWrapper>
   );

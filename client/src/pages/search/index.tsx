@@ -13,6 +13,7 @@ import {
   getAllSearchResults,
   selectAllSearchResults,
 } from "../../slices/searchResultSlice";
+import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
@@ -20,6 +21,7 @@ const SearchPage = () => {
   const tabContainer = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
+  const userCountry = useSelector(selectCurrentUserCountry);
   const searchResults = useAppSelector(selectAllSearchResults);
 
   const categoriesStatus = useSelector(
@@ -31,10 +33,10 @@ const SearchPage = () => {
 
   // Fetch all categories on render
   useEffect(() => {
-    if (categoriesStatus === "idle") {
-      dispatch(getCategories({ limit: 50 }));
+    if (categoriesStatus === "idle" && userCountry !== undefined) {
+      dispatch(getCategories({ limit: 50, country: userCountry }));
     }
-  }, [categoriesStatus, dispatch]);
+  }, [categoriesStatus, dispatch, userCountry]);
 
   // Fetch user's search query after a delay
   useEffect(() => {

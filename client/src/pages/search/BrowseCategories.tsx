@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { stringToHSL } from "../../utils";
 import { useAppSelector } from "../../app/hooks";
 import { selectCategories } from "../../slices/categoriesSlice";
@@ -12,10 +13,12 @@ const BrowseCategories = () => {
       <h3>Browse all</h3>
       <CategoriesGrid>
         {categories.items?.map((category) => (
-          <CategoryCard key={category.id} bgColor={stringToHSL(category.name)}>
-            <CategoryName>{category.name.split("/").join("/ ")}</CategoryName>
-            <CategoryCover src={category.icons[0].url} alt="" />
-          </CategoryCard>
+          <Link key={category.id} to={`/category/${category.id}`}>
+            <CategoryCard bgColor={stringToHSL(category.name)}>
+              <CategoryName>{category.name.split("/").join("/ ")}</CategoryName>
+              <CategoryCover src={category.icons[0].url} alt="" />
+            </CategoryCard>
+          </Link>
         ))}
       </CategoriesGrid>
     </CategoriesWrapper>

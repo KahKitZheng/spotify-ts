@@ -65,9 +65,6 @@ const HomePage = () => {
     // Remove the access token in url after signing in
     window.history.replaceState(null, "", "/");
 
-    if (userStatus === "idle") {
-      dispatch(getCurrentUser());
-    }
     if (userPlaylistsStatus === "idle") {
       dispatch(getCurrentUserPlaylists({ limit: 10 }));
     }
@@ -112,6 +109,7 @@ const HomePage = () => {
         followingCount={savedArtists.artists?.total}
         playlistCount={userPlaylists?.total}
       />
+
       <S.Section>
         <S.SectionLink to="/genre/recently-played">
           Recently played
