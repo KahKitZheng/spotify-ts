@@ -22,7 +22,6 @@ export const TrackIndex = styled.span`
   width: 32px;
   padding-left: 8px;
   padding-right: 18px;
-  color: #979da4;
   font-size: 14px;
 `;
 
@@ -50,13 +49,13 @@ export const TrackArtists = styled.p`
   ${textOverflow(1)};
 
   a {
-    color: #979da4;
+    color: ${({ theme }) => theme.font.text};
   }
 `;
 
 export const ExplicitTrack = styled.span`
   border-radius: 2px;
-  background-color: #979da4;
+  background-color: ${({ theme }) => theme.font.text};
   color: ${({ theme }) => theme.bg.main};
   font-weight: 600;
   font-size: 11px;

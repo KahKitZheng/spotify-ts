@@ -113,7 +113,6 @@ const CopyrightWrapper = styled.div`
 
 const Copyright = styled.small`
   display: block;
-  color: #979da4;
 `;
 
 const DiscoverMore = styled(S.SectionName)`

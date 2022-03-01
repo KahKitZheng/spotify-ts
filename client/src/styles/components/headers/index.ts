@@ -22,7 +22,6 @@ export const HeaderName = styled.h1`
 `;
 
 export const HeaderStats = styled.p`
-  opacity: 0.8;
   font-size: 14px;
   margin-top: 4px;
 `;
