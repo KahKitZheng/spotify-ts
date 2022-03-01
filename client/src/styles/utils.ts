@@ -9,6 +9,7 @@ export const textOverflow = (visibleLines: number) => {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    overflow-wrap: anywhere;
 
     @supports (-webkit-line-clamp: ${visibleLines}) {
       overflow: hidden;

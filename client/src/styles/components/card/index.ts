@@ -54,5 +54,5 @@ export const CardArtistLink = styled(Link)`
   color: ${({ theme }) => theme.font.text};
   font-size: 14px;
   width: fit-content;
-  ${textOverflow(2)};
+  ${textOverflow(1)};
 `;
