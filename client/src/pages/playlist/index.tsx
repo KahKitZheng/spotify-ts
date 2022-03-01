@@ -1,8 +1,9 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Track from "../../components/track";
 import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import { useSelector } from "react-redux";
@@ -81,21 +82,7 @@ const PlaylistPage = () => {
       <T.TracklistWrapper>
         {playlist.tracks?.items.map((item) => {
           return "track" in item.track ? (
-            <T.Track key={item.track.id}>
-              <T.TrackAlbumCover src={item.track.album?.images[0].url} alt="" />
-              <T.TrackInfo>
-                <T.TrackName>{item.track.name}</T.TrackName>
-                <T.TrackArtists>
-                  {item.track.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
-                  {item.track.artists.map((artist, index, arr) => (
-                    <Fragment key={artist.id}>
-                      <Link to={`/artist/${artist.id}`}>{artist.name}</Link>
-                      {index !== arr.length - 1 && <span>, </span>}
-                    </Fragment>
-                  ))}
-                </T.TrackArtists>
-              </T.TrackInfo>
-            </T.Track>
+            <Track key={item.track.id} variant="playlist" item={item.track} />
           ) : null;
         })}
       </T.TracklistWrapper>

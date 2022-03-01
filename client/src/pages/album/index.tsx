@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../../components/card";
+import Track from "../../components/track";
 import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
 import * as S from "../../styles/components/section";
@@ -74,20 +75,8 @@ const AlbumPage = () => {
       </H.HeaderWrapper>
 
       <T.TracklistWrapper>
-        {album.tracks?.items.map((item) => (
-          <T.Track key={item.id}>
-            <T.TrackInfo>
-              <T.TrackName>{item.name}</T.TrackName>
-              <T.TrackArtists>
-                {item.artists.map((artist, index, arr) => (
-                  <Fragment key={artist.id}>
-                    <Link to={`artist/${artist.id}`}>{artist.name}</Link>
-                    {index !== arr.length - 1 && <span>, </span>}
-                  </Fragment>
-                ))}
-              </T.TrackArtists>
-            </T.TrackInfo>
-          </T.Track>
+        {album.tracks?.items.map((track) => (
+          <Track key={track.id} variant="basic" item={track} />
         ))}
       </T.TracklistWrapper>
 

@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../../components/card";
+import Track from "../../components/track";
 import * as H from "../../styles/components/headers";
 import * as S from "../../styles/components/section";
 import * as T from "../../styles/components/track";
@@ -85,16 +86,7 @@ const ArtistPage = () => {
           <S.SectionName>Popular</S.SectionName>
           <TrackGrid>
             {topTracks.tracks?.slice(0, 10).map((track) => (
-              <T.Track key={track.id}>
-                <T.TrackAlbumCover
-                  src={track.album?.images[0].url}
-                  alt=""
-                  $small
-                />
-                <T.TrackInfo>
-                  <T.TrackName>{track.name}</T.TrackName>
-                </T.TrackInfo>
-              </T.Track>
+              <Track key={track.id} variant="popular-artist" item={track} />
             ))}
           </TrackGrid>
         </S.Section>
