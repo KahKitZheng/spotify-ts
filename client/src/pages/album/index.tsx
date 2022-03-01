@@ -74,11 +74,11 @@ const AlbumPage = () => {
         </H.HeaderStats>
       </H.HeaderWrapper>
 
-      <T.TracklistWrapper>
-        {album.tracks?.items.map((track) => (
-          <Track key={track.id} variant="basic" item={track} />
+      <T.TrackList>
+        {album.tracks?.items.map((track, index) => (
+          <Track key={track.id} variant="album" item={track} index={index} />
         ))}
-      </T.TracklistWrapper>
+      </T.TrackList>
 
       <CopyrightWrapper>
         {album.copyrights.map((copyright, index) => (

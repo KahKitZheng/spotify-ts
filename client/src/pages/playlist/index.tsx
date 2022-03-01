@@ -79,13 +79,18 @@ const PlaylistPage = () => {
         </H.HeaderStats>
       </H.HeaderWrapper>
 
-      <T.TracklistWrapper>
-        {playlist.tracks?.items.map((item) => {
+      <T.TrackList>
+        {playlist.tracks?.items.map((item, index) => {
           return "track" in item.track ? (
-            <Track key={item.track.id} variant="playlist" item={item.track} />
+            <Track
+              key={item.track.id}
+              variant="playlist"
+              item={item.track}
+              index={index}
+            />
           ) : null;
         })}
-      </T.TracklistWrapper>
+      </T.TrackList>
     </div>
   ) : null;
 };

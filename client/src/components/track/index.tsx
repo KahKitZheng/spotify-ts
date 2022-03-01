@@ -8,20 +8,21 @@ import {
 } from "../../types/SpotifyObjects";
 
 interface Props {
-  variant: "basic" | "popular-artist" | "playlist";
+  variant: "album" | "popular-artist" | "playlist";
   item: Track | SimplifiedTrack;
+  index: number;
 }
 
 const TrackComponent = (props: Props) => {
-  const { variant, item } = props;
+  const { variant, item, index } = props;
 
   switch (variant) {
-    case "basic":
-      return <BasicTrack item={item as SimplifiedTrack} />;
+    case "album":
+      return <AlbumTrack item={item as SimplifiedTrack} index={index} />;
     case "popular-artist":
-      return <PopularArtistTrack item={item as Track} />;
+      return <PopularArtistTrack item={item as Track} index={index} />;
     case "playlist":
-      return <PlaylistTrack item={item as Track} />;
+      return <PlaylistTrack item={item as Track} index={index} />;
   }
 };
 
@@ -36,11 +37,12 @@ const renderArtists = (list: SimplifiedArtist[]) => {
 };
 
 // Track Name + Artists
-const BasicTrack = (props: { item: SimplifiedTrack }) => {
-  const { item } = props;
+const AlbumTrack = (props: { item: SimplifiedTrack; index: number }) => {
+  const { index, item } = props;
 
   return (
     <T.Track>
+      <T.TrackIndex>{index + 1}</T.TrackIndex>
       <T.TrackInfo>
         <T.TrackName>{item.name}</T.TrackName>
         <T.TrackArtists>
@@ -53,11 +55,12 @@ const BasicTrack = (props: { item: SimplifiedTrack }) => {
 };
 
 // Album Cover + Track Name
-const PopularArtistTrack = (props: { item: Track }) => {
-  const { item } = props;
+const PopularArtistTrack = (props: { item: Track; index: number }) => {
+  const { index = 1, item } = props;
 
   return (
     <T.Track>
+      <T.TrackIndex>{index + 1}</T.TrackIndex>
       <T.TrackAlbumCover src={item.album?.images[0].url} alt="" $small />
       <T.TrackInfo>
         <T.TrackName>{item.name}</T.TrackName>
@@ -68,11 +71,12 @@ const PopularArtistTrack = (props: { item: Track }) => {
 };
 
 // Album Cover + Track Name + Track Artists
-const PlaylistTrack = (props: { item: Track }) => {
-  const { item } = props;
+const PlaylistTrack = (props: { item: Track; index: number }) => {
+  const { index, item } = props;
 
   return (
     <T.Track>
+      <T.TrackIndex>{index + 1}</T.TrackIndex>
       <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
       <T.TrackInfo>
         <T.TrackName>{item.name}</T.TrackName>

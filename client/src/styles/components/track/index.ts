@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { textOverflow } from "../../utils";
 
-export const TracklistWrapper = styled.div`
+export const TrackList = styled.div`
   margin-top: 20px;
 `;
 
@@ -14,6 +14,18 @@ export const Track = styled.div`
     margin-bottom: 0;
   }
 `;
+
+export const TrackIndex = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 32px;
+  padding-left: 8px;
+  padding-right: 18px;
+  color: #979da4;
+  font-size: 14px;
+`;
+
 export const TrackAlbumCover = styled.img<{ $small?: boolean }>`
   aspect-ratio: 1 / 1;
   height: ${({ $small }) => ($small ? "32px" : "48px")};
