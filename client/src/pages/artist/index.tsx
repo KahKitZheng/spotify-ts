@@ -74,7 +74,7 @@ const ArtistPage = () => {
         <H.HeaderStats>
           {artist.genres?.map((genre, index, arr) => (
             <Fragment key={genre}>
-              <Link to={`/browse/categories/${genre}`}>{genre}</Link>
+              <Link to={`/genre/${genre}/${artist.id}`}>{genre}</Link>
               {index !== arr.length - 1 && <span>, </span>}
             </Fragment>
           ))}

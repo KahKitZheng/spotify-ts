@@ -12,6 +12,7 @@ import AlbumPage from "../pages/album";
 import ArtistPage from "../pages/artist";
 import RecentTracksPage from "../pages/recent-tracks";
 import CategoryPage from "../pages/category";
+import GenrePage from "../pages/genre";
 import { TopArtistsPage, TopTracksPage } from "../pages/top-items/";
 
 const AppRouter = () => {
@@ -28,6 +29,7 @@ const AppRouter = () => {
           <Route path="/top-artists" element={<TopArtistsPage />} />
           <Route path="/top-tracks" element={<TopTracksPage />} />
           <Route path="/category/:id" element={<CategoryPage />} />
+          <Route path="/genre/:category/:artist" element={<GenrePage />} />
           <Route path="/genre/recently-played" element={<RecentTracksPage />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

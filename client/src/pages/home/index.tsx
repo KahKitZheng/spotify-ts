@@ -148,12 +148,12 @@ const HomePage = () => {
         </CollectionOverflow>
       </S.Section>
 
-      {recommendArtists.tracks?.length > 0 && (
+      {recommendArtists.tracks?.length > 0 && seedArtist && (
         <S.Section>
           <SeedArtist>
-            <Link to={`/artist/${seedArtist?.id}`}>
+            <Link to={`/artist/${seedArtist.id}`}>
               <SeedArtistCover
-                src={seedArtist.images && seedArtist.images[0].url}
+                src={seedArtist.images ? seedArtist.images[0].url : ""}
                 alt=""
               />
             </Link>

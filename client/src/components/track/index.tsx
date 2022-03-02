@@ -10,7 +10,7 @@ import {
 interface Props {
   variant: "album" | "popular-tracks" | "playlist" | "user-top";
   item: Track | SimplifiedTrack;
-  index: number;
+  index?: number;
 }
 
 const TrackComponent = (props: Props) => {
@@ -39,12 +39,12 @@ const renderArtists = (list: SimplifiedArtist[]) => {
 };
 
 // Track Name + Artists
-const AlbumTrack = (props: { item: SimplifiedTrack; index: number }) => {
+const AlbumTrack = (props: { item: SimplifiedTrack; index?: number }) => {
   const { index, item } = props;
 
   return (
     <T.Track>
-      <T.TrackIndex>{index + 1}</T.TrackIndex>
+      {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackInfo>
         <T.TrackName>{item.name}</T.TrackName>
         <T.TrackArtists>
@@ -57,12 +57,12 @@ const AlbumTrack = (props: { item: SimplifiedTrack; index: number }) => {
 };
 
 // Album Cover + Track Name
-const PopularArtistTrack = (props: { item: Track; index: number }) => {
+const PopularArtistTrack = (props: { item: Track; index?: number }) => {
   const { index = 1, item } = props;
 
   return (
     <T.Track>
-      <T.TrackIndex>{index + 1}</T.TrackIndex>
+      {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackAlbumCover src={item.album?.images[0].url} alt="" $small />
       <T.TrackInfo>
         <T.TrackName>{item.name}</T.TrackName>
@@ -73,12 +73,12 @@ const PopularArtistTrack = (props: { item: Track; index: number }) => {
 };
 
 // Album Cover + Track Name + Track Artists
-const PlaylistTrack = (props: { item: Track; index: number }) => {
+const PlaylistTrack = (props: { item: Track; index?: number }) => {
   const { index, item } = props;
 
   return (
     <T.Track>
-      <T.TrackIndex>{index + 1}</T.TrackIndex>
+      {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
       <T.TrackInfo>
         <T.TrackName>{item.name}</T.TrackName>
@@ -92,12 +92,12 @@ const PlaylistTrack = (props: { item: Track; index: number }) => {
 };
 
 // Album Cover + Track Name + Track Artists
-const UserTopTrack = (props: { item: Track; index: number }) => {
+const UserTopTrack = (props: { item: Track; index?: number }) => {
   const { index, item } = props;
 
   return (
     <T.Track>
-      <T.TrackIndex>{index + 1}</T.TrackIndex>
+      {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
       <T.TrackInfo>
         <T.TrackName>{item.name}</T.TrackName>

@@ -12,6 +12,7 @@ import searchResultSlice from "../slices/searchResultSlice";
 import playlistSlice from "../slices/playlistSlice";
 import albumSlice from "../slices/albumSlice";
 import artistSlice from "../slices/artistSlice";
+import genreSlice from "../slices/genreSlice";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const store = configureStore({
     playlist: playlistSlice,
     album: albumSlice,
     artist: artistSlice,
+    genre: genreSlice,
     counter: counterReducer,
   },
 });

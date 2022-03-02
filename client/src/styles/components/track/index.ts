@@ -61,9 +61,10 @@ export const ExplicitTrack = styled.span`
   font-size: 11px;
   display: inline-block;
   isolation: isolate;
-  z-index: -1;
   position: relative;
+  width: fit-content;
   top: -1px;
   margin-right: 6px;
   padding: 0 4px;
+  z-index: -1;
 `;
