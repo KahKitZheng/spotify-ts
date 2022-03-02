@@ -16,8 +16,6 @@ export const CollectionOverflow = (props: Props) => (
 
 const CollectionBase = styled.div`
   --gap: 16px;
-  --columns: 2;
-  --colWidth: calc((100% / var(--columns)) - var(--gap));
 
   display: grid;
   grid-gap: var(--gap);
@@ -30,7 +28,7 @@ const CollectionGridWrapper = styled(CollectionBase)`
 
 const CollectionOverflowWrapper = styled(CollectionBase)`
   grid-auto-flow: column;
-  grid-template-columns: repeat(auto-fit, minmax(calc(10rem - 4px), 12rem));
+  grid-template-columns: repeat(auto-fit, calc(10rem - 4px));
   margin-left: calc(var(--gap) * -1);
   margin-right: calc(var(--gap) * -1);
   padding: 4px var(--gap) 8px;

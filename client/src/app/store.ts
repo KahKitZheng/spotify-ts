@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
 import currentUserReducer from "../slices/currentUserSlice";
 import currentUserPlaylistsReducer from "../slices/currentUserPlaylistsSlice";
 import recentTracksReducer from "../slices/recentTrackSlice";
@@ -29,7 +28,6 @@ export const store = configureStore({
     album: albumSlice,
     artist: artistSlice,
     genre: genreSlice,
-    counter: counterReducer,
   },
 });
 

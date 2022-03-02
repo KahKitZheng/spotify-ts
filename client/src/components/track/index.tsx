@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import * as T from "../../styles/components/track";
 import { Link } from "react-router-dom";
+import { formatDuration } from "../../utils";
 import {
   SimplifiedArtist,
   SimplifiedTrack,
@@ -46,12 +47,17 @@ const AlbumTrack = (props: { item: SimplifiedTrack; index?: number }) => {
     <T.Track>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackInfo>
-        <T.TrackName>{item.name}</T.TrackName>
-        <T.TrackArtists>
-          {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
-          {renderArtists(item?.artists)}
-        </T.TrackArtists>
+        <T.TrackDetails>
+          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackArtists>
+            {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+            {renderArtists(item?.artists)}
+          </T.TrackArtists>
+        </T.TrackDetails>
       </T.TrackInfo>
+      <T.TrackDuration>
+        <span>{formatDuration(item.duration_ms, "track")}</span>
+      </T.TrackDuration>
     </T.Track>
   );
 };
@@ -63,11 +69,16 @@ const PopularArtistTrack = (props: { item: Track; index?: number }) => {
   return (
     <T.Track>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
-      <T.TrackAlbumCover src={item.album?.images[0].url} alt="" $small />
       <T.TrackInfo>
-        <T.TrackName>{item.name}</T.TrackName>
-        {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" $small />
+        <T.TrackDetails>
+          <T.TrackName>{item.name}</T.TrackName>
+          {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+        </T.TrackDetails>
       </T.TrackInfo>
+      <T.TrackDuration>
+        <span>{formatDuration(item.duration_ms, "track")}</span>
+      </T.TrackDuration>
     </T.Track>
   );
 };
@@ -79,14 +90,22 @@ const PlaylistTrack = (props: { item: Track; index?: number }) => {
   return (
     <T.Track>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
-      <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
       <T.TrackInfo>
-        <T.TrackName>{item.name}</T.TrackName>
-        <T.TrackArtists>
-          {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
-          {renderArtists(item.artists)}
-        </T.TrackArtists>
+        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+        <T.TrackDetails>
+          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackArtists>
+            {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+            {renderArtists(item.artists)}
+          </T.TrackArtists>
+        </T.TrackDetails>
       </T.TrackInfo>
+      <T.TrackAlbum>
+        <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
+      </T.TrackAlbum>
+      <T.TrackDuration>
+        <span>{formatDuration(item.duration_ms, "track")}</span>
+      </T.TrackDuration>
     </T.Track>
   );
 };
@@ -98,14 +117,19 @@ const UserTopTrack = (props: { item: Track; index?: number }) => {
   return (
     <T.Track>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
-      <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
       <T.TrackInfo>
-        <T.TrackName>{item.name}</T.TrackName>
-        <T.TrackArtists>
-          {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
-          {renderArtists(item.artists)}
-        </T.TrackArtists>
+        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+        <T.TrackDetails>
+          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackArtists>
+            {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+            {renderArtists(item.artists)}
+          </T.TrackArtists>
+        </T.TrackDetails>
       </T.TrackInfo>
+      <T.TrackDuration>
+        <span>{formatDuration(item.duration_ms, "track")}</span>
+      </T.TrackDuration>
     </T.Track>
   );
 };
