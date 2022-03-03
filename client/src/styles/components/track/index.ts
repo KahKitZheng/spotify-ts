@@ -18,20 +18,32 @@ export const Track = styled.div`
   }
 
   @media (min-width: 876px) {
-    grid-template-columns: 20px 6fr 3fr 1fr;
-    grid-template-areas: "track-index track-info track-album track-duration";
+    grid-template-columns: 20px 6fr 4fr 2fr 100px;
+    grid-template-areas: "track-index track-info track-album track-date-added track-duration";
   }
-`;
-
-export const TrackSection = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 export const TrackAlbum = styled.div`
   display: flex;
   align-items: center;
   grid-area: track-album;
+  font-size: 14px;
+  padding-right: 64px;
+
+  a {
+    ${textOverflow(1)};
+  }
+
+  @media (max-width: 876px) {
+    display: none;
+  }
+`;
+
+export const TrackDateAdded = styled.span`
+  display: flex;
+  align-items: center;
+  grid-area: track-date-added;
+  font-size: 14px;
 
   @media (max-width: 876px) {
     display: none;
@@ -74,7 +86,7 @@ export const TrackName = styled.p`
 `;
 
 export const TrackArtists = styled.p`
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.3;
   ${textOverflow(1)};
 
@@ -88,6 +100,8 @@ export const TrackDuration = styled.div`
   align-items: center;
   justify-content: flex-end;
   grid-area: track-duration;
+  font-size: 14px;
+  padding-right: 8px;
 
   @media (max-width: 500px) {
     display: none;

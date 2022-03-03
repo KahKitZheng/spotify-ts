@@ -47,12 +47,11 @@ export const playlistSlice = createSlice({
   reducers: {
     countPlaylistDuration: (state) => {
       const tracklist = state.playlist.tracks.items;
-      let tracklistDuration = 0;
-      tracklist.forEach((item) => {
-        tracklistDuration += item.track.duration_ms;
-      });
 
-      state.playlistDuration = tracklistDuration;
+      state.playlistDuration = tracklist.reduce(
+        (total, item) => total + item.track.duration_ms,
+        0
+      );
     },
   },
   extraReducers: (builder) => {

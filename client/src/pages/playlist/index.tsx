@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import { useSelector } from "react-redux";
-import { formatDuration, stringToHSL } from "../../utils";
+import { formatAddedAt, formatDuration, stringToHSL } from "../../utils";
 import {
   countPlaylistDuration,
   getPlaylistWithOffset,
@@ -37,12 +37,17 @@ const PlaylistPage = () => {
     }
   }, [dispatch, id]);
 
+  useEffect(() => {
+    if (offsetStatus === "succeeded") {
+      dispatch(countPlaylistDuration());
+    }
+  }, [dispatch, offsetStatus]);
+
   // Fetch again if the tracklist is incomplete
   useEffect(() => {
     // Check if the tracklist is not empty before fetching next batch of tracks and
     // has items to count the playlist duration
     if (playlist.tracks?.items.length > 0) {
-      dispatch(countPlaylistDuration());
       setGradient(stringToHSL(playlist.name));
 
       // Make sure that only one request is dispatched to the API at a time
@@ -75,7 +80,7 @@ const PlaylistPage = () => {
           {playlist.followers?.total.toLocaleString()} likes
           <span className="bull">&bull;</span>
           {playlist.tracks?.total} songs,{" "}
-          {formatDuration(playlistDuration, "long")}
+          {formatDuration(playlistDuration, "playlist")}
         </H.HeaderStats>
       </H.HeaderWrapper>
 
@@ -85,8 +90,11 @@ const PlaylistPage = () => {
             <Track
               key={item.track.id}
               variant="playlist"
-              item={item.track}
               index={index}
+              item={item.track}
+              addedAt={
+                item.added_at !== null ? formatAddedAt(item.added_at) : ""
+              }
             />
           ) : null;
         })}

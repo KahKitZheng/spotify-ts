@@ -12,10 +12,11 @@ interface Props {
   variant: "album" | "popular-tracks" | "playlist" | "user-top";
   item: Track | SimplifiedTrack;
   index?: number;
+  addedAt?: string;
 }
 
 const TrackComponent = (props: Props) => {
-  const { variant, item, index } = props;
+  const { variant, item, addedAt, index } = props;
 
   switch (variant) {
     case "album":
@@ -23,7 +24,9 @@ const TrackComponent = (props: Props) => {
     case "popular-tracks":
       return <PopularArtistTrack item={item as Track} index={index} />;
     case "playlist":
-      return <PlaylistTrack item={item as Track} index={index} />;
+      return (
+        <PlaylistTrack item={item as Track} addedAt={addedAt} index={index} />
+      );
     case "user-top":
       return <UserTopTrack item={item as Track} index={index} />;
   }
@@ -84,8 +87,12 @@ const PopularArtistTrack = (props: { item: Track; index?: number }) => {
 };
 
 // Album Cover + Track Name + Track Artists
-const PlaylistTrack = (props: { item: Track; index?: number }) => {
-  const { index, item } = props;
+const PlaylistTrack = (props: {
+  item: Track;
+  addedAt?: string;
+  index?: number;
+}) => {
+  const { index, item, addedAt } = props;
 
   return (
     <T.Track>
@@ -103,6 +110,7 @@ const PlaylistTrack = (props: { item: Track; index?: number }) => {
       <T.TrackAlbum>
         <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
       </T.TrackAlbum>
+      {addedAt !== null && <T.TrackDateAdded>{addedAt}</T.TrackDateAdded>}
       <T.TrackDuration>
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>

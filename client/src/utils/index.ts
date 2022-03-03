@@ -32,13 +32,13 @@ export const resetScroll = (htmlElement: RefObject<HTMLElement>) => {
  */
 export const formatDuration = (
   duration: number,
-  formatType: "long" | "short" | "track"
+  formatType: "playlist" | "short" | "track"
 ) => {
   const seconds = Math.floor((duration / 1000) % 60);
   const minutes = Math.floor((duration / (1000 * 60)) % 60);
-  const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  const hours = Math.floor(duration / (1000 * 60 * 60));
 
-  if (formatType === "long") {
+  if (formatType === "playlist") {
     if (hours >= 1) {
       return `${hours} hr ${minutes} min`;
     } else {
@@ -56,4 +56,21 @@ export const formatDuration = (
  */
 export const random = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min)) + min;
+};
+
+/**
+ * Format the date when a track was added to playlist i.e. "Jan 1, 1970"
+ */
+export const formatAddedAt = (dateAdded: string | undefined) => {
+  if (dateAdded !== undefined) {
+    const date = new Date(dateAdded);
+
+    const Day = date.getDate();
+    const Month = date.toLocaleString("default", { month: "short" });
+    const Year = date.getFullYear();
+
+    return `${Month} ${Day}, ${Year}`;
+  } else {
+    return "";
+  }
 };
