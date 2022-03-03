@@ -84,7 +84,7 @@ const ArtistPage = () => {
       {topTracks.tracks?.length > 0 && (
         <S.Section>
           <S.SectionName>Popular</S.SectionName>
-          <TrackGrid>
+          <T.TrackList>
             {topTracks.tracks?.slice(0, 10).map((track, index) => (
               <Track
                 key={track.id}
@@ -93,7 +93,7 @@ const ArtistPage = () => {
                 index={index}
               />
             ))}
-          </TrackGrid>
+          </T.TrackList>
         </S.Section>
       )}
 

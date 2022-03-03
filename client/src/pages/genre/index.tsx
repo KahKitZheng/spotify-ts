@@ -37,7 +37,7 @@ const GenrePage = () => {
       </PageTitle>
       <TrackList>
         {genre.tracks?.map((track) => (
-          <Track key={track.id} variant="playlist" item={track} />
+          <Track key={track.id} variant="genre" item={track} />
         ))}
       </TrackList>
     </div>

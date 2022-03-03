@@ -122,7 +122,10 @@ const PlaylistCard = (props: {
 
   return (
     <C.CardWrapper onClick={() => to(`/playlist/${item.id}`)}>
-      <C.CardCover src={item.images[0].url} alt="" />
+      <C.CardCover
+        src={item.images?.length !== 0 ? item.images[0].url : ""}
+        alt=""
+      />
       <C.CardTitle to={`/playlist/${item.id}`}>{item.name}</C.CardTitle>
       {item.description ? (
         <C.CardDescription

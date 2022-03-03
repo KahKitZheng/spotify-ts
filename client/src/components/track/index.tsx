@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import * as T from "../../styles/components/track";
 import { Link } from "react-router-dom";
+import LikeButton from "../../components/button";
 import { formatDuration } from "../../utils";
 import {
   SimplifiedArtist,
@@ -9,7 +10,7 @@ import {
 } from "../../types/SpotifyObjects";
 
 interface Props {
-  variant: "album" | "popular-tracks" | "playlist" | "user-top";
+  variant: "album" | "popular-tracks" | "playlist" | "user-top" | "genre";
   item: Track | SimplifiedTrack;
   index?: number;
   addedAt?: string;
@@ -29,6 +30,8 @@ const TrackComponent = (props: Props) => {
       );
     case "user-top":
       return <UserTopTrack item={item as Track} index={index} />;
+    case "genre":
+      return <GenreTrack item={item as Track} />;
   }
 };
 
@@ -46,8 +49,12 @@ const renderArtists = (list: SimplifiedArtist[]) => {
 const AlbumTrack = (props: { item: SimplifiedTrack; index?: number }) => {
   const { index, item } = props;
 
+  function handleOnclick() {
+    console.log("test");
+  }
+
   return (
-    <T.Track>
+    <T.OrderedTrack>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackInfo>
         <T.TrackDetails>
@@ -59,9 +66,10 @@ const AlbumTrack = (props: { item: SimplifiedTrack; index?: number }) => {
         </T.TrackDetails>
       </T.TrackInfo>
       <T.TrackDuration>
+        <LikeButton handleClick={handleOnclick} />
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>
-    </T.Track>
+    </T.OrderedTrack>
   );
 };
 
@@ -70,7 +78,7 @@ const PopularArtistTrack = (props: { item: Track; index?: number }) => {
   const { index = 1, item } = props;
 
   return (
-    <T.Track>
+    <T.OrderedTrack>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackInfo>
         <T.TrackAlbumCover src={item.album?.images[0].url} alt="" $small />
@@ -82,20 +90,20 @@ const PopularArtistTrack = (props: { item: Track; index?: number }) => {
       <T.TrackDuration>
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>
-    </T.Track>
+    </T.OrderedTrack>
   );
 };
 
 // Album Cover + Track Name + Track Artists
 const PlaylistTrack = (props: {
   item: Track;
-  addedAt?: string;
   index?: number;
+  addedAt?: string;
 }) => {
   const { index, item, addedAt } = props;
 
   return (
-    <T.Track>
+    <T.PlaylistTrack>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackInfo>
         <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
@@ -114,7 +122,7 @@ const PlaylistTrack = (props: {
       <T.TrackDuration>
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>
-    </T.Track>
+    </T.PlaylistTrack>
   );
 };
 
@@ -123,8 +131,31 @@ const UserTopTrack = (props: { item: Track; index?: number }) => {
   const { index, item } = props;
 
   return (
-    <T.Track>
+    <T.OrderedTrack>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
+      <T.TrackInfo>
+        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+        <T.TrackDetails>
+          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackArtists>
+            {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+            {renderArtists(item.artists)}
+          </T.TrackArtists>
+        </T.TrackDetails>
+      </T.TrackInfo>
+      <T.TrackDuration>
+        <span>{formatDuration(item.duration_ms, "track")}</span>
+      </T.TrackDuration>
+    </T.OrderedTrack>
+  );
+};
+
+// Album Cover + Track Name + Track Artists
+const GenreTrack = (props: { item: Track }) => {
+  const { item } = props;
+
+  return (
+    <T.Track>
       <T.TrackInfo>
         <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
         <T.TrackDetails>
