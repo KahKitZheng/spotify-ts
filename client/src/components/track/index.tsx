@@ -1,8 +1,10 @@
 import React, { Fragment } from "react";
+import LikeButton from "../../components/button";
 import * as T from "../../styles/components/track";
 import { Link } from "react-router-dom";
-import LikeButton from "../../components/button";
+import { useDispatch } from "react-redux";
 import { formatDuration } from "../../utils";
+import { removeTrack, saveTrack } from "../../slices/albumSlice";
 import {
   SimplifiedArtist,
   SimplifiedTrack,
@@ -21,7 +23,7 @@ const TrackComponent = (props: Props) => {
 
   switch (variant) {
     case "album":
-      return <AlbumTrack item={item as SimplifiedTrack} index={index} />;
+      return <AlbumTrack item={item as SimplifiedTrack} />;
     case "popular-tracks":
       return <PopularArtistTrack item={item as Track} index={index} />;
     case "playlist":
@@ -46,16 +48,17 @@ const renderArtists = (list: SimplifiedArtist[]) => {
 };
 
 // Track Name + Artists
-const AlbumTrack = (props: { item: SimplifiedTrack; index?: number }) => {
-  const { index, item } = props;
+const AlbumTrack = (props: { item: SimplifiedTrack }) => {
+  const { item } = props;
+  const dispatch = useDispatch();
 
-  function handleOnclick() {
-    console.log("test");
+  function handleOnclick(isSaved?: boolean) {
+    isSaved ? dispatch(removeTrack(item.id)) : dispatch(saveTrack(item.id));
   }
 
   return (
     <T.OrderedTrack>
-      {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
+      <T.TrackIndex>{item.track_number}</T.TrackIndex>
       <T.TrackInfo>
         <T.TrackDetails>
           <T.TrackName>{item.name}</T.TrackName>
@@ -66,7 +69,10 @@ const AlbumTrack = (props: { item: SimplifiedTrack; index?: number }) => {
         </T.TrackDetails>
       </T.TrackInfo>
       <T.TrackDuration>
-        <LikeButton handleClick={handleOnclick} />
+        <LikeButton
+          isSaved={item.is_saved}
+          handleClick={() => handleOnclick(item.is_saved)}
+        />
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>
     </T.OrderedTrack>

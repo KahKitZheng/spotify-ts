@@ -479,6 +479,7 @@ export type SimplifiedTrack = {
   external_urls: ExternalURL;
   href: string;
   id: string;
+  is_saved: boolean; // custom prop
   is_playable?: boolean;
   linked_from?: TrackLink;
   restrictions?: Restrictions;

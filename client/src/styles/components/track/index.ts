@@ -19,12 +19,10 @@ export const TrackList = styled.div`
 export const Track = styled.div`
   display: grid;
   align-items: center;
-  grid-template-columns: 10fr 100px;
-  grid-template-areas: "track-info track-duration";
+  grid-template-areas: "track-info";
   grid-gap: 16px;
-  width: 100%;
+  margin: -8px;
   padding: 8px;
-  margin: -8px 0;
 
   :last-of-type {
     margin-bottom: 0;
@@ -36,6 +34,11 @@ export const Track = styled.div`
 
   :hover ${Button} {
     display: block;
+  }
+
+  @media (min-width: 500px) {
+    grid-template-columns: 10fr 100px;
+    grid-template-areas: "track-info track-duration";
   }
 `;
 
@@ -56,8 +59,10 @@ export const TrackDiscInfo = styled(Track)`
 `;
 
 export const OrderedTrack = styled(Track)`
-  grid-template-columns: 24px 10fr 100px;
-  grid-template-areas: "track-index track-info track-duration";
+  @media (min-width: 500px) {
+    grid-template-columns: 24px 10fr 100px;
+    grid-template-areas: "track-index track-info track-duration";
+  }
 `;
 
 export const PlaylistTrack = styled(Track)`
@@ -74,10 +79,15 @@ export const PlaylistTrack = styled(Track)`
  * Track Sections
  */
 export const TrackIndex = styled.span`
-  grid-area: track-index;
-  display: flex;
-  justify-content: flex-end;
-  padding-left: 8px;
+  display: none;
+
+  @media (min-width: 500px) {
+    display: revert;
+    grid-area: track-index;
+    grid-template-columns: 24px 6fr 4fr 2fr 100px;
+    grid-template-areas: "track-index track-info track-album track-date-added track-duration";
+    text-align: right;
+  }
 `;
 
 export const TrackInfo = styled.div`

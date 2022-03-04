@@ -8,13 +8,13 @@ import * as S from "../../styles/components/section";
 import { BsDisc } from "react-icons/bs";
 import { CollectionOverflow } from "../../components/collection";
 import { Link, useParams } from "react-router-dom";
-import { formatDuration, stringToHSL } from "../../utils";
+import { extractTrackId, formatDuration, stringToHSL } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  checkSavedAlbumTracks,
   countAlbumDuration,
   getAlbum,
   getAlbumDiscography,
-  groupTracksByDisc,
   selectAlbum,
   selectAlbumDisc,
   selectAlbumDiscography,
@@ -33,6 +33,8 @@ const AlbumPage = () => {
   const albumDisc = useSelector(selectAlbumDisc);
   const albumDiscography = useSelector(selectAlbumDiscography);
 
+  console.log(albumDisc);
+
   useEffect(() => {
     if (id) {
       dispatch(getAlbum({ id }));
@@ -46,9 +48,10 @@ const AlbumPage = () => {
 
   useEffect(() => {
     if (albumStatus === "succeeded") {
-      dispatch(groupTracksByDisc());
+      const list = album.tracks?.items;
+      dispatch(checkSavedAlbumTracks(extractTrackId(list)));
     }
-  }, [albumStatus, dispatch]);
+  }, [album.tracks?.items, albumStatus, dispatch]);
 
   useEffect(() => {
     if (album.artists) {

@@ -79,6 +79,7 @@ app.get("/login", function (req, res) {
     "user-follow-read",
     "user-follow-modify",
     "user-library-read",
+    "user-library-modify",
     "playlist-read-private",
     "playlist-read-collaborative",
     "playlist-modify-public",

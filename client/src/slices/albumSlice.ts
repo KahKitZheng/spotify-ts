@@ -20,20 +20,17 @@ export const initialState: AlbumState = {
   status: "idle",
 };
 
-interface fetchParams {
-  id: string;
-  query?: string;
-}
-
+// Fetch albums of an artist
 export const getAlbum = createAsyncThunk(
   "album/getAlbum",
-  async (data: fetchParams) => {
+  async (data: { id: string; query?: string }) => {
     const { id } = data;
     const response = await axios.get(`/albums/${id}`);
     return response.data;
   }
 );
 
+// Fetch all albums of an artist
 export const getAlbumDiscography = createAsyncThunk(
   "album/getArtistAlbums",
   async (data: { id: string }) => {
@@ -41,6 +38,33 @@ export const getAlbumDiscography = createAsyncThunk(
       `/artists/${data.id}/albums/?include_groups=album&limit=10`
     );
     return response.data;
+  }
+);
+
+// Check if one or more tracks is already saved in liked songs
+export const checkSavedAlbumTracks = createAsyncThunk(
+  "album/checkSavedAlbumTrack",
+  async (ids: string[]) => {
+    const response = await axios.get(`/me/tracks/contains?ids=${ids}`);
+    return response.data;
+  }
+);
+
+// Save track to your liked songs
+export const saveTrack = createAsyncThunk(
+  "album/saveTrack",
+  async (id: string) => {
+    await axios.put(`/me/tracks?ids=${id}`, {});
+    return id;
+  }
+);
+
+// Save track to your liked songs
+export const removeTrack = createAsyncThunk(
+  "album/removeTrack",
+  async (id: string) => {
+    await axios.delete(`/me/tracks?ids=${id}`, {});
+    return id;
   }
 );
 
@@ -54,12 +78,10 @@ export const AlbumSlice = createSlice({
       albumTracks.forEach((item) => (albumDuration += item.duration_ms));
       state.albumDuration = albumDuration;
     },
-    groupTracksByDisc: (state) => {
-      if (state.album.tracks.items?.length !== 0) {
-        const groupedTrack = groupBy(state.album.tracks?.items, "disc_number");
-        const albumDisc = Object.keys(groupedTrack).map((i) => groupedTrack[i]);
-        state.albumDisc = albumDisc;
-      }
+    removeSavedTrack: (state, action) => {
+      const list = state.album.tracks.items;
+      const index = list.findIndex((track) => track.id === action.payload);
+      state.album.tracks.items[index].is_saved = !action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -74,17 +96,28 @@ export const AlbumSlice = createSlice({
       .addCase(getAlbum.rejected, (state) => {
         state.status = "failed";
       });
-    builder
-      .addCase(getAlbumDiscography.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getAlbumDiscography.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.albumDiscography = action.payload;
-      })
-      .addCase(getAlbumDiscography.rejected, (state) => {
-        state.status = "failed";
+    builder.addCase(checkSavedAlbumTracks.fulfilled, (state, action) => {
+      state.album.tracks.items?.map((track, index) => {
+        track.is_saved = action.payload[index];
       });
+
+      const groupedTrack = groupBy(state.album.tracks?.items, "disc_number");
+      const albumDisc = Object.keys(groupedTrack).map((i) => groupedTrack[i]);
+      state.albumDisc = albumDisc;
+    });
+    builder.addCase(getAlbumDiscography.fulfilled, (state, action) => {
+      state.albumDiscography = action.payload;
+    });
+    builder.addCase(saveTrack.fulfilled, (state, action) => {
+      const list = state.album.tracks.items;
+      const index = list.findIndex((track) => track.id === action.payload);
+      state.album.tracks.items[index].is_saved = true;
+    });
+    builder.addCase(removeTrack.fulfilled, (state, action) => {
+      const list = state.album.tracks.items;
+      const index = list.findIndex((track) => track.id === action.payload);
+      state.album.tracks.items[index].is_saved = false;
+    });
   },
 });
 
@@ -108,6 +141,6 @@ export const selectAlbumDiscography = (state: RootState) => {
   return state.album.albumDiscography;
 };
 
-export const { countAlbumDuration, groupTracksByDisc } = AlbumSlice.actions;
+export const { countAlbumDuration, removeSavedTrack } = AlbumSlice.actions;
 
 export default AlbumSlice.reducer;
