@@ -2,6 +2,10 @@ import styled from "styled-components";
 import { textOverflow } from "../../utils";
 import { Button } from "../../../components/button";
 
+export const TrackDisc = styled.div`
+  margin-top: 2rem;
+`;
+
 export const TrackList = styled.div`
   display: grid;
   grid-template-columns: auto;
@@ -14,6 +18,7 @@ export const TrackList = styled.div`
  */
 export const Track = styled.div`
   display: grid;
+  align-items: center;
   grid-template-columns: 10fr 100px;
   grid-template-areas: "track-info track-duration";
   grid-gap: 16px;
@@ -31,6 +36,22 @@ export const Track = styled.div`
 
   :hover ${Button} {
     display: block;
+  }
+`;
+
+export const TrackDiscInfo = styled(Track)`
+  grid-template-columns: 24px 1fr;
+  grid-template-areas: "disc-icon disc-number";
+  font-weight: 600;
+  font-size: 18px;
+
+  :hover {
+    background-color: revert;
+  }
+
+  span {
+    display: flex;
+    justify-content: flex-end;
   }
 `;
 
@@ -55,10 +76,8 @@ export const PlaylistTrack = styled(Track)`
 export const TrackIndex = styled.span`
   grid-area: track-index;
   display: flex;
-  align-items: center;
   justify-content: flex-end;
   padding-left: 8px;
-  font-size: 14px;
 `;
 
 export const TrackInfo = styled.div`
@@ -69,8 +88,7 @@ export const TrackInfo = styled.div`
 
 export const TrackAlbum = styled.div`
   grid-area: track-album;
-  display: flex;
-  align-items: center;
+  width: fit-content;
   font-size: 14px;
 
   a {
@@ -84,8 +102,6 @@ export const TrackAlbum = styled.div`
 
 export const TrackDateAdded = styled.span`
   grid-area: track-date-added;
-  display: flex;
-  align-items: center;
   font-size: 14px;
   padding-left: 48px;
 

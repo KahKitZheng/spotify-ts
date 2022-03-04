@@ -74,3 +74,21 @@ export const formatAddedAt = (dateAdded: string | undefined) => {
     return "";
   }
 };
+
+/**
+ * Helper function to group objects with same property value i.e. tracks with same disc_number
+ * src: https://gist.github.com/robmathers/1830ce09695f759bf2c4df15c29dd22d?permalink_comment_id=3554018#gistcomment-3554018
+ */
+type ItemKey = string | number | symbol;
+
+export const groupBy = <Key extends ItemKey, T extends Record<Key, ItemKey>>(
+  items: T[],
+  key: Key
+): Record<ItemKey, T[]> =>
+  items?.reduce(
+    (result, item) => ({
+      ...result,
+      [item[key]]: [...(result[item[key]] || []), item],
+    }),
+    {} as Record<ItemKey, T[]>
+  );

@@ -5,6 +5,7 @@ import Track from "../../components/track";
 import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
 import * as S from "../../styles/components/section";
+import { BsDisc } from "react-icons/bs";
 import { CollectionOverflow } from "../../components/collection";
 import { Link, useParams } from "react-router-dom";
 import { formatDuration, stringToHSL } from "../../utils";
@@ -13,9 +14,12 @@ import {
   countAlbumDuration,
   getAlbum,
   getAlbumDiscography,
+  groupTracksByDisc,
   selectAlbum,
+  selectAlbumDisc,
   selectAlbumDiscography,
   selectAlbumDuration,
+  selectAlbumStatus,
 } from "../../slices/albumSlice";
 
 const AlbumPage = () => {
@@ -24,7 +28,9 @@ const AlbumPage = () => {
 
   const dispatch = useDispatch();
   const album = useSelector(selectAlbum);
+  const albumStatus = useSelector(selectAlbumStatus);
   const albumDuration = useSelector(selectAlbumDuration);
+  const albumDisc = useSelector(selectAlbumDisc);
   const albumDiscography = useSelector(selectAlbumDiscography);
 
   useEffect(() => {
@@ -37,6 +43,12 @@ const AlbumPage = () => {
       setGradient(stringToHSL(album.name));
     }
   }, [album.name, album.tracks?.items.length, dispatch, id]);
+
+  useEffect(() => {
+    if (albumStatus === "succeeded") {
+      dispatch(groupTracksByDisc());
+    }
+  }, [albumStatus, dispatch]);
 
   useEffect(() => {
     if (album.artists) {
@@ -74,11 +86,28 @@ const AlbumPage = () => {
         </H.HeaderStats>
       </H.HeaderWrapper>
 
-      <T.TrackList>
-        {album.tracks?.items.map((track, index) => (
-          <Track key={track.id} variant="album" item={track} index={index} />
-        ))}
-      </T.TrackList>
+      {albumDisc?.map((disc, index) => (
+        <T.TrackDisc key={index}>
+          {albumDisc.length > 1 && (
+            <T.TrackDiscInfo>
+              <span>
+                <BsDisc />
+              </span>
+              <p>Disc {index + 1}</p>
+            </T.TrackDiscInfo>
+          )}
+          <T.TrackList>
+            {disc?.map((track, index) => (
+              <Track
+                key={track.id}
+                variant="album"
+                item={track}
+                index={index}
+              />
+            ))}
+          </T.TrackList>
+        </T.TrackDisc>
+      ))}
 
       <CopyrightWrapper>
         {album.copyrights.map((copyright, index) => (

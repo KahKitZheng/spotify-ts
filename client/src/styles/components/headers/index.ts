@@ -11,6 +11,7 @@ export const HeaderWrapper = styled.div<{ $bgGradient: string }>`
 export const Thumbnail = styled.img`
   height: 160px;
   width: 160px;
+  object-fit: cover;
   margin: 24px auto 32px;
   box-shadow: 0 0 32px rgba(0, 0, 0, 0.5);
 `;

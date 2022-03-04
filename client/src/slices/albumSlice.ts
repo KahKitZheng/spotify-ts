@@ -1,11 +1,13 @@
 import axios from "axios";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { groupBy } from "../utils";
 import { RootState } from "../app/store";
-import { Album, Paging } from "../types/SpotifyObjects";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { Album, Paging, SimplifiedTrack } from "../types/SpotifyObjects";
 
 interface AlbumState {
   album: Album;
   albumDuration: number;
+  albumDisc: SimplifiedTrack[][];
   albumDiscography: Paging<Album>;
   status: "idle" | "loading" | "succeeded" | "failed";
 }
@@ -13,6 +15,7 @@ interface AlbumState {
 export const initialState: AlbumState = {
   album: {} as Album,
   albumDuration: 0,
+  albumDisc: [] as SimplifiedTrack[][],
   albumDiscography: {} as Paging<Album>,
   status: "idle",
 };
@@ -51,6 +54,13 @@ export const AlbumSlice = createSlice({
       albumTracks.forEach((item) => (albumDuration += item.duration_ms));
       state.albumDuration = albumDuration;
     },
+    groupTracksByDisc: (state) => {
+      if (state.album.tracks.items?.length !== 0) {
+        const groupedTrack = groupBy(state.album.tracks?.items, "disc_number");
+        const albumDisc = Object.keys(groupedTrack).map((i) => groupedTrack[i]);
+        state.albumDisc = albumDisc;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -78,18 +88,26 @@ export const AlbumSlice = createSlice({
   },
 });
 
-export const selectAlbum = (state: RootState) => {
-  return state.album.album;
+export const selectAlbumStatus = (state: RootState) => {
+  return state.album.status;
 };
 
-export const selectAlbumDiscography = (state: RootState) => {
-  return state.album.albumDiscography;
+export const selectAlbum = (state: RootState) => {
+  return state.album.album;
 };
 
 export const selectAlbumDuration = (state: RootState) => {
   return state.album.albumDuration;
 };
 
-export const { countAlbumDuration } = AlbumSlice.actions;
+export const selectAlbumDisc = (state: RootState) => {
+  return state.album.albumDisc;
+};
+
+export const selectAlbumDiscography = (state: RootState) => {
+  return state.album.albumDiscography;
+};
+
+export const { countAlbumDuration, groupTracksByDisc } = AlbumSlice.actions;
 
 export default AlbumSlice.reducer;
