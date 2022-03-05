@@ -6,6 +6,11 @@ import { useDispatch } from "react-redux";
 import { formatDuration } from "../../utils";
 import { removeSavedAlbumTrack, saveAlbumTrack } from "../../slices/albumSlice";
 import {
+  removeSavedTopTrack,
+  saveTopTrack,
+  TimeRange,
+} from "../../slices/topItemsSlice";
+import {
   removeSavedPopularArtistTrack,
   savePopularArtistTrack,
 } from "../../slices/artistSlice";
@@ -24,10 +29,11 @@ interface Props {
   item: Track | SimplifiedTrack;
   index?: number;
   addedAt?: string;
+  timeRange?: TimeRange;
 }
 
 const TrackComponent = (props: Props) => {
-  const { variant, item, addedAt, index } = props;
+  const { variant, item, addedAt, index, timeRange } = props;
 
   switch (variant) {
     case "album":
@@ -39,7 +45,13 @@ const TrackComponent = (props: Props) => {
         <PlaylistTrack item={item as Track} addedAt={addedAt} index={index} />
       );
     case "user-top":
-      return <UserTopTrack item={item as Track} index={index} />;
+      return (
+        <UserTopTrack
+          item={item as Track}
+          index={index}
+          timeRange={timeRange}
+        />
+      );
     case "genre":
       return <GenreTrack item={item as Track} />;
   }
@@ -165,11 +177,23 @@ const PlaylistTrack = (props: {
 };
 
 // Album Cover + Track Name + Track Artists
-const UserTopTrack = (props: { item: Track; index?: number }) => {
-  const { index, item } = props;
+const UserTopTrack = (props: {
+  item: Track;
+  index?: number;
+  timeRange?: TimeRange;
+}) => {
+  const { index, item, timeRange } = props;
+  const dispatch = useDispatch();
 
+  function handleOnclick(isSaved?: boolean) {
+    if (timeRange !== undefined) {
+      isSaved
+        ? dispatch(removeSavedTopTrack({ id: item.id, time_range: timeRange }))
+        : dispatch(saveTopTrack({ id: item.id, time_range: timeRange }));
+    }
+  }
   return (
-    <T.OrderedTrack>
+    <T.TopTrack>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackInfo>
         <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
@@ -181,10 +205,19 @@ const UserTopTrack = (props: { item: Track; index?: number }) => {
           </T.TrackArtists>
         </T.TrackDetails>
       </T.TrackInfo>
+      <T.TrackAlbum>
+        <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
+      </T.TrackAlbum>
       <T.TrackDuration>
+        {timeRange !== undefined && (
+          <LikeButton
+            isSaved={item.is_saved}
+            handleClick={() => handleOnclick(item.is_saved)}
+          />
+        )}
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>
-    </T.OrderedTrack>
+    </T.TopTrack>
   );
 };
 

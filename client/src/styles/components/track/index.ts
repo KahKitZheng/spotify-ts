@@ -75,6 +75,16 @@ export const PlaylistTrack = styled(Track)`
   }
 `;
 
+export const TopTrack = styled(Track)`
+  grid-template-columns: 24px 10fr 100px;
+  grid-template-areas: "track-index track-info track-duration";
+
+  @media (min-width: 876px) {
+    grid-template-columns: 24px 6fr 4fr 100px;
+    grid-template-areas: "track-index track-info track-album track-duration";
+  }
+`;
+
 /**
  * Track Sections
  */

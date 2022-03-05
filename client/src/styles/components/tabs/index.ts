@@ -43,4 +43,5 @@ export const TabView = styled(Section)`
   padding-top: 32px;
   padding-bottom: 16px;
   ${overflowNoScrollbar}
+  overflow-x: hidden;
 `;

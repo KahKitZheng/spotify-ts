@@ -3,6 +3,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Paging, Track, Artist } from "../types/SpotifyObjects";
 import { RootState } from "../app/store";
 
+export type TimeRange = "short_term" | "medium_term" | "long_term";
+
 interface TopArtists {
   short_term: Paging<Artist>;
   medium_term: Paging<Artist>;
@@ -27,12 +29,22 @@ const initialState: TopItemsState = {
   status: "idle",
 };
 
+interface CheckSavedTrackProps {
+  ids: string[];
+  time_range: TimeRange;
+}
+interface ChangeTrackProps {
+  id: string;
+  time_range: TimeRange;
+}
+
 interface fetchParams {
   limit?: number;
   offset?: number;
-  time_range: "short_term" | "medium_term" | "long_term";
+  time_range: TimeRange;
 }
 
+// Fetch top artists of current user
 export const getTopArtists = createAsyncThunk(
   "topItems/getTopArtists",
   async (data?: fetchParams) => {
@@ -51,6 +63,7 @@ export const getTopArtists = createAsyncThunk(
   }
 );
 
+// Fetch top tracks of current user
 export const getTopTracks = createAsyncThunk(
   "topItems/getTopTracks",
   async (data?: fetchParams) => {
@@ -66,6 +79,33 @@ export const getTopTracks = createAsyncThunk(
       );
       return response.data;
     }
+  }
+);
+
+// Check if one or more tracks is already saved in liked songs
+export const checkSavedTopTracks = createAsyncThunk(
+  "topItems/checkSavedTopTracks",
+  async (data: CheckSavedTrackProps) => {
+    const response = await axios.get(`/me/tracks/contains?ids=${data.ids}`);
+    return response.data;
+  }
+);
+
+// Save top track to your liked songs
+export const saveTopTrack = createAsyncThunk(
+  "topItems/saveTopTrack",
+  async (data: ChangeTrackProps) => {
+    await axios.put(`/me/tracks?ids=${data.id}`, {});
+    return data.id;
+  }
+);
+
+// Remove a liked top track from your liked songs
+export const removeSavedTopTrack = createAsyncThunk(
+  "topItems/removeSavedTopTrack",
+  async (data: ChangeTrackProps) => {
+    await axios.delete(`/me/tracks?ids=${data.id}`, {});
+    return data.id;
   }
 );
 
@@ -87,19 +127,30 @@ export const topItemsSlice = createSlice({
       .addCase(getTopArtists.rejected, (state) => {
         state.status = "failed";
       });
-    builder
-      .addCase(getTopTracks.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getTopTracks.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        if (action.meta.arg !== undefined) {
-          state.topTracks[action.meta.arg.time_range] = action.payload;
-        }
-      })
-      .addCase(getTopTracks.rejected, (state) => {
-        state.status = "failed";
+    builder.addCase(getTopTracks.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      if (action.meta.arg !== undefined) {
+        state.topTracks[action.meta.arg.time_range] = action.payload;
+      }
+    });
+    builder.addCase(checkSavedTopTracks.fulfilled, (state, action) => {
+      const timeRange = action.meta.arg.time_range;
+      state.topTracks[timeRange].items?.map((track, index) => {
+        track.is_saved = action.payload[index];
       });
+    });
+    builder.addCase(saveTopTrack.fulfilled, (state, action) => {
+      const timeRange = action.meta.arg.time_range;
+      const list = state.topTracks[timeRange].items;
+      const index = list.findIndex((track) => track.id === action.payload);
+      state.topTracks[timeRange].items[index].is_saved = true;
+    });
+    builder.addCase(removeSavedTopTrack.fulfilled, (state, action) => {
+      const timeRange = action.meta.arg.time_range;
+      const list = state.topTracks[timeRange].items;
+      const index = list.findIndex((track) => track.id === action.payload);
+      state.topTracks[timeRange].items[index].is_saved = false;
+    });
   },
 });
 

@@ -3,18 +3,28 @@ import Track from "../../components/track";
 import * as Tab from "../../styles/components/tabs";
 import * as T from "../../styles/components/track";
 import { useDispatch, useSelector } from "react-redux";
-import { getTopTracks, selectTopTracks } from "../../slices/topItemsSlice";
-
-type PeriodFilter = "short_term" | "medium_term" | "long_term";
+import {
+  checkSavedTopTracks,
+  getTopTracks,
+  selectTopTracks,
+  TimeRange,
+} from "../../slices/topItemsSlice";
+import { extractTrackId } from "../../utils";
 
 const TopTracksPage = () => {
-  const [filter, setFilter] = useState<PeriodFilter>("short_term");
+  const [filter, setFilter] = useState<TimeRange>("short_term");
   const dispatch = useDispatch();
   const topTracks = useSelector(selectTopTracks);
 
   useEffect(() => {
     if (topTracks[filter]?.limit !== 50) {
       dispatch(getTopTracks({ limit: 50, time_range: filter }));
+    }
+
+    if (topTracks[filter]?.items.length > 0) {
+      const list = topTracks[filter].items;
+      const ids = extractTrackId(list);
+      dispatch(checkSavedTopTracks({ ids: ids, time_range: filter }));
     }
   }, [dispatch, filter, topTracks]);
 
@@ -41,9 +51,17 @@ const TopTracksPage = () => {
         </Tab.Tab>
       </Tab.TabHeader>
       <Tab.TabView>
-        {topTracks[filter]?.items.map((track, index) => (
-          <Track key={track.id} variant="user-top" item={track} index={index} />
-        ))}
+        <T.TrackList>
+          {topTracks[filter]?.items.map((track, index) => (
+            <Track
+              key={track.id}
+              variant="user-top"
+              item={track}
+              index={index}
+              timeRange={filter}
+            />
+          ))}
+        </T.TrackList>
       </Tab.TabView>
     </Tab.PageWrapper>
   );
