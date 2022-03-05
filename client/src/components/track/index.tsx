@@ -4,7 +4,11 @@ import * as T from "../../styles/components/track";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { formatDuration } from "../../utils";
-import { removeTrack, saveTrack } from "../../slices/albumSlice";
+import { removeAlbumTrack, saveAlbumTrack } from "../../slices/albumSlice";
+import {
+  removePopularArtistTrack,
+  savePopularArtistTrack,
+} from "../../slices/artistSlice";
 import {
   SimplifiedArtist,
   SimplifiedTrack,
@@ -53,7 +57,9 @@ const AlbumTrack = (props: { item: SimplifiedTrack }) => {
   const dispatch = useDispatch();
 
   function handleOnclick(isSaved?: boolean) {
-    isSaved ? dispatch(removeTrack(item.id)) : dispatch(saveTrack(item.id));
+    isSaved
+      ? dispatch(removeAlbumTrack(item.id))
+      : dispatch(saveAlbumTrack(item.id));
   }
 
   return (
@@ -82,6 +88,13 @@ const AlbumTrack = (props: { item: SimplifiedTrack }) => {
 // Album Cover + Track Name
 const PopularArtistTrack = (props: { item: Track; index?: number }) => {
   const { index = 1, item } = props;
+  const dispatch = useDispatch();
+
+  function handleOnclick(isSaved?: boolean) {
+    isSaved
+      ? dispatch(removePopularArtistTrack(item.id))
+      : dispatch(savePopularArtistTrack(item.id));
+  }
 
   return (
     <T.OrderedTrack>
@@ -94,6 +107,10 @@ const PopularArtistTrack = (props: { item: Track; index?: number }) => {
         </T.TrackDetails>
       </T.TrackInfo>
       <T.TrackDuration>
+        <LikeButton
+          isSaved={item.is_saved}
+          handleClick={() => handleOnclick(item.is_saved)}
+        />
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>
     </T.OrderedTrack>

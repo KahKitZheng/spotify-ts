@@ -6,17 +6,19 @@ import * as H from "../../styles/components/headers";
 import * as S from "../../styles/components/section";
 import * as T from "../../styles/components/track";
 import { Link, useParams } from "react-router-dom";
-import { stringToHSL } from "../../utils";
+import { extractTrackId, stringToHSL } from "../../utils";
 import { CollectionOverflow } from "../../components/collection";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
 import {
+  checkSavedPopularTracks,
   getArtist,
   getArtistAlbums,
   getArtistTopTracks,
   getRelatedArtists,
   selectArtist,
   selectArtistAlbum,
+  selectArtistStatus,
   selectArtistTopTracks,
   selectRelatedArtists,
 } from "../../slices/artistSlice";
@@ -28,6 +30,7 @@ const ArtistPage = () => {
   const dispatch = useDispatch();
   const country = useSelector(selectCurrentUserCountry);
   const artist = useSelector(selectArtist);
+  const artistStatus = useSelector(selectArtistStatus);
   const discography = useSelector(selectArtistAlbum);
   const topTracks = useSelector(selectArtistTopTracks);
   const relatedArtists = useSelector(selectRelatedArtists);
@@ -44,9 +47,9 @@ const ArtistPage = () => {
 
   useEffect(() => {
     if (id) {
-      dispatch(getArtist({ id }));
+      dispatch(getArtist(id));
       dispatch(getArtistAlbums({ id }));
-      dispatch(getRelatedArtists({ id }));
+      dispatch(getRelatedArtists(id));
     }
 
     if (artist.name) {
@@ -64,6 +67,13 @@ const ArtistPage = () => {
 
     fetchTopTracks();
   }, [country, dispatch, id]);
+
+  useEffect(() => {
+    if (topTracks.tracks?.length > 0) {
+      const list = topTracks.tracks;
+      dispatch(checkSavedPopularTracks(extractTrackId(list)));
+    }
+  }, [artistStatus, dispatch, topTracks.tracks]);
 
   return id === artist.id ? (
     <div>

@@ -51,7 +51,7 @@ export const checkSavedAlbumTracks = createAsyncThunk(
 );
 
 // Save track to your liked songs
-export const saveTrack = createAsyncThunk(
+export const saveAlbumTrack = createAsyncThunk(
   "album/saveTrack",
   async (id: string) => {
     await axios.put(`/me/tracks?ids=${id}`, {});
@@ -60,7 +60,7 @@ export const saveTrack = createAsyncThunk(
 );
 
 // Save track to your liked songs
-export const removeTrack = createAsyncThunk(
+export const removeAlbumTrack = createAsyncThunk(
   "album/removeTrack",
   async (id: string) => {
     await axios.delete(`/me/tracks?ids=${id}`, {});
@@ -78,11 +78,6 @@ export const AlbumSlice = createSlice({
       albumTracks.forEach((item) => (albumDuration += item.duration_ms));
       state.albumDuration = albumDuration;
     },
-    removeSavedTrack: (state, action) => {
-      const list = state.album.tracks.items;
-      const index = list.findIndex((track) => track.id === action.payload);
-      state.album.tracks.items[index].is_saved = !action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -96,6 +91,9 @@ export const AlbumSlice = createSlice({
       .addCase(getAlbum.rejected, (state) => {
         state.status = "failed";
       });
+    builder.addCase(getAlbumDiscography.fulfilled, (state, action) => {
+      state.albumDiscography = action.payload;
+    });
     builder.addCase(checkSavedAlbumTracks.fulfilled, (state, action) => {
       state.album.tracks.items?.map((track, index) => {
         track.is_saved = action.payload[index];
@@ -105,15 +103,12 @@ export const AlbumSlice = createSlice({
       const albumDisc = Object.keys(groupedTrack).map((i) => groupedTrack[i]);
       state.albumDisc = albumDisc;
     });
-    builder.addCase(getAlbumDiscography.fulfilled, (state, action) => {
-      state.albumDiscography = action.payload;
-    });
-    builder.addCase(saveTrack.fulfilled, (state, action) => {
+    builder.addCase(saveAlbumTrack.fulfilled, (state, action) => {
       const list = state.album.tracks.items;
       const index = list.findIndex((track) => track.id === action.payload);
       state.album.tracks.items[index].is_saved = true;
     });
-    builder.addCase(removeTrack.fulfilled, (state, action) => {
+    builder.addCase(removeAlbumTrack.fulfilled, (state, action) => {
       const list = state.album.tracks.items;
       const index = list.findIndex((track) => track.id === action.payload);
       state.album.tracks.items[index].is_saved = false;
@@ -141,6 +136,6 @@ export const selectAlbumDiscography = (state: RootState) => {
   return state.album.albumDiscography;
 };
 
-export const { countAlbumDuration, removeSavedTrack } = AlbumSlice.actions;
+export const { countAlbumDuration } = AlbumSlice.actions;
 
 export default AlbumSlice.reducer;
