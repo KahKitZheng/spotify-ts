@@ -42,7 +42,7 @@ const LibraryPage = () => {
 
   useEffect(() => {
     if (savedArtistsStatus === "idle") {
-      dispatch(getUserSavedArtists({ type: "artist" }));
+      dispatch(getUserSavedArtists({ type: "artist", limit: 50 }));
     }
     if (savedAlbumsStatus === "idle") {
       dispatch(getUserSavedAlbums({ limit: 50 }));
