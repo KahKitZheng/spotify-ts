@@ -30,9 +30,9 @@ export const getAlbum = createAsyncThunk(
   }
 );
 
-// Fetch all albums of an artist
+// Fetch 10 albums of an artist
 export const getAlbumDiscography = createAsyncThunk(
-  "album/getArtistAlbums",
+  "album/getAlbumDiscography",
   async (data: { id: string }) => {
     const response = await axios.get(
       `/artists/${data.id}/albums/?include_groups=album&limit=10`
@@ -50,17 +50,17 @@ export const checkSavedAlbumTracks = createAsyncThunk(
   }
 );
 
-// Save track to your liked songs
+// Save an album track to your liked songs
 export const saveAlbumTrack = createAsyncThunk(
-  "album/saveTrack",
+  "album/saveAlbumTrack",
   async (id: string) => {
     await axios.put(`/me/tracks?ids=${id}`, {});
     return id;
   }
 );
 
-// Save track to your liked songs
-export const removeAlbumTrack = createAsyncThunk(
+// Remove an album track from your liked songs
+export const removeSavedAlbumTrack = createAsyncThunk(
   "album/removeTrack",
   async (id: string) => {
     await axios.delete(`/me/tracks?ids=${id}`, {});
@@ -108,7 +108,7 @@ export const AlbumSlice = createSlice({
       const index = list.findIndex((track) => track.id === action.payload);
       state.album.tracks.items[index].is_saved = true;
     });
-    builder.addCase(removeAlbumTrack.fulfilled, (state, action) => {
+    builder.addCase(removeSavedAlbumTrack.fulfilled, (state, action) => {
       const list = state.album.tracks.items;
       const index = list.findIndex((track) => track.id === action.payload);
       state.album.tracks.items[index].is_saved = false;

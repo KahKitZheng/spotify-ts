@@ -74,7 +74,7 @@ export const getRelatedArtists = createAsyncThunk(
 
 // Check if one or more tracks is already saved in liked songs
 export const checkSavedPopularTracks = createAsyncThunk(
-  "artist/checkSavedAlbumTrack",
+  "artist/checkSavedPopularTracks",
   async (ids: string[]) => {
     const response = await axios.get(`/me/tracks/contains?ids=${ids}`);
     return response.data;
@@ -83,16 +83,16 @@ export const checkSavedPopularTracks = createAsyncThunk(
 
 // Save track to your liked songs
 export const savePopularArtistTrack = createAsyncThunk(
-  "artist/saveTrack",
+  "artist/savePopularArtistTrack",
   async (id: string) => {
     await axios.put(`/me/tracks?ids=${id}`, {});
     return id;
   }
 );
 
-// Save track to your liked songs
-export const removePopularArtistTrack = createAsyncThunk(
-  "artist/removeTrack",
+// Remove a liked popular artist track from your liked songs
+export const removeSavedPopularArtistTrack = createAsyncThunk(
+  "artist/removeSavedPopularArtistTrack",
   async (id: string) => {
     await axios.delete(`/me/tracks?ids=${id}`, {});
     return id;
@@ -137,11 +137,14 @@ export const ArtistSlice = createSlice({
       const index = list.findIndex((track) => track.id === action.payload);
       state.topTracks.tracks[index].is_saved = true;
     });
-    builder.addCase(removePopularArtistTrack.fulfilled, (state, action) => {
-      const list = state.topTracks.tracks;
-      const index = list.findIndex((track) => track.id === action.payload);
-      state.topTracks.tracks[index].is_saved = false;
-    });
+    builder.addCase(
+      removeSavedPopularArtistTrack.fulfilled,
+      (state, action) => {
+        const list = state.topTracks.tracks;
+        const index = list.findIndex((track) => track.id === action.payload);
+        state.topTracks.tracks[index].is_saved = false;
+      }
+    );
   },
 });
 

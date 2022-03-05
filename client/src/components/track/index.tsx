@@ -4,11 +4,15 @@ import * as T from "../../styles/components/track";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { formatDuration } from "../../utils";
-import { removeAlbumTrack, saveAlbumTrack } from "../../slices/albumSlice";
+import { removeSavedAlbumTrack, saveAlbumTrack } from "../../slices/albumSlice";
 import {
-  removePopularArtistTrack,
+  removeSavedPopularArtistTrack,
   savePopularArtistTrack,
 } from "../../slices/artistSlice";
+import {
+  removeSavedPlaylistTrack,
+  savePlaylistTrack,
+} from "../../slices/playlistSlice";
 import {
   SimplifiedArtist,
   SimplifiedTrack,
@@ -58,7 +62,7 @@ const AlbumTrack = (props: { item: SimplifiedTrack }) => {
 
   function handleOnclick(isSaved?: boolean) {
     isSaved
-      ? dispatch(removeAlbumTrack(item.id))
+      ? dispatch(removeSavedAlbumTrack(item.id))
       : dispatch(saveAlbumTrack(item.id));
   }
 
@@ -92,7 +96,7 @@ const PopularArtistTrack = (props: { item: Track; index?: number }) => {
 
   function handleOnclick(isSaved?: boolean) {
     isSaved
-      ? dispatch(removePopularArtistTrack(item.id))
+      ? dispatch(removeSavedPopularArtistTrack(item.id))
       : dispatch(savePopularArtistTrack(item.id));
   }
 
