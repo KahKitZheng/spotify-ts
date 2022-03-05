@@ -154,14 +154,4 @@ const ArtistPage = () => {
   ) : null;
 };
 
-const TrackGrid = styled.div`
-  display: grid;
-  grid-template-rows: repeat(5, 1fr);
-  margin-top: 8px;
-
-  ${T.Track}:nth-child(1n + 6) {
-    display: none;
-  }
-`;
-
 export default ArtistPage;

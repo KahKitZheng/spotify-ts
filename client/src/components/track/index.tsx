@@ -128,6 +128,13 @@ const PlaylistTrack = (props: {
   addedAt?: string;
 }) => {
   const { index, item, addedAt } = props;
+  const dispatch = useDispatch();
+
+  function handleOnclick(isSaved?: boolean) {
+    isSaved
+      ? dispatch(removeSavedPlaylistTrack(item.id))
+      : dispatch(savePlaylistTrack(item.id));
+  }
 
   return (
     <T.PlaylistTrack>
@@ -147,6 +154,10 @@ const PlaylistTrack = (props: {
       </T.TrackAlbum>
       {addedAt !== null && <T.TrackDateAdded>{addedAt}</T.TrackDateAdded>}
       <T.TrackDuration>
+        <LikeButton
+          isSaved={item.is_saved}
+          handleClick={() => handleOnclick(item.is_saved)}
+        />
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>
     </T.PlaylistTrack>

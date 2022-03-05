@@ -1,5 +1,10 @@
 import { RefObject } from "react";
-import { SimplifiedTrack, Track } from "../types/SpotifyObjects";
+import {
+  SimplifiedTrack,
+  Track,
+  Playlist,
+  PlaylistItem,
+} from "../types/SpotifyObjects";
 
 /**
  * Calculate HSL colors based on string value
@@ -95,10 +100,18 @@ export const groupBy = <Key extends ItemKey, T extends Record<Key, ItemKey>>(
   );
 
 /** Extract id from object and push it into an array */
-export const extractTrackId = (list: Array<Track | SimplifiedTrack>) => {
+export const extractTrackId = (
+  list: Array<Track | SimplifiedTrack | PlaylistItem>
+) => {
   let ids: string[] = [];
   list?.map((item) => {
-    ids = [...ids, item.id];
+    if ("added_at" in item) {
+      if (item !== undefined) {
+        ids = [...ids, item.track.id];
+      }
+    } else {
+      ids = [...ids, item.id];
+    }
   });
   return ids;
 };

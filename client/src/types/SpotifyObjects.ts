@@ -171,6 +171,7 @@ export type Episode = {
   href: string;
   id: string;
   images: SpotifyImage[];
+  is_saved: boolean; // custom prop
   is_externally_hosted: boolean;
   is_playable: boolean;
   language?: string;

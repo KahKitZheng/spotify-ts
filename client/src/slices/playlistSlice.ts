@@ -24,6 +24,7 @@ interface fetchParams {
   market?: string;
 }
 
+// Fetch playlist
 export const getPlaylist = createAsyncThunk(
   "playlist/getPlaylist",
   async (data: fetchParams) => {
@@ -33,11 +34,39 @@ export const getPlaylist = createAsyncThunk(
   }
 );
 
+// Fetch remaining tracks of playlist
 export const getPlaylistWithOffset = createAsyncThunk(
   "playlist/getPlaylistWithOffset",
   async (data: { url: string }) => {
     const response = await axios.get(data.url);
     return response.data;
+  }
+);
+
+// Check if one or more tracks is already saved in liked songs
+export const checkSavedPlaylistTracks = createAsyncThunk(
+  "playlist/checkSavedPopularTracks",
+  async (ids: string[]) => {
+    const response = await axios.get(`/me/tracks/contains?ids=${ids}`);
+    return response.data;
+  }
+);
+
+// Save track to your liked songs
+export const savePlaylistTrack = createAsyncThunk(
+  "playlist/savePlaylistTrack",
+  async (id: string) => {
+    await axios.put(`/me/tracks?ids=${id}`, {});
+    return id;
+  }
+);
+
+// Remove a liked playlist track from your liked songs
+export const removeSavedPlaylistTrack = createAsyncThunk(
+  "playlist/removeSavedPlaylistTrack",
+  async (id: string) => {
+    await axios.delete(`/me/tracks?ids=${id}`, {});
+    return id;
   }
 );
 
@@ -66,6 +95,25 @@ export const playlistSlice = createSlice({
       .addCase(getPlaylist.rejected, (state) => {
         state.status = "failed";
       });
+    builder.addCase(checkSavedPlaylistTracks.fulfilled, (state, action) => {
+      state.playlist.tracks.items?.map((track, index) => {
+        track.track.is_saved = action.payload[index];
+      });
+    });
+    builder.addCase(savePlaylistTrack.fulfilled, (state, action) => {
+      const list = state.playlist.tracks.items;
+      const index = list.findIndex(
+        (track) => track.track.id === action.payload
+      );
+      state.playlist.tracks.items[index].track.is_saved = true;
+    });
+    builder.addCase(removeSavedPlaylistTrack.fulfilled, (state, action) => {
+      const list = state.playlist.tracks.items;
+      const index = list.findIndex(
+        (track) => track.track.id === action.payload
+      );
+      state.playlist.tracks.items[index].track.is_saved = false;
+    });
     builder
       .addCase(getPlaylistWithOffset.pending, (state) => {
         state.offsetStatus = "loading";

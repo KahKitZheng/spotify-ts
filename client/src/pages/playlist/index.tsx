@@ -7,8 +7,14 @@ import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import { useSelector } from "react-redux";
-import { formatAddedAt, formatDuration, stringToHSL } from "../../utils";
 import {
+  extractTrackId,
+  formatAddedAt,
+  formatDuration,
+  stringToHSL,
+} from "../../utils";
+import {
+  checkSavedPlaylistTracks,
   countPlaylistDuration,
   getPlaylistWithOffset,
 } from "../../slices/playlistSlice";
@@ -50,10 +56,10 @@ const PlaylistPage = () => {
     if (playlist.tracks?.items.length > 0) {
       setGradient(stringToHSL(playlist.name));
 
-      // Make sure that only one request is dispatched to the API at a time
-      if (offsetStatus === "idle" && playlist.tracks?.next !== null) {
-        dispatch(getPlaylistWithOffset({ url: playlist.tracks?.next }));
-      }
+      // // Make sure that only one request is dispatched to the API at a time
+      // if (offsetStatus === "idle" && playlist.tracks?.next !== null) {
+      //   dispatch(getPlaylistWithOffset({ url: playlist.tracks?.next }));
+      // }
     }
   }, [
     dispatch,
@@ -62,6 +68,15 @@ const PlaylistPage = () => {
     playlist.tracks?.items.length,
     playlist.tracks?.next,
   ]);
+
+  console.log(playlist);
+
+  useEffect(() => {
+    if (playlist.tracks?.items.length > 0) {
+      const list = playlist.tracks.items;
+      dispatch(checkSavedPlaylistTracks(extractTrackId(list?.slice(0, 50))));
+    }
+  }, [dispatch, playlist.tracks?.items]);
 
   return id === playlist.id ? (
     <div>
