@@ -16,6 +16,7 @@ export const CollectionOverflow = (props: Props) => (
 
 const CollectionBase = styled.div`
   --gap: 16px;
+  --column-width: 190px;
 
   display: grid;
   grid-gap: var(--gap);
@@ -23,15 +24,16 @@ const CollectionBase = styled.div`
 
 const CollectionGridWrapper = styled(CollectionBase)`
   grid-auto-flow: dense;
-  grid-template-columns: repeat(auto-fill, minmax(9.85rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
 `;
 
 const CollectionOverflowWrapper = styled(CollectionBase)`
   grid-auto-flow: column;
-  grid-template-columns: repeat(auto-fit, calc(10rem - 4px));
+  grid-template-columns: repeat(auto-fill, minmax(190px, max-content));
   margin-left: calc(var(--gap) * -1);
   margin-right: calc(var(--gap) * -1);
-  padding: 4px var(--gap) 8px;
+  padding-left: var(--gap);
+  padding-right: var(--gap);
   overflow-x: auto;
   ${overflowNoScrollbar};
 `;
