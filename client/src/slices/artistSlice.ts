@@ -72,6 +72,35 @@ export const getRelatedArtists = createAsyncThunk(
   }
 );
 
+// Check if current user follows artist
+export const checkSavedArtist = createAsyncThunk(
+  "artist/checkSavedArtist",
+  async (ids: string[]) => {
+    const response = await axios.get(
+      `me/following/contains?type=artist?ids=${ids}`
+    );
+    return response.data;
+  }
+);
+
+// Save artist to your library
+export const saveArtist = createAsyncThunk(
+  "artist/saveArtist",
+  async (id: string) => {
+    await axios.put(`/me/following?type=artist&ids=${id}`, {});
+    // return id;
+  }
+);
+
+// Remove artist track from your library
+export const removeSavedArtist = createAsyncThunk(
+  "artist/removeSavedArtist",
+  async (id: string) => {
+    await axios.delete(`/me/following?type=artist&ids=${id}`, {});
+    // return id;
+  }
+);
+
 // Check if one or more tracks is already saved in liked songs
 export const checkSavedPopularTracks = createAsyncThunk(
   "artist/checkSavedPopularTracks",
@@ -126,6 +155,15 @@ export const ArtistSlice = createSlice({
     builder.addCase(getRelatedArtists.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.relatedArtists = action.payload;
+    });
+    builder.addCase(checkSavedArtist.fulfilled, (state, action) => {
+      state.artist.is_saved = action.payload[0];
+    });
+    builder.addCase(saveArtist.fulfilled, (state) => {
+      state.artist.is_saved = true;
+    });
+    builder.addCase(removeSavedArtist.fulfilled, (state) => {
+      state.artist.is_saved = false;
     });
     builder.addCase(checkSavedPopularTracks.fulfilled, (state, action) => {
       state.topTracks.tracks?.map((track, index) => {

@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
-import styled from "styled-components";
 import Card from "../../components/card";
 import Track from "../../components/track";
+import ActionBar from "../../components/actionbar";
 import * as H from "../../styles/components/headers";
 import * as S from "../../styles/components/section";
 import * as T from "../../styles/components/track";
@@ -16,6 +16,8 @@ import {
   getArtistAlbums,
   getArtistTopTracks,
   getRelatedArtists,
+  removeSavedArtist,
+  saveArtist,
   selectArtist,
   selectArtistAlbum,
   selectArtistStatus,
@@ -75,6 +77,12 @@ const ArtistPage = () => {
     }
   }, [artistStatus, dispatch, topTracks.tracks]);
 
+  function handleOnclick(isSaved?: boolean) {
+    isSaved
+      ? dispatch(removeSavedArtist(artist.id))
+      : dispatch(saveArtist(artist.id));
+  }
+
   return id === artist.id ? (
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
@@ -90,6 +98,11 @@ const ArtistPage = () => {
           ))}
         </H.HeaderStats>
       </H.HeaderWrapper>
+
+      <ActionBar
+        isSaved={artist.is_saved}
+        handleClick={() => handleOnclick(artist.is_saved)}
+      />
 
       {topTracks.tracks?.length > 0 && (
         <S.Section>

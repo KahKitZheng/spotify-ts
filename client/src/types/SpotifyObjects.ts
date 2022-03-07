@@ -41,6 +41,7 @@ export type Artist = {
   href: string;
   id: string;
   images: SpotifyImage[];
+  is_saved: boolean; // custom prop
   name: string;
   popularity: number;
   type: "artist";
