@@ -21,6 +21,7 @@ export type Album = {
   href: string;
   id: string;
   images: SpotifyImage[];
+  is_saved: boolean; // custom prop
   label: string;
   name: string;
   popularity: number;

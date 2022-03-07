@@ -8,7 +8,7 @@ export const Section = styled.section`
 `;
 
 export const SectionName = styled.h2`
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   width: fit-content;
 `;
 

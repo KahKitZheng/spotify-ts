@@ -3,7 +3,11 @@ import { textOverflow } from "../../utils";
 import { Button } from "../../../components/button";
 
 export const TrackDisc = styled.div`
-  margin-top: 2rem;
+  margin-top: 1rem;
+
+  :not(:first-of-type) {
+    margin-top: 2rem;
+  }
 `;
 
 export const TrackList = styled.div`

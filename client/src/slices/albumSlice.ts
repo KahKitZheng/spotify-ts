@@ -41,6 +41,33 @@ export const getAlbumDiscography = createAsyncThunk(
   }
 );
 
+// Check if album is saved in current user's library
+export const checkSavedAlbum = createAsyncThunk(
+  "album/checkSavedAlbum",
+  async (id: string) => {
+    const response = await axios.get(`/me/albums/contains?ids=${id}`);
+    return response.data;
+  }
+);
+
+// Save album to current user's library
+export const saveAlbum = createAsyncThunk(
+  "album/saveAlbum",
+  async (id: string) => {
+    await axios.put(`/me/albums?ids=${id}`, {});
+    // return id;
+  }
+);
+
+// Remove album from current user's library
+export const removeSavedAlbum = createAsyncThunk(
+  "album/removeAlbum",
+  async (id: string) => {
+    await axios.delete(`/me/albums?ids=${id}`, {});
+    // return id;
+  }
+);
+
 // Check if one or more tracks is already saved in liked songs
 export const checkSavedAlbumTracks = createAsyncThunk(
   "album/checkSavedAlbumTrack",
@@ -93,6 +120,15 @@ export const AlbumSlice = createSlice({
       });
     builder.addCase(getAlbumDiscography.fulfilled, (state, action) => {
       state.albumDiscography = action.payload;
+    });
+    builder.addCase(checkSavedAlbum.fulfilled, (state, action) => {
+      state.album.is_saved = action.payload[0];
+    });
+    builder.addCase(saveAlbum.fulfilled, (state) => {
+      state.album.is_saved = true;
+    });
+    builder.addCase(removeSavedAlbum.fulfilled, (state) => {
+      state.album.is_saved = false;
     });
     builder.addCase(checkSavedAlbumTracks.fulfilled, (state, action) => {
       state.album.tracks.items?.map((track, index) => {

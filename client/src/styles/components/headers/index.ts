@@ -18,7 +18,7 @@ export const Thumbnail = styled.img`
 
 export const HeaderName = styled.h1`
   font-size: 22px;
-  line-height: 1.2;
+  line-height: 1.5;
   margin-top: 4px;
 `;
 

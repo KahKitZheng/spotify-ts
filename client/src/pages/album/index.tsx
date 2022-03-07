@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../../components/card";
 import Track from "../../components/track";
+import ActionBar from "../../components/actionbar";
 import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
 import * as S from "../../styles/components/section";
@@ -11,10 +12,13 @@ import { Link, useParams } from "react-router-dom";
 import { extractTrackId, formatDuration, stringToHSL } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  checkSavedAlbum,
   checkSavedAlbumTracks,
   countAlbumDuration,
   getAlbum,
   getAlbumDiscography,
+  removeSavedAlbum,
+  saveAlbum,
   selectAlbum,
   selectAlbumDisc,
   selectAlbumDiscography,
@@ -38,6 +42,7 @@ const AlbumPage = () => {
   useEffect(() => {
     if (id) {
       dispatch(getAlbum({ id }));
+      dispatch(checkSavedAlbum(id));
     }
 
     if (album.tracks?.items.length > 0) {
@@ -67,6 +72,12 @@ const AlbumPage = () => {
     }
   }
 
+  function handleOnclick(isSaved?: boolean) {
+    isSaved
+      ? dispatch(removeSavedAlbum(album.id))
+      : dispatch(saveAlbum(album.id));
+  }
+
   return id === album.id ? (
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
@@ -89,28 +100,35 @@ const AlbumPage = () => {
         </H.HeaderStats>
       </H.HeaderWrapper>
 
-      {albumDisc?.map((disc, index) => (
-        <T.TrackDisc key={index}>
-          {albumDisc.length > 1 && (
-            <T.TrackDiscInfo>
-              <span>
-                <BsDisc />
-              </span>
-              <p>Disc {index + 1}</p>
-            </T.TrackDiscInfo>
-          )}
-          <T.TrackList>
-            {disc?.map((track, index) => (
-              <Track
-                key={track.id}
-                variant="album"
-                item={track}
-                index={index}
-              />
-            ))}
-          </T.TrackList>
-        </T.TrackDisc>
-      ))}
+      <ActionBar
+        isSaved={album.is_saved}
+        handleClick={() => handleOnclick(album.is_saved)}
+      />
+
+      <div>
+        {albumDisc?.map((disc, index) => (
+          <T.TrackDisc key={index}>
+            {albumDisc.length > 1 && (
+              <T.TrackDiscInfo>
+                <span>
+                  <BsDisc />
+                </span>
+                <p>Disc {index + 1}</p>
+              </T.TrackDiscInfo>
+            )}
+            <T.TrackList>
+              {disc?.map((track, index) => (
+                <Track
+                  key={track.id}
+                  variant="album"
+                  item={track}
+                  index={index}
+                />
+              ))}
+            </T.TrackList>
+          </T.TrackDisc>
+        ))}
+      </div>
 
       <CopyrightWrapper>
         {album.copyrights.map((copyright, index) => (
@@ -135,6 +153,8 @@ const AlbumPage = () => {
 };
 
 const AlbumType = styled.span`
+  display: block;
+  margin-bottom: -4px;
   font-size: 14px;
   text-transform: capitalize;
 `;
