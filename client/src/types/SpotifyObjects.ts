@@ -235,6 +235,7 @@ export type Playlist = {
   href: string;
   id: string;
   images: SpotifyImage[];
+  is_saved: boolean; // custom prop
   name: string;
   owner: PublicUser;
   primary_color?: string | null;

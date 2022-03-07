@@ -75,9 +75,9 @@ export const getRelatedArtists = createAsyncThunk(
 // Check if current user follows artist
 export const checkSavedArtist = createAsyncThunk(
   "artist/checkSavedArtist",
-  async (ids: string[]) => {
+  async (ids: string) => {
     const response = await axios.get(
-      `me/following/contains?type=artist?ids=${ids}`
+      `me/following/contains?type=artist&ids=${ids}`
     );
     return response.data;
   }

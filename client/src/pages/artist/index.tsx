@@ -11,6 +11,7 @@ import { CollectionOverflow } from "../../components/collection";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
 import {
+  checkSavedArtist,
   checkSavedPopularTracks,
   getArtist,
   getArtistAlbums,
@@ -52,6 +53,7 @@ const ArtistPage = () => {
       dispatch(getArtist(id));
       dispatch(getArtistAlbums({ id }));
       dispatch(getRelatedArtists(id));
+      dispatch(checkSavedArtist(id));
     }
 
     if (artist.name) {

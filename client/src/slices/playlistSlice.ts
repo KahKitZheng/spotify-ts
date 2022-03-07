@@ -43,9 +43,37 @@ export const getPlaylistWithOffset = createAsyncThunk(
   }
 );
 
+// Check if playlist is already saved in current user's library
+export const checkSavedPlaylist = createAsyncThunk(
+  "playlist/checkSavedPlaylist",
+  async (data: { playlist_id: string; userId: string }) => {
+    const response = await axios.get(
+      `/playlists/${data.playlist_id}/followers/contains?ids=${data.userId}`
+    );
+    return response.data;
+  }
+);
+
+// Save playlist to current user's library
+export const savePlaylist = createAsyncThunk(
+  "playlist/savePlaylist",
+  async (playlist_id: string) => {
+    await axios.put(`/playlists/${playlist_id}/followers`, {});
+  }
+);
+
+// Remove playlist track current user's library
+export const removeSavedPlaylist = createAsyncThunk(
+  "playlist/removeSavedPlaylist",
+  async (playlist_id: string) => {
+    await axios.delete(`/playlists/${playlist_id}/followers`, {});
+    // return id;
+  }
+);
+
 // Check if one or more tracks is already saved in liked songs
 export const checkSavedPlaylistTracks = createAsyncThunk(
-  "playlist/checkSavedPopularTracks",
+  "playlist/checkSavedPlaylistTracks",
   async (ids: string[]) => {
     const response = await axios.get(`/me/tracks/contains?ids=${ids}`);
     return response.data;
@@ -95,6 +123,15 @@ export const playlistSlice = createSlice({
       .addCase(getPlaylist.rejected, (state) => {
         state.status = "failed";
       });
+    builder.addCase(checkSavedPlaylist.fulfilled, (state, action) => {
+      state.playlist.is_saved = action.payload[0];
+    });
+    builder.addCase(savePlaylist.fulfilled, (state) => {
+      state.playlist.is_saved = true;
+    });
+    builder.addCase(removeSavedPlaylist.fulfilled, (state) => {
+      state.playlist.is_saved = false;
+    });
     builder.addCase(checkSavedPlaylistTracks.fulfilled, (state, action) => {
       state.playlist.tracks.items?.map((track, index) => {
         track.track.is_saved = action.payload[index];

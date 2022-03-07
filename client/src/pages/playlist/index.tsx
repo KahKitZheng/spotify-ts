@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Track from "../../components/track";
+import ActionBar from "../../components/actionbar";
 import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import { useSelector } from "react-redux";
+import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import {
   extractTrackId,
   formatAddedAt,
@@ -14,9 +16,12 @@ import {
   stringToHSL,
 } from "../../utils";
 import {
+  checkSavedPlaylist,
   checkSavedPlaylistTracks,
   countPlaylistDuration,
   getPlaylistWithOffset,
+  removeSavedPlaylist,
+  savePlaylist,
 } from "../../slices/playlistSlice";
 import {
   getPlaylist,
@@ -29,6 +34,7 @@ const PlaylistPage = () => {
   const [gradient, setGradient] = useState("");
 
   const dispatch = useAppDispatch();
+  const userId = useAppSelector(selectCurrentUserId);
   const playlist = useAppSelector(selectPlaylist);
   const playlistDuration = useAppSelector(selectPlaylistDuration);
 
@@ -42,6 +48,12 @@ const PlaylistPage = () => {
       dispatch(getPlaylist({ playlist_id: id }));
     }
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (playlist.id && userId) {
+      dispatch(checkSavedPlaylist({ playlist_id: playlist.id, userId }));
+    }
+  }, [dispatch, playlist.id, userId]);
 
   useEffect(() => {
     if (offsetStatus === "succeeded") {
@@ -69,14 +81,18 @@ const PlaylistPage = () => {
     playlist.tracks?.next,
   ]);
 
-  console.log(playlist);
-
   useEffect(() => {
     if (playlist.tracks?.items.length > 0) {
-      const list = playlist.tracks.items;
+      const list = playlist.tracks?.items;
       dispatch(checkSavedPlaylistTracks(extractTrackId(list?.slice(0, 50))));
     }
   }, [dispatch, playlist.tracks?.items]);
+
+  function handleOnclick(isSaved?: boolean) {
+    isSaved
+      ? dispatch(removeSavedPlaylist(playlist.id))
+      : dispatch(savePlaylist(playlist.id));
+  }
 
   return id === playlist.id ? (
     <div>
@@ -98,6 +114,11 @@ const PlaylistPage = () => {
           {formatDuration(playlistDuration, "playlist")}
         </H.HeaderStats>
       </H.HeaderWrapper>
+
+      <ActionBar
+        isSaved={playlist.is_saved}
+        handleClick={() => handleOnclick(playlist.is_saved)}
+      />
 
       <T.TrackList>
         {playlist.tracks?.items.map((item, index) => {

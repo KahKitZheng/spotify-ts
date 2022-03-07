@@ -40,6 +40,10 @@ export const currentUserSlice = createSlice({
   },
 });
 
+export const selectCurrentUserId = (state: RootState) => {
+  return state.currentUser.user.id;
+};
+
 export const selectCurrentUser = (state: RootState) => {
   return state.currentUser.user;
 };

@@ -83,6 +83,7 @@ app.get("/login", function (req, res) {
     "playlist-read-private",
     "playlist-read-collaborative",
     "playlist-modify-public",
+    "playlist-modify-private",
   ];
 
   res.redirect(
