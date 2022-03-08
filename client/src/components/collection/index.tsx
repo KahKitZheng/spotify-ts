@@ -24,12 +24,12 @@ const CollectionBase = styled.div`
 
 const CollectionGridWrapper = styled(CollectionBase)`
   grid-auto-flow: dense;
-  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
 `;
 
 const CollectionOverflowWrapper = styled(CollectionBase)`
   grid-auto-flow: column;
-  grid-template-columns: repeat(auto-fill, minmax(190px, max-content));
+  grid-template-columns: repeat(auto-fit, --colum-width);
   margin-left: calc(var(--gap) * -1);
   margin-right: calc(var(--gap) * -1);
   padding-top: calc(var(--gap) / 2);

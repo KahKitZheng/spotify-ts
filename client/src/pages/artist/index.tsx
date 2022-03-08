@@ -129,7 +129,12 @@ const ArtistPage = () => {
           <S.SectionName>Albums</S.SectionName>
           <CollectionOverflow>
             {albums?.slice(0, 10).map((album) => (
-              <Card key={album.id} variant="album-discography" item={album} />
+              <Card
+                key={album.id}
+                variant="album-discography"
+                item={album}
+                overflow
+              />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -140,7 +145,12 @@ const ArtistPage = () => {
           <S.SectionName>Singles and EPs</S.SectionName>
           <CollectionOverflow>
             {singles?.slice(0, 10).map((album) => (
-              <Card key={album.id} variant="album-discography" item={album} />
+              <Card
+                key={album.id}
+                variant="album-discography"
+                item={album}
+                overflow
+              />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -151,7 +161,12 @@ const ArtistPage = () => {
           <S.SectionName>Appears On</S.SectionName>
           <CollectionOverflow>
             {appearsOn?.slice(0, 10).map((album) => (
-              <Card key={album.id} variant="album-discography" item={album} />
+              <Card
+                key={album.id}
+                variant="album-discography"
+                item={album}
+                overflow
+              />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -162,7 +177,7 @@ const ArtistPage = () => {
           <S.SectionName>Fans also like</S.SectionName>
           <CollectionOverflow>
             {relatedArtists.artists?.slice(0, 10).map((artist) => (
-              <Card key={artist.id} variant="artist" item={artist} />
+              <Card key={artist.id} variant="artist" item={artist} overflow />
             ))}
           </CollectionOverflow>
         </S.Section>

@@ -116,7 +116,7 @@ const HomePage = () => {
         </S.SectionLink>
         <CollectionOverflow>
           {recentTracks.items?.slice(0, 10).map((item, index) => (
-            <Card key={index} variant="recently-played" item={item} />
+            <Card key={index} variant="recently-played" item={item} overflow />
           ))}
         </CollectionOverflow>
       </S.Section>
@@ -125,7 +125,7 @@ const HomePage = () => {
         <S.SectionLink to="/top-artists">Your top artists</S.SectionLink>
         <CollectionOverflow>
           {topArtists.short_term?.items?.slice(0, 10).map((artist) => (
-            <Card key={artist.id} variant="artist" item={artist} />
+            <Card key={artist.id} variant="artist" item={artist} overflow />
           ))}
         </CollectionOverflow>
       </S.Section>
@@ -134,7 +134,7 @@ const HomePage = () => {
         <S.SectionLink to="/top-tracks">Your top tracks</S.SectionLink>
         <CollectionOverflow>
           {topTracks.short_term?.items?.slice(0, 10).map((track) => (
-            <Card key={track.id} variant="track" item={track} />
+            <Card key={track.id} variant="track" item={track} overflow />
           ))}
         </CollectionOverflow>
       </S.Section>
@@ -143,7 +143,12 @@ const HomePage = () => {
         <S.SectionLink to="/library">Your playlists</S.SectionLink>
         <CollectionOverflow>
           {userPlaylists.items?.slice(0, 10).map((playlist) => (
-            <Card key={playlist.id} variant="playlist" item={playlist} />
+            <Card
+              key={playlist.id}
+              variant="playlist"
+              item={playlist}
+              overflow
+            />
           ))}
         </CollectionOverflow>
       </S.Section>
@@ -166,7 +171,7 @@ const HomePage = () => {
           </SeedArtist>
           <CollectionOverflow>
             {recommendArtists.tracks?.slice(0, 10).map((track) => (
-              <Card key={track.id} variant="track" item={track} />
+              <Card key={track.id} variant="track" item={track} overflow />
             ))}
           </CollectionOverflow>
         </S.Section>

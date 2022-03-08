@@ -145,7 +145,7 @@ const AlbumPage = () => {
           <DiscoverMore>More by {album.artists[0].name}</DiscoverMore>
           <CollectionOverflow>
             {albumDiscography.items?.map((album) => (
-              <Card key={album.id} variant="album" item={album} />
+              <Card key={album.id} variant="album" item={album} overflow />
             ))}
           </CollectionOverflow>
         </S.Section>
