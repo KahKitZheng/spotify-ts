@@ -82,22 +82,24 @@ const AlbumPage = () => {
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
         <H.Thumbnail src={album.images && album.images[0].url} alt="" />
-        <AlbumType>{album.album_type}</AlbumType>
-        <H.HeaderName>{album.name}</H.HeaderName>
-        <H.HeaderStats>
-          {album.artists?.map((artist, index, arr) => (
-            <Fragment key={artist.id}>
-              <Link to={`/artist/${artist.id}`}>{artist.name}</Link>
-              <span>{index !== arr.length - 1 ? ", " : ""}</span>
-            </Fragment>
-          ))}
-          <span className="bull">&bull;</span>
-          <span>{album.release_date?.slice(0, 4)}</span>
-          <span className="bull">&bull;</span>
-          <span>{album.total_tracks} songs</span>
-          <span className="bull">&bull;</span>
-          <span>{formatDuration(albumDuration, "short")}</span>
-        </H.HeaderStats>
+        <div>
+          <AlbumType>{album.album_type}</AlbumType>
+          <H.HeaderName>{album.name}</H.HeaderName>
+          <H.HeaderStats>
+            {album.artists?.map((artist, index, arr) => (
+              <Fragment key={artist.id}>
+                <Link to={`/artist/${artist.id}`}>{artist.name}</Link>
+                <span>{index !== arr.length - 1 ? ", " : ""}</span>
+              </Fragment>
+            ))}
+            <span className="bull">&bull;</span>
+            <span>{album.release_date?.slice(0, 4)}</span>
+            <span className="bull">&bull;</span>
+            <span>{album.total_tracks} songs</span>
+            <span className="bull">&bull;</span>
+            <span>{formatDuration(albumDuration, "short")}</span>
+          </H.HeaderStats>
+        </div>
       </H.HeaderWrapper>
 
       <ActionBar
@@ -152,10 +154,7 @@ const AlbumPage = () => {
   ) : null;
 };
 
-const AlbumType = styled.span`
-  display: block;
-  margin-bottom: -4px;
-  font-size: 14px;
+const AlbumType = styled(H.HeaderExtraInfo)`
   text-transform: capitalize;
 `;
 

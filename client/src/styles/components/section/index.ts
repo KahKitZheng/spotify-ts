@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 export const Section = styled.section`
   display: flex;
@@ -8,13 +8,11 @@ export const Section = styled.section`
 `;
 
 export const SectionName = styled.h2`
-  margin-bottom: 16px;
   width: fit-content;
 `;
 
 export const SectionLink = styled(Link)`
   font-weight: 700;
   font-size: 24px;
-  margin-bottom: 8px;
   width: fit-content;
 `;

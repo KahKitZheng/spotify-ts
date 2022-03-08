@@ -45,7 +45,12 @@ const ActionBarWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 16px;
+  margin-top: 24px;
+
+  @media (min-width: 768px) {
+    flex-direction: row-reverse;
+    justify-content: start;
+  }
 `;
 
 const Button = styled.button`
@@ -64,7 +69,7 @@ const PlayButton = styled(Button)`
   background-color: #1ed760;
   color: black;
   border-radius: 50%;
-  padding: 12px;
+  padding: 10px;
 
   span {
     display: block;
@@ -75,6 +80,10 @@ const PlayButton = styled(Button)`
 const ButtonGroup = styled.div`
   display: flex;
   align-items: baseline;
+
+  @media (min-width: 768px) {
+    margin-left: 20px;
+  }
 `;
 
 const SaveButton = styled(Button)<{ $isSaved: boolean }>`

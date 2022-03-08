@@ -89,16 +89,18 @@ const ArtistPage = () => {
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
         <H.Thumbnail src={artist.images && artist.images[0].url} alt="" />
-        <H.HeaderName>{artist.name}</H.HeaderName>
-        <small>{artist.followers?.total.toLocaleString()} followers</small>
-        <H.HeaderStats>
-          {artist.genres?.map((genre, index, arr) => (
-            <Fragment key={genre}>
-              <Link to={`/genre/${genre}/${artist.id}`}>{genre}</Link>
-              {index !== arr.length - 1 && <span>, </span>}
-            </Fragment>
-          ))}
-        </H.HeaderStats>
+        <div>
+          <H.HeaderName>{artist.name}</H.HeaderName>
+          <small>{artist.followers?.total.toLocaleString()} followers</small>
+          <H.HeaderStats>
+            {artist.genres?.map((genre, index, arr) => (
+              <Fragment key={genre}>
+                <Link to={`/genre/${genre}/${artist.id}`}>{genre}</Link>
+                {index !== arr.length - 1 && <span>, </span>}
+              </Fragment>
+            ))}
+          </H.HeaderStats>
+        </div>
       </H.HeaderWrapper>
 
       <ActionBar

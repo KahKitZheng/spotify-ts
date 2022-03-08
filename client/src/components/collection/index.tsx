@@ -32,6 +32,7 @@ const CollectionOverflowWrapper = styled(CollectionBase)`
   grid-template-columns: repeat(auto-fill, minmax(190px, max-content));
   margin-left: calc(var(--gap) * -1);
   margin-right: calc(var(--gap) * -1);
+  padding-top: calc(var(--gap) / 2);
   padding-left: var(--gap);
   padding-right: var(--gap);
   overflow-x: auto;

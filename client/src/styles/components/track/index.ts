@@ -4,10 +4,10 @@ import { Button } from "../../../components/button";
 
 // Containers for collection of tracks
 export const TrackDisc = styled.div`
-  margin-top: 1rem;
+  margin-top: 16px;
 
   :not(:first-of-type) {
-    margin-top: 2rem;
+    margin-top: 48px;
   }
 `;
 
@@ -71,7 +71,7 @@ export const OrderedTrack = styled(Track)`
 `;
 
 export const PlaylistTrack = styled(OrderedTrack)`
-  @media (min-width: 876px) {
+  @media (min-width: 768px) {
     grid-template-columns: 24px 6fr 4fr 100px;
     grid-template-areas: "track-index track-info track-album track-duration";
   }
@@ -83,7 +83,7 @@ export const PlaylistTrack = styled(OrderedTrack)`
 `;
 
 export const TopTrack = styled(OrderedTrack)`
-  @media (min-width: 876px) {
+  @media (min-width: 768px) {
     grid-template-columns: 24px 6fr 4fr 100px;
     grid-template-areas: "track-index track-info track-album track-duration";
   }
@@ -117,7 +117,7 @@ export const TrackAlbum = styled.div`
     ${textOverflow(1)};
   }
 
-  @media (max-width: 876px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
@@ -167,7 +167,7 @@ export const TrackName = styled.p`
 `;
 
 export const TrackArtists = styled.p`
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.3;
   ${textOverflow(1)};
 
