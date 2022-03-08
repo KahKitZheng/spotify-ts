@@ -12,6 +12,7 @@ export const TabHeader = styled.ul`
   display: flex;
   list-style: none;
   position: fixed;
+  z-index: 5;
   margin: -16px;
   padding: 16px;
   background-color: ${({ theme }) => theme.bg.main};
@@ -40,7 +41,7 @@ export const TabView = styled(Section)`
   flex: 2 1 auto;
   height: 100%;
   margin-bottom: -16px;
-  padding-top: 32px;
+  padding-top: 16px;
   padding-bottom: 16px;
   ${overflowNoScrollbar}
   overflow-x: hidden;
