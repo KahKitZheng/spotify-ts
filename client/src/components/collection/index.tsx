@@ -29,7 +29,7 @@ const CollectionGridWrapper = styled(CollectionBase)`
 
 const CollectionOverflowWrapper = styled(CollectionBase)`
   grid-auto-flow: column;
-  grid-template-columns: repeat(auto-fit, --colum-width);
+  grid-template-columns: repeat(auto-fit, var(--column-width));
   margin-left: calc(var(--gap) * -1);
   margin-right: calc(var(--gap) * -1);
   padding-top: calc(var(--gap) / 2);
