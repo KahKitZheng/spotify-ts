@@ -178,6 +178,10 @@ export const playlistSlice = createSlice({
   },
 });
 
+export const selectPlaylistStatus = (state: RootState) => {
+  return state.playlist.status;
+};
+
 export const selectPlaylist = (state: RootState) => {
   return state.playlist.playlist;
 };

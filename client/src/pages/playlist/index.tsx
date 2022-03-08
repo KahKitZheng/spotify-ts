@@ -22,6 +22,7 @@ import {
   getPlaylistWithOffset,
   removeSavedPlaylist,
   savePlaylist,
+  selectPlaylistStatus,
 } from "../../slices/playlistSlice";
 import {
   getPlaylist,
@@ -36,6 +37,7 @@ const PlaylistPage = () => {
   const dispatch = useAppDispatch();
   const userId = useAppSelector(selectCurrentUserId);
   const playlist = useAppSelector(selectPlaylist);
+  const playlistStatus = useAppSelector(selectPlaylistStatus);
   const playlistDuration = useAppSelector(selectPlaylistDuration);
 
   const offsetStatus = useSelector(
@@ -50,16 +52,16 @@ const PlaylistPage = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (playlist.id && userId) {
+    if (playlistStatus === "succeeded") {
       dispatch(checkSavedPlaylist({ playlist_id: playlist.id, userId }));
     }
-  }, [dispatch, playlist.id, userId]);
+  }, [dispatch, playlist.id, playlistStatus, userId]);
 
-  useEffect(() => {
-    if (offsetStatus === "succeeded") {
-      dispatch(countPlaylistDuration());
-    }
-  }, [dispatch, offsetStatus]);
+  // useEffect(() => {
+  //   if (offsetStatus === "succeeded") {
+  //     dispatch(countPlaylistDuration());
+  //   }
+  // }, [dispatch, offsetStatus]);
 
   // Fetch again if the tracklist is incomplete
   useEffect(() => {
