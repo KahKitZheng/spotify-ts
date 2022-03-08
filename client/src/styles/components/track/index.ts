@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { textOverflow } from "../../utils";
 import { Button } from "../../../components/button";
 
+// Containers for collection of tracks
 export const TrackDisc = styled.div`
   margin-top: 1rem;
 
@@ -69,20 +70,19 @@ export const OrderedTrack = styled(Track)`
   }
 `;
 
-export const PlaylistTrack = styled(Track)`
-  grid-template-columns: 24px 10fr 100px;
-  grid-template-areas: "track-index track-info track-duration";
-
+export const PlaylistTrack = styled(OrderedTrack)`
   @media (min-width: 876px) {
+    grid-template-columns: 24px 6fr 4fr 100px;
+    grid-template-areas: "track-index track-info track-album track-duration";
+  }
+
+  @media (min-width: 1200px) {
     grid-template-columns: 24px 6fr 4fr 2fr 100px;
     grid-template-areas: "track-index track-info track-album track-date-added track-duration";
   }
 `;
 
-export const TopTrack = styled(Track)`
-  grid-template-columns: 24px 10fr 100px;
-  grid-template-areas: "track-index track-info track-duration";
-
+export const TopTrack = styled(OrderedTrack)`
   @media (min-width: 876px) {
     grid-template-columns: 24px 6fr 4fr 100px;
     grid-template-areas: "track-index track-info track-album track-duration";
@@ -98,8 +98,6 @@ export const TrackIndex = styled.span`
   @media (min-width: 500px) {
     display: revert;
     grid-area: track-index;
-    grid-template-columns: 24px 6fr 4fr 2fr 100px;
-    grid-template-areas: "track-index track-info track-album track-date-added track-duration";
     text-align: right;
   }
 `;
@@ -129,21 +127,21 @@ export const TrackDateAdded = styled.span`
   font-size: 14px;
   padding-left: 48px;
 
-  @media (max-width: 876px) {
+  @media (max-width: 1200px) {
     display: none;
   }
 `;
 
 export const TrackDuration = styled.div`
-  grid-area: track-duration;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  font-size: 14px;
-  padding-right: 8px;
+  display: none;
 
-  @media (max-width: 500px) {
-    display: none;
+  @media (min-width: 500px) {
+    grid-area: track-duration;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 14px;
+    padding-right: 8px;
   }
 `;
 
