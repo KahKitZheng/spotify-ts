@@ -6,11 +6,13 @@ import { RootState } from "../app/store";
 interface UserPlaylistsState {
   userPlaylists: Paging<SimplifiedPlaylist>;
   status: "idle" | "loading" | "succeeded" | "failed";
+  offsetStatus: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: UserPlaylistsState = {
   userPlaylists: {} as Paging<SimplifiedPlaylist>,
   status: "idle",
+  offsetStatus: "idle",
 };
 
 interface fetchParams {
@@ -34,6 +36,25 @@ export const getCurrentUserPlaylists = createAsyncThunk(
   }
 );
 
+// Fetch current user's remaining playlists
+export const getPlaylistWithOffset = createAsyncThunk(
+  "currentUserPlaylists/getPlaylistWithOffset",
+  async (data: { url: string }) => {
+    const response = await axios.get(data.url);
+    return response.data;
+  }
+);
+
+// Create new playlist
+export const createPlaylist = createAsyncThunk(
+  "currentUserPlaylists/createPlaylist",
+  async (data: { user_id: string; name: string }) => {
+    const { user_id, name } = data;
+    const response = await axios.post(`/users/${user_id}/playlists`, { name });
+    return response.data;
+  }
+);
+
 export const userPlaylistsSlice = createSlice({
   name: "currentUserPlaylists",
   initialState: initialState,
@@ -50,11 +71,34 @@ export const userPlaylistsSlice = createSlice({
       .addCase(getCurrentUserPlaylists.rejected, (state) => {
         state.status = "failed";
       });
+    builder.addCase(getPlaylistWithOffset.fulfilled, (state, action) => {
+      action.payload.next === null
+        ? (state.offsetStatus = "succeeded")
+        : (state.offsetStatus = "idle");
+      state.userPlaylists.next = action.payload.next;
+      state.userPlaylists.offset = action.payload.offset;
+      state.userPlaylists.items = state.userPlaylists.items.concat(
+        action.payload.items
+      );
+    });
+    builder.addCase(createPlaylist.fulfilled, (state, action) => {
+      const playlist = action.payload;
+      playlist.description = "";
+      state.userPlaylists.items = [playlist, ...state.userPlaylists.items];
+    });
   },
 });
 
 export const selectCurrentUserPlaylists = (state: RootState) => {
   return state.currentUserPlaylists.userPlaylists;
+};
+
+export const selectSavedPlaylistsStatus = (state: RootState) => {
+  return state.currentUserPlaylists.status;
+};
+
+export const selectSavedPlaylistsOffsetStatus = (state: RootState) => {
+  return state.currentUserPlaylists.offsetStatus;
 };
 
 export default userPlaylistsSlice.reducer;

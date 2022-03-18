@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { MEDIA } from "../../styles/media";
 import { IoIosPlay, IoIosPause, IoIosMore } from "react-icons/io";
 import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri";
 
@@ -47,7 +48,7 @@ const ActionBarWrapper = styled.div`
   justify-content: space-between;
   margin-top: 24px;
 
-  @media (min-width: 768px) {
+  @media (min-width: ${MEDIA.tablet}) {
     flex-direction: row-reverse;
     justify-content: start;
   }
@@ -81,7 +82,7 @@ const ButtonGroup = styled.div`
   display: flex;
   align-items: baseline;
 
-  @media (min-width: 768px) {
+  @media (min-width: ${MEDIA.tablet}) {
     margin-left: 20px;
   }
 `;

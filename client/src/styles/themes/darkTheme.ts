@@ -13,6 +13,9 @@ const darkTheme: DefaultTheme = {
 
   bg: {
     main: "#10111a",
+    card: "#1d1d25",
+    card_thumbnail_placeholder: "#1c1d25",
+    bottom_tabs: "#17171e",
   },
 
   font: {

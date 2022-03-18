@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { MEDIA } from "../../styles/media";
 import { NavLink, useLocation } from "react-router-dom";
 import { HiOutlineHome, HiHome } from "react-icons/hi";
 import { IoSearchOutline, IoSearch } from "react-icons/io5";
@@ -51,11 +52,16 @@ const BottomTabs = () => {
 };
 
 const BottomTabsWrapper = styled.footer`
+  grid-area: bottom;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
-  background-color: #22242f;
+  background-color: ${({ theme }) => theme.bg.bottom_tabs};
   padding: 12px 24px;
+
+  @media (min-width: ${MEDIA.tablet}) {
+    display: none;
+  }
 `;
 
 const TabLink = styled(NavLink)`

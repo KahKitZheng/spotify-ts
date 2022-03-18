@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { textOverflow } from "../../utils";
 import { Button } from "../../../components/button";
+import { MEDIA } from "../../media";
 
 // Containers for collection of tracks
 export const TrackDisc = styled.div`
@@ -41,7 +42,7 @@ export const Track = styled.div`
     display: block;
   }
 
-  @media (min-width: 500px) {
+  @media (min-width: ${MEDIA.mobile}) {
     grid-template-columns: 10fr 100px;
     grid-template-areas: "track-info track-duration";
   }
@@ -64,26 +65,26 @@ export const TrackDiscInfo = styled(Track)`
 `;
 
 export const OrderedTrack = styled(Track)`
-  @media (min-width: 500px) {
+  @media (min-width: ${MEDIA.mobile}) {
     grid-template-columns: 24px 10fr 100px;
     grid-template-areas: "track-index track-info track-duration";
   }
 `;
 
 export const PlaylistTrack = styled(OrderedTrack)`
-  @media (min-width: 768px) {
+  @media (min-width: ${MEDIA.tablet}) {
     grid-template-columns: 24px 6fr 4fr 100px;
     grid-template-areas: "track-index track-info track-album track-duration";
   }
 
-  @media (min-width: 1200px) {
+  @media (min-width: ${MEDIA.laptop}) {
     grid-template-columns: 24px 6fr 4fr 2fr 100px;
     grid-template-areas: "track-index track-info track-album track-date-added track-duration";
   }
 `;
 
 export const TopTrack = styled(OrderedTrack)`
-  @media (min-width: 768px) {
+  @media (min-width: ${MEDIA.tablet}) {
     grid-template-columns: 24px 6fr 4fr 100px;
     grid-template-areas: "track-index track-info track-album track-duration";
   }
@@ -95,7 +96,7 @@ export const TopTrack = styled(OrderedTrack)`
 export const TrackIndex = styled.span`
   display: none;
 
-  @media (min-width: 500px) {
+  @media (min-width: ${MEDIA.mobile}) {
     display: revert;
     grid-area: track-index;
     text-align: right;
@@ -117,7 +118,7 @@ export const TrackAlbum = styled.div`
     ${textOverflow(1)};
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${MEDIA.tablet}) {
     display: none;
   }
 `;
@@ -135,7 +136,7 @@ export const TrackDateAdded = styled.span`
 export const TrackDuration = styled.div`
   display: none;
 
-  @media (min-width: 500px) {
+  @media (min-width: ${MEDIA.mobile}) {
     grid-area: track-duration;
     display: flex;
     align-items: center;

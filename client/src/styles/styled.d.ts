@@ -9,6 +9,9 @@ declare module "styled-components" {
 
     bg: {
       main: string;
+      card: string;
+      card_thumbnail_placeholder: string;
+      bottom_tabs: string;
     };
 
     font: {

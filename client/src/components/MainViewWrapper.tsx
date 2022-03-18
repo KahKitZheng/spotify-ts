@@ -8,7 +8,7 @@ const MainViewWrapper = ({ children }: Props) => {
 };
 
 const ViewWrapper = styled.main`
-  flex: 1;
+  grid-area: main;
   padding: 16px;
   overflow: auto;
 `;

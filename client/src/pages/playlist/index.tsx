@@ -19,7 +19,7 @@ import {
   checkSavedPlaylist,
   checkSavedPlaylistTracks,
   countPlaylistDuration,
-  getPlaylistWithOffset,
+  getPlaylistTracksWithOffset,
   removeSavedPlaylist,
   savePlaylist,
   selectPlaylistStatus,
@@ -72,7 +72,7 @@ const PlaylistPage = () => {
 
       // // Make sure that only one request is dispatched to the API at a time
       // if (offsetStatus === "idle" && playlist.tracks?.next !== null) {
-      //   dispatch(getPlaylistWithOffset({ url: playlist.tracks?.next }));
+      //   dispatch(getPlaylistTracksWithOffset({ url: playlist.tracks?.next }));
       // }
     }
   }, [
@@ -99,7 +99,13 @@ const PlaylistPage = () => {
   return id === playlist.id ? (
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
-        <H.Thumbnail src={playlist.images && playlist.images[0].url} alt="" />
+        {playlist.images[0] === undefined ? (
+          <H.ThumbnailPlaceholder>
+            {playlist.name.slice(0, 1)}
+          </H.ThumbnailPlaceholder>
+        ) : (
+          <H.Thumbnail src={playlist.images && playlist.images[0].url} alt="" />
+        )}
         <div>
           <H.HeaderExtraInfo>
             By <PlaylistOwner>{playlist.owner?.display_name}</PlaylistOwner>
@@ -124,31 +130,33 @@ const PlaylistPage = () => {
         handleClick={() => handleOnclick(playlist.is_saved)}
       />
 
-      <T.TrackList>
-        {playlist.tracks?.items.map((item, index) => {
-          return "track" in item.track ? (
-            <Track
-              key={item.track.id}
-              variant="playlist"
-              index={index}
-              item={item.track}
-              addedAt={
-                item.added_at !== null ? formatAddedAt(item.added_at) : ""
-              }
-            />
-          ) : null;
-        })}
-      </T.TrackList>
+      {playlist.tracks?.items && (
+        <T.TrackList>
+          {playlist.tracks?.items.map((item, index) => {
+            return "track" in item.track ? (
+              <Track
+                key={item.track.id}
+                variant="playlist"
+                index={index}
+                item={item.track}
+                addedAt={
+                  item.added_at !== null ? formatAddedAt(item.added_at) : ""
+                }
+              />
+            ) : null;
+          })}
+        </T.TrackList>
+      )}
     </div>
   ) : null;
 };
 
-export const PlaylistOwner = styled.span`
+const PlaylistOwner = styled.span`
   color: ${({ theme }) => theme.font.title};
   font-weight: 600;
 `;
 
-export const PlaylistDescription = styled.p`
+const PlaylistDescription = styled.p`
   font-size: 14px;
   margin-top: 8px;
   opacity: 0.8;

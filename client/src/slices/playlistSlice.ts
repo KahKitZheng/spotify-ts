@@ -35,8 +35,8 @@ export const getPlaylist = createAsyncThunk(
 );
 
 // Fetch remaining tracks of playlist
-export const getPlaylistWithOffset = createAsyncThunk(
-  "playlist/getPlaylistWithOffset",
+export const getPlaylistTracksWithOffset = createAsyncThunk(
+  "playlist/getPlaylistTracksWithOffset",
   async (data: { url: string }) => {
     const response = await axios.get(data.url);
     return response.data;
@@ -62,12 +62,11 @@ export const savePlaylist = createAsyncThunk(
   }
 );
 
-// Remove playlist track current user's library
+// Remove playlist from current user's library
 export const removeSavedPlaylist = createAsyncThunk(
   "playlist/removeSavedPlaylist",
   async (playlist_id: string) => {
     await axios.delete(`/playlists/${playlist_id}/followers`, {});
-    // return id;
   }
 );
 
@@ -80,7 +79,7 @@ export const checkSavedPlaylistTracks = createAsyncThunk(
   }
 );
 
-// Save track to your liked songs
+// Save playlist track to your liked songs
 export const savePlaylistTrack = createAsyncThunk(
   "playlist/savePlaylistTrack",
   async (id: string) => {
@@ -139,42 +138,24 @@ export const playlistSlice = createSlice({
     });
     builder.addCase(savePlaylistTrack.fulfilled, (state, action) => {
       const list = state.playlist.tracks.items;
-      const index = list.findIndex(
-        (track) => track.track.id === action.payload
-      );
+      const index = list.findIndex((item) => item.track.id === action.payload);
       state.playlist.tracks.items[index].track.is_saved = true;
     });
     builder.addCase(removeSavedPlaylistTrack.fulfilled, (state, action) => {
       const list = state.playlist.tracks.items;
-      const index = list.findIndex(
-        (track) => track.track.id === action.payload
-      );
+      const index = list.findIndex((item) => item.track.id === action.payload);
       state.playlist.tracks.items[index].track.is_saved = false;
     });
-    builder
-      .addCase(getPlaylistWithOffset.pending, (state) => {
-        state.offsetStatus = "loading";
-      })
-      .addCase(getPlaylistWithOffset.fulfilled, (state, action) => {
-        if (action.payload.next === null) {
-          state.offsetStatus = "succeeded";
-          state.playlist.tracks.next = action.payload.next;
-          state.playlist.tracks.offset = action.payload.offset;
-          state.playlist.tracks.items = state.playlist.tracks.items.concat(
-            action.payload.items
-          );
-        } else {
-          state.offsetStatus = "idle";
-          state.playlist.tracks.next = action.payload.next;
-          state.playlist.tracks.offset = action.payload.offset;
-          state.playlist.tracks.items = state.playlist.tracks.items.concat(
-            action.payload.items
-          );
-        }
-      })
-      .addCase(getPlaylistWithOffset.rejected, (state) => {
-        state.offsetStatus = "failed";
-      });
+    builder.addCase(getPlaylistTracksWithOffset.fulfilled, (state, action) => {
+      action.payload.next === null
+        ? (state.offsetStatus = "succeeded")
+        : (state.offsetStatus = "idle");
+      state.playlist.tracks.next = action.payload.next;
+      state.playlist.tracks.offset = action.payload.offset;
+      state.playlist.tracks.items = state.playlist.tracks.items.concat(
+        action.payload.items
+      );
+    });
   },
 });
 

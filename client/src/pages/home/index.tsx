@@ -13,10 +13,7 @@ import {
   selectCurrentUser,
   selectCurrentUserStatus,
 } from "../../slices/currentUserSlice";
-import {
-  getCurrentUserPlaylists,
-  selectCurrentUserPlaylists,
-} from "../../slices/currentUserPlaylistsSlice";
+import { selectCurrentUserPlaylists } from "../../slices/currentUserPlaylistsSlice";
 import {
   getRecentTracks,
   selectRecentTracks,
@@ -65,9 +62,6 @@ const HomePage = () => {
     // Remove the access token in url after signing in
     window.history.replaceState(null, "", "/");
 
-    if (userPlaylistsStatus === "idle") {
-      dispatch(getCurrentUserPlaylists({ limit: 10 }));
-    }
     if (recentTracksStatus === "idle") {
       dispatch(getRecentTracks({ limit: 10 }));
     }
