@@ -55,6 +55,15 @@ export const createPlaylist = createAsyncThunk(
   }
 );
 
+// Edit playlist details
+export const editPlaylistDetails = createAsyncThunk(
+  "currentUserPlaylists/EditPlaylistDetails",
+  async (data: { id: string; name: string; description: string }) => {
+    const { id, name, description } = data;
+    await axios.put(`/playlists/${id}`, { name, description });
+  }
+);
+
 export const userPlaylistsSlice = createSlice({
   name: "currentUserPlaylists",
   initialState: initialState,
@@ -85,6 +94,14 @@ export const userPlaylistsSlice = createSlice({
       const playlist = action.payload;
       playlist.description = "";
       state.userPlaylists.items = [playlist, ...state.userPlaylists.items];
+    });
+    builder.addCase(editPlaylistDetails.fulfilled, (state, action) => {
+      const index = state.userPlaylists.items.findIndex(
+        (playlist) => playlist.id === action.meta.arg.id
+      );
+      state.userPlaylists.items[index].name = action.meta.arg.name;
+      state.userPlaylists.items[index].description =
+        action.meta.arg.description;
     });
   },
 });

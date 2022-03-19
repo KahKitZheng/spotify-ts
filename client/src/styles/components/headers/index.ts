@@ -38,11 +38,15 @@ const ThumbnailBase = css`
   }
 `;
 
-export const Thumbnail = styled.img`
+export const Thumbnail = styled.img<{ $isOwner?: boolean }>`
   ${ThumbnailBase}
+
+  :hover {
+    cursor: ${({ $isOwner }) => $isOwner && "pointer"};
+  }
 `;
 
-export const ThumbnailPlaceholder = styled.span`
+export const ThumbnailPlaceholder = styled.span<{ $isOwner?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,6 +55,10 @@ export const ThumbnailPlaceholder = styled.span`
   font-weight: 700;
   font-size: 82px;
   ${ThumbnailBase};
+
+  :hover {
+    cursor: ${({ $isOwner }) => $isOwner && "pointer"};
+  }
 `;
 
 export const HeaderExtraInfo = styled.span`
@@ -62,6 +70,10 @@ export const HeaderExtraInfo = styled.span`
 export const HeaderName = styled.h1`
   font-size: clamp(22px, 1rem + 2vw, 3rem);
   line-height: 1.2;
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 export const HeaderStats = styled.p`

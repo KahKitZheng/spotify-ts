@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 import styled from "styled-components";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   TiHomeOutline as HomeOutline,
   TiHome as HomeFill,
@@ -29,6 +29,7 @@ import { selectCurrentUser } from "../../slices/currentUserSlice";
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectCurrentUser);
@@ -47,6 +48,7 @@ const Sidebar = () => {
 
   function createNewPlaylist() {
     dispatch(createPlaylist({ user_id: user.id, name: "New Playlist" }));
+    navigate(`/playlist/${playlists.items[0].id}`);
   }
 
   return playlists.items ? (
@@ -84,16 +86,13 @@ const Sidebar = () => {
             <ListItemText>Your Library</ListItemText>
           </ListItem>
         </li>
-
         <li>
-          <ListItem to={`/playlist/${playlists.items[0].id}`}>
+          <CreatePlaylist onClick={() => createNewPlaylist()}>
             <ListItemIcon>
               <MdAddBox />
             </ListItemIcon>
-            <ListItemText onClick={() => createNewPlaylist}>
-              Create Playlist
-            </ListItemText>
-          </ListItem>
+            <ListItemText>Create Playlist</ListItemText>
+          </CreatePlaylist>
         </li>
         <li>
           <ListItem to="/liked-songs">

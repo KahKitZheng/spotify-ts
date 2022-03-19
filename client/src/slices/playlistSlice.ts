@@ -97,6 +97,15 @@ export const removeSavedPlaylistTrack = createAsyncThunk(
   }
 );
 
+// Edit current playlist details
+export const editCurrentPlaylistDetails = createAsyncThunk(
+  "playlist/EditCurrentPlaylistDetails",
+  async (data: { id: string; name: string; description: string }) => {
+    const { id, name, description } = data;
+    await axios.put(`/playlists/${id}`, { name, description });
+  }
+);
+
 export const playlistSlice = createSlice({
   name: "playlist",
   initialState: initialState,
@@ -155,6 +164,10 @@ export const playlistSlice = createSlice({
       state.playlist.tracks.items = state.playlist.tracks.items.concat(
         action.payload.items
       );
+    });
+    builder.addCase(editCurrentPlaylistDetails.fulfilled, (state, action) => {
+      state.playlist.name = action.meta.arg.name;
+      state.playlist.description = action.meta.arg.description;
     });
   },
 });

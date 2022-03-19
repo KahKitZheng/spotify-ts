@@ -12,7 +12,6 @@ import {
  */
 export const stringToHSL = (value: string): string => {
   let hash = 0;
-
   if (value.length == 0) return "hsl(236, 34%, 53%)";
 
   for (let i = 0; i < value.length; i++) {
@@ -20,8 +19,7 @@ export const stringToHSL = (value: string): string => {
     hash = hash & hash; // Convert to 32bit integer
   }
 
-  const shortened = hash % 360;
-  return `hsl(${shortened}, 40%, 53%)`;
+  return `hsl(${hash % 360}, 70%, 40%)`;
 };
 
 /**

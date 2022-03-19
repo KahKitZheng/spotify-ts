@@ -51,6 +51,7 @@ const AppRouter = () => {
 const Layout = styled.div`
   display: grid;
   grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto;
   grid-template-areas:
     "main main"
     "bottom bottom";
