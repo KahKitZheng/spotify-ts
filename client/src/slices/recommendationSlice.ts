@@ -10,25 +10,38 @@ interface RecommendationResponse {
 
 interface RecommendationState {
   artists: RecommendationResponse;
+  playlistTracks: RecommendationResponse;
   status: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: RecommendationState = {
   artists: {} as RecommendationResponse,
+  playlistTracks: {} as RecommendationResponse,
   status: "idle",
 };
 
-type fetchArtistParams = {
-  seed: string;
+type fetchParams = {
+  seed: string[];
   limit: number;
 };
 
-export const getArtistRecommendation = createAsyncThunk(
-  "recommendation/getArtistRecommendation",
-  async (data: fetchArtistParams) => {
+export const recommendArtistTracks = createAsyncThunk(
+  "recommendation/recommendArtistTracks",
+  async (data: fetchParams) => {
     const { seed, limit = 20 } = data;
     const response = await axios.get(
-      `/recommendations?seed_artists=${seed}&limit=${limit}`
+      `/recommendations?seed_artists=${seed.join()}&limit=${limit}`
+    );
+    return response.data;
+  }
+);
+
+export const recommendPlaylistTracks = createAsyncThunk(
+  "recommendation/recommendPlaylistTracks",
+  async (data: fetchParams) => {
+    const { seed, limit = 20 } = data;
+    const response = await axios.get(
+      `/recommendations?seed_tracks=${seed.join()}&limit=${limit}`
     );
     return response.data;
   }
@@ -39,22 +52,25 @@ export const recommendationSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getArtistRecommendation.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getArtistRecommendation.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.artists = action.payload;
-      })
-      .addCase(getArtistRecommendation.rejected, (state) => {
-        state.status = "failed";
-      });
+    builder.addCase(recommendArtistTracks.fulfilled, (state, action) => {
+      state.artists = action.payload;
+    });
+    builder.addCase(recommendPlaylistTracks.fulfilled, (state, action) => {
+      state.playlistTracks = action.payload;
+    });
   },
 });
 
-export const selectArtistRecommendation = (state: RootState) => {
+export const selectRecommendedStatus = (state: RootState) => {
+  return state.recommendations.status;
+};
+
+export const selectRecommendedArtistTracks = (state: RootState) => {
   return state.recommendations.artists;
+};
+
+export const selectRecommendedPlaylistTracks = (state: RootState) => {
+  return state.recommendations.playlistTracks;
 };
 
 export default recommendationSlice.reducer;

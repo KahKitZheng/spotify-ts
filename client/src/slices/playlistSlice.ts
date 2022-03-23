@@ -1,7 +1,9 @@
 import axios from "axios";
 import { RootState } from "../app/store";
-import { Playlist, Track } from "../types/SpotifyObjects";
+import { Playlist, PlaylistItem, Track } from "../types/SpotifyObjects";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { useAppSelector } from "../app/hooks";
+import { selectCurrentUser } from "./currentUserSlice";
 
 interface PlaylistState {
   playlist: Playlist;
@@ -30,8 +32,6 @@ export const getPlaylistInfo = createAsyncThunk(
   async (data: fetchParams) => {
     const { playlist_id } = data;
     const response = await axios.get(`/playlists/${playlist_id}`);
-    console.log(response.data);
-
     return response.data;
   }
 );
@@ -122,10 +122,35 @@ export const addTrackToPlaylist = createAsyncThunk(
 
 // Add track to playlist store
 export const addTrackToPlaylistData = createAsyncThunk(
-  "playlist/AddTrackToPlaylistData",
-  async (id: string) => {
+  "playlist/addTrackToPlaylistData",
+  async (id: string, thunkApi) => {
+    type User = "user";
+    const now = new Date();
     const response = await axios.get(`/tracks/${id}`);
-    return response.data;
+    const state = thunkApi.getState() as RootState;
+    const user = state.currentUser.user;
+
+    const playlistItem = {
+      added_at: now.toISOString(),
+      added_by: {
+        display_name: user.display_name,
+        external_urls: user.external_urls,
+        followers: undefined,
+        href: user.href,
+        id: user.id,
+        images: user.images,
+        type: "user" as User,
+        uri: user.uri,
+      },
+      is_local: false,
+      primary_color: null,
+      track: response.data as Track,
+      video_thumbnail: {
+        url: null,
+      },
+    };
+
+    return playlistItem;
   }
 );
 
@@ -189,30 +214,10 @@ export const playlistSlice = createSlice({
       );
     });
     builder.addCase(addTrackToPlaylistData.fulfilled, (state, action) => {
-      const now = new Date();
-      type userType = "user";
-
-      const playlistItem = {
-        added_at: now.toString(),
-        added_by: {
-          display_name: "",
-          external_urls: { spotify: "" },
-          followers: undefined,
-          href: "",
-          id: "",
-          images: undefined,
-          type: "user" as userType,
-          uri: "",
-        },
-        is_local: false,
-        primary_color: null,
-        track: action.payload,
-        video_thumbnail: {
-          url: null,
-        },
-      };
-
-      state.playlist.tracks.items.push(playlistItem);
+      state.playlist.tracks.items = [
+        ...state.playlist.tracks.items,
+        action.payload,
+      ];
     });
     builder.addCase(editCurrentPlaylistDetails.fulfilled, (state, action) => {
       state.playlist.name = action.meta.arg.name;

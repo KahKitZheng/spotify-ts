@@ -25,8 +25,8 @@ import {
   selectTopTracks,
 } from "../../slices/topItemsSlice";
 import {
-  getArtistRecommendation,
-  selectArtistRecommendation,
+  recommendArtistTracks,
+  selectRecommendedArtistTracks,
 } from "../../slices/recommendationSlice";
 import {
   getUserSavedArtists,
@@ -42,7 +42,7 @@ const HomePage = () => {
   const recentTracks = useAppSelector(selectRecentTracks);
   const topArtists = useAppSelector(selectTopArtists);
   const topTracks = useAppSelector(selectTopTracks);
-  const recommendArtists = useAppSelector(selectArtistRecommendation);
+  const recommendArtists = useAppSelector(selectRecommendedArtistTracks);
   const seedArtist = topArtists.short_term?.items[random(0, 11)];
 
   const userPlaylistsStatus = useSelector(
@@ -54,9 +54,6 @@ const HomePage = () => {
   const recentTracksStatus = useSelector(
     (state: RootState) => state.recentTracks.status
   );
-  const recommendArtistStatus = useSelector(
-    (state: RootState) => state.recommendations.status
-  );
 
   useEffect(() => {
     // Remove the access token in url after signing in
@@ -65,12 +62,9 @@ const HomePage = () => {
     if (recentTracksStatus === "idle") {
       dispatch(getRecentTracks({ limit: 10 }));
     }
-    if (
-      recommendArtistStatus === "idle" &&
-      topArtists.short_term?.items.length > 0
-    ) {
+    if (topArtists.short_term?.items.length > 0) {
       const artistSeed = topArtists.short_term.items[0].id;
-      dispatch(getArtistRecommendation({ seed: artistSeed, limit: 10 }));
+      dispatch(recommendArtistTracks({ seed: [artistSeed], limit: 10 }));
     }
     if (userSavedArtistsStatus === "idle") {
       dispatch(getUserSavedArtists({ type: "artist" }));
@@ -78,7 +72,6 @@ const HomePage = () => {
   }, [
     dispatch,
     recentTracksStatus,
-    recommendArtistStatus,
     topArtists.short_term?.items,
     userPlaylistsStatus,
     userSavedArtistsStatus,

@@ -21,6 +21,7 @@ import {
   savePlaylistTrack,
 } from "../../slices/playlistSlice";
 import {
+  Episode,
   SimplifiedArtist,
   SimplifiedTrack,
   Track,
@@ -34,7 +35,7 @@ interface Props {
     | "playlist-add"
     | "user-top"
     | "genre";
-  item: Track | SimplifiedTrack;
+  item: Track | SimplifiedTrack | Episode;
   index?: number;
   addedAt?: string;
   timeRange?: TimeRange;

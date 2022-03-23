@@ -5,7 +5,10 @@ import Track from "../../components/track";
 import ActionBar from "../../components/actionbar";
 import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
+import { useDebounce } from "../../hooks";
 import { useParams } from "react-router-dom";
+import { MEDIA } from "../../styles/media";
+import { MdClose } from "react-icons/md";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import {
@@ -13,6 +16,7 @@ import {
   formatAddedAt,
   formatDuration,
   stringToHSL,
+  random,
 } from "../../utils";
 import {
   checkSavedPlaylist,
@@ -30,14 +34,15 @@ import {
   selectPlaylist,
   selectPlaylistDuration,
 } from "../../slices/playlistSlice";
-import { MEDIA } from "../../styles/media";
-import { MdClose } from "react-icons/md";
 import { editPlaylistDetails } from "../../slices/currentUserPlaylistsSlice";
 import {
   getAllSearchResults,
   selectAllSearchResults,
 } from "../../slices/searchResultSlice";
-import { useDebounce } from "../../hooks";
+import {
+  recommendPlaylistTracks,
+  selectRecommendedPlaylistTracks,
+} from "../../slices/recommendationSlice";
 
 Modal.setAppElement("#root");
 
@@ -59,6 +64,7 @@ const PlaylistPage = () => {
   const playlistStatus = useAppSelector(selectPlaylistStatus);
   const playlistDuration = useAppSelector(selectPlaylistDuration);
   const searchResults = useAppSelector(selectAllSearchResults);
+  const recommendedTracks = useAppSelector(selectRecommendedPlaylistTracks);
 
   /** Fetch playlist info */
   const fetchPlaylistInfo = useCallback(() => {
@@ -80,7 +86,7 @@ const PlaylistPage = () => {
 
   /** Fetch remaining playlist tracks if there is any */
   const fetchAllPlaylistTracks = useCallback(() => {
-    const playlistItems = playlist.tracks.items;
+    const playlistItems = playlist.tracks?.items;
     const hasMoreTracks = playlist.tracks?.next;
 
     if (fetchOffset >= playlistItems?.length && hasMoreTracks !== null) {
@@ -109,6 +115,24 @@ const PlaylistPage = () => {
     }
   }, [dispatch, query, debouncedValue]);
 
+  const fetchRecommendedTracks = useCallback(() => {
+    const playlistItems = playlist.tracks?.items;
+    const seed = [];
+
+    if (playlistItems?.length === 1) {
+      seed.push(playlistItems[0].track.id);
+    } else if (playlistItems?.length > 1) {
+      for (let index = 0; index < 5; index++) {
+        const randomSeed = random(1, playlistItems?.length);
+        seed.push(playlistItems[randomSeed].track.id);
+      }
+    }
+
+    if (playlistItems?.length !== 0) {
+      dispatch(recommendPlaylistTracks({ seed, limit: 20 }));
+    }
+  }, [dispatch, playlist.tracks?.items]);
+
   /** Calculate the playlist duration after all tracks has been fetched */
   const setPlaylistdDuration = useCallback(() => {
     if (playlist.tracks?.next === null) {
@@ -132,20 +156,16 @@ const PlaylistPage = () => {
     fetchAllPlaylistTracks();
     setPlaylistBackground();
     setPlaylistdDuration();
-  }, [
-    fetchPlaylistIsSaved,
-    fetchAllPlaylistTracks,
-    setPlaylistBackground,
-    setPlaylistdDuration,
-  ]);
+  }, [fetchAllPlaylistTracks, setPlaylistBackground, setPlaylistdDuration]);
 
   useEffect(() => {
     playlist.id !== id ? setFetchOffset(0) : fetchSavedTracks();
   }, [fetchSavedTracks, id, playlist.id]);
 
   useEffect(() => {
+    fetchRecommendedTracks();
     fetchQueryTracks();
-  }, [fetchQueryTracks]);
+  }, [fetchQueryTracks, fetchRecommendedTracks]);
 
   function handleSaveTrack(isSaved?: boolean) {
     isSaved
@@ -217,38 +237,56 @@ const PlaylistPage = () => {
       />
       {playlist.tracks.items?.length > 0 && (
         <T.TrackList>
-          {playlist.tracks?.items.map((item, index) => {
-            return "track" in item.track ? (
-              <Track
-                key={item.track.id}
-                variant="playlist"
-                index={index}
-                item={item.track}
-                addedAt={
-                  item.added_at !== null ? formatAddedAt(item.added_at) : ""
-                }
-              />
-            ) : null;
-          })}
+          {playlist.tracks?.items.map((item, index) => (
+            <Track
+              key={item.track.id}
+              variant="playlist"
+              index={index}
+              item={item.track}
+              addedAt={
+                item.added_at !== null ? formatAddedAt(item.added_at) : ""
+              }
+            />
+          ))}
         </T.TrackList>
       )}
+
       {playlist.owner.id === userId ? (
-        <RecommendTracks>
-          <SearchDescription>
+        <PlaylistSection>
+          <PlaylistSectionName>
             Let&apos;s find something for your playlist
-          </SearchDescription>
+          </PlaylistSectionName>
           <SearchInput
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for songs"
           />
+          {query !== "" && (
+            <T.TrackList>
+              {searchResults.tracks?.items.map((track) => (
+                <Track key={track.id} item={track} variant={"playlist-add"} />
+              ))}
+            </T.TrackList>
+          )}
+        </PlaylistSection>
+      ) : null}
+
+      {playlist.owner.id === userId ? (
+        <PlaylistSection>
+          <PlaylistHeader>
+            <div>
+              <PlaylistSectionName>Recommended</PlaylistSectionName>
+              <small>Based on what&apos;s in this playlist</small>
+            </div>
+            <RefreshRecommendation>refresh</RefreshRecommendation>
+          </PlaylistHeader>
           <T.TrackList>
-            {searchResults.tracks?.items.map((track) => (
+            {recommendedTracks.tracks?.map((track) => (
               <Track key={track.id} item={track} variant={"playlist-add"} />
             ))}
           </T.TrackList>
-        </RecommendTracks>
+        </PlaylistSection>
       ) : null}
 
       {/* Edit playlist modal */}
@@ -306,20 +344,44 @@ const PlaylistDescription = styled.p`
   color: #cecece;
 `;
 
-const RecommendTracks = styled.div`
+const PlaylistSection = styled.section`
+  position: relative;
   margin-top: 16px;
 `;
 
-const SearchDescription = styled.h2`
+const PlaylistHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const PlaylistSectionName = styled.h2`
   font-size: 20px;
-  margin-bottom: 8px;
+  line-height: 1.2;
 
   @media (min-width: ${MEDIA.tablet}) {
     font-size: revert;
   }
 `;
 
+const RefreshRecommendation = styled.button`
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.white};
+  border: 0;
+  margin-right: 16px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease-in;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
 const SearchInput = styled.input`
+  margin-top: 12px;
   padding: 4px 8px;
   width: 400px;
   max-width: 100%;
