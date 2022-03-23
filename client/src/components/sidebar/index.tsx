@@ -47,8 +47,9 @@ const Sidebar = () => {
   }, [dispatch, offsetStatus, playlists.next, playlists.offset, status]);
 
   function createNewPlaylist() {
-    dispatch(createPlaylist({ user_id: user.id, name: "New Playlist" }));
-    navigate(`/playlist/${playlists.items[0].id}`);
+    dispatch(createPlaylist({ user_id: user.id, name: "New Playlist" })).then(
+      (res) => navigate(`/playlist/${res.payload.id}`)
+    );
   }
 
   return playlists.items ? (

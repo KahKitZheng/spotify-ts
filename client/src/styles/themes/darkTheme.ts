@@ -9,6 +9,7 @@ const darkTheme: DefaultTheme = {
   colors: {
     white: WHITE,
     black: BLACK,
+    spotify: "#1ed760",
   },
 
   bg: {

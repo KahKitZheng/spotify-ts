@@ -1,10 +1,5 @@
 import { RefObject } from "react";
-import {
-  SimplifiedTrack,
-  Track,
-  Playlist,
-  PlaylistItem,
-} from "../types/SpotifyObjects";
+import { SimplifiedTrack, Track, PlaylistItem } from "../types/SpotifyObjects";
 
 /**
  * Calculate HSL colors based on string value

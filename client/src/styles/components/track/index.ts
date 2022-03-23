@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { textOverflow } from "../../utils";
-import { Button } from "../../../components/button";
 import { MEDIA } from "../../media";
+import { textOverflow } from "../../utils";
+import { StyledLikeButton } from "../../../components/button";
 
 // Containers for collection of tracks
 export const TrackDisc = styled.div`
@@ -25,7 +25,8 @@ export const TrackList = styled.div`
 export const Track = styled.div`
   display: grid;
   align-items: center;
-  grid-template-areas: "track-info";
+  grid-template-columns: 10fr 80px;
+  grid-template-areas: "track-info track-duration";
   grid-gap: 16px;
   margin: -8px;
   padding: 8px;
@@ -38,18 +39,13 @@ export const Track = styled.div`
     background-color: #1a1c25;
   }
 
-  :hover ${Button} {
+  :hover ${StyledLikeButton} {
     display: block;
-  }
-
-  @media (min-width: ${MEDIA.mobile}) {
-    grid-template-columns: 10fr 100px;
-    grid-template-areas: "track-info track-duration";
   }
 `;
 
 export const TrackDiscInfo = styled(Track)`
-  grid-template-columns: 24px 1fr;
+  grid-template-columns: 24px 80px;
   grid-template-areas: "disc-icon disc-number";
   font-weight: 600;
   font-size: 18px;
@@ -66,26 +62,33 @@ export const TrackDiscInfo = styled(Track)`
 
 export const OrderedTrack = styled(Track)`
   @media (min-width: ${MEDIA.mobile}) {
-    grid-template-columns: 24px 10fr 100px;
+    grid-template-columns: 24px 10fr 80px;
     grid-template-areas: "track-index track-info track-duration";
   }
 `;
 
 export const PlaylistTrack = styled(OrderedTrack)`
   @media (min-width: ${MEDIA.tablet}) {
-    grid-template-columns: 24px 6fr 4fr 100px;
+    grid-template-columns: 24px 6fr 4fr 80px;
     grid-template-areas: "track-index track-info track-album track-duration";
   }
 
   @media (min-width: ${MEDIA.laptop}) {
-    grid-template-columns: 24px 6fr 4fr 2fr 100px;
+    grid-template-columns: 24px 6fr 4fr 3fr 80px;
     grid-template-areas: "track-index track-info track-album track-date-added track-duration";
+  }
+`;
+
+export const PlaylistAddTrack = styled(Track)`
+  @media (min-width: ${MEDIA.tablet}) {
+    grid-template-columns: 6fr 4fr 80px;
+    grid-template-areas: "track-info track-album track-duration";
   }
 `;
 
 export const TopTrack = styled(OrderedTrack)`
   @media (min-width: ${MEDIA.tablet}) {
-    grid-template-columns: 24px 6fr 4fr 100px;
+    grid-template-columns: 24px 6fr 4fr 80px;
     grid-template-areas: "track-index track-info track-album track-duration";
   }
 `;
@@ -128,22 +131,18 @@ export const TrackDateAdded = styled.span`
   font-size: 14px;
   padding-left: 48px;
 
-  @media (max-width: 1200px) {
+  @media (max-width: ${MEDIA.laptop}) {
     display: none;
   }
 `;
 
 export const TrackDuration = styled.div`
-  display: none;
-
-  @media (min-width: ${MEDIA.mobile}) {
-    grid-area: track-duration;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    font-size: 14px;
-    padding-right: 8px;
-  }
+  grid-area: track-duration;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 14px;
+  padding-right: 8px;
 `;
 
 /**
@@ -190,4 +189,22 @@ export const ExplicitTrack = styled.span`
   top: -1px;
   margin-right: 6px;
   padding: 0 4px;
+`;
+
+export const AddTrackToPlaylist = styled.button`
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.font.text};
+  border-radius: 16px;
+  margin-left: 32px;
+  padding: 4px 24px;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease-in;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;

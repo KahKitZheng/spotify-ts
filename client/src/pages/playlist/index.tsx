@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import Track from "../../components/track";
@@ -7,8 +7,6 @@ import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { RootState } from "../../app/store";
-import { useSelector } from "react-redux";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import {
   extractTrackId,
@@ -21,95 +19,133 @@ import {
   checkSavedPlaylistTracks,
   countPlaylistDuration,
   editCurrentPlaylistDetails,
+  getPlaylistInfo,
   getPlaylistTracksWithOffset,
   removeSavedPlaylist,
   savePlaylist,
   selectPlaylistStatus,
+  setPlaylistStatus,
 } from "../../slices/playlistSlice";
 import {
-  getPlaylist,
   selectPlaylist,
   selectPlaylistDuration,
 } from "../../slices/playlistSlice";
 import { MEDIA } from "../../styles/media";
 import { MdClose } from "react-icons/md";
 import { editPlaylistDetails } from "../../slices/currentUserPlaylistsSlice";
+import {
+  getAllSearchResults,
+  selectAllSearchResults,
+} from "../../slices/searchResultSlice";
+import { useDebounce } from "../../hooks";
 
 Modal.setAppElement("#root");
 
 const PlaylistPage = () => {
+  // Component state
+  const { id } = useParams();
+  const [query, setQuery] = useState("");
+  const [modal, setModal] = useState(false);
+  const [fetchOffset, setFetchOffset] = useState(0);
+  const [gradient, setGradient] = useState(`hsl(0, 0%, 40%)`);
+  const [playlistName, setPlaylistName] = useState("");
+  const [playlistDescription, setPlaylistDescription] = useState("");
+  const debouncedValue = useDebounce<string>(query, 600);
+
+  // Store state
   const dispatch = useAppDispatch();
   const userId = useAppSelector(selectCurrentUserId);
   const playlist = useAppSelector(selectPlaylist);
   const playlistStatus = useAppSelector(selectPlaylistStatus);
   const playlistDuration = useAppSelector(selectPlaylistDuration);
+  const searchResults = useAppSelector(selectAllSearchResults);
 
-  const { id } = useParams();
-  const [gradient, setGradient] = useState(`hsl(0, 0%, 40%)`);
-  const [modal, setModal] = useState(false);
-  const [playlistName, setPlaylistName] = useState("");
-  const [playlistDescription, setPlaylistDescription] = useState("");
-
-  console.log(playlist.name, playlist.description);
-
-  const offsetStatus = useSelector(
-    (state: RootState) => state.playlist.offsetStatus
-  );
-
-  useEffect(() => {
-    if (playlist.name !== null || playlist.description) {
-      setPlaylistName(playlist.name);
-      setPlaylistDescription(playlist.description || "");
+  /** Fetch playlist info */
+  const fetchPlaylistInfo = useCallback(() => {
+    if (playlist.id !== id && playlistStatus === "succeeded") {
+      dispatch(setPlaylistStatus("idle"));
     }
-  }, [playlist.description, playlist.name]);
 
-  // Fetch playlist for initial render
-  useEffect(() => {
-    if (id) {
-      dispatch(getPlaylist({ playlist_id: id }));
+    if (id !== undefined && playlistStatus === "idle") {
+      dispatch(getPlaylistInfo({ playlist_id: id }));
     }
-  }, [dispatch, id]);
+  }, [dispatch, id, playlist.id, playlistStatus]);
 
-  useEffect(() => {
+  /** Check whether the current user has liked the playlist */
+  const fetchPlaylistIsSaved = useCallback(() => {
     if (playlistStatus === "succeeded") {
       dispatch(checkSavedPlaylist({ playlist_id: playlist.id, userId }));
     }
   }, [dispatch, playlist.id, playlistStatus, userId]);
 
-  // useEffect(() => {
-  //   if (offsetStatus === "succeeded") {
-  //     dispatch(countPlaylistDuration());
-  //   }
-  // }, [dispatch, offsetStatus]);
+  /** Fetch remaining playlist tracks if there is any */
+  const fetchAllPlaylistTracks = useCallback(() => {
+    const playlistItems = playlist.tracks.items;
+    const hasMoreTracks = playlist.tracks?.next;
 
-  // Fetch again if the tracklist is incomplete
-  useEffect(() => {
-    // Check if the tracklist is not empty before fetching next batch of tracks and
-    // has items to count the playlist duration
-    if (playlist.tracks?.items.length > 0) {
-      setGradient(stringToHSL(playlist.name));
-
-      // // Make sure that only one request is dispatched to the API at a time
-      // if (offsetStatus === "idle" && playlist.tracks?.next !== null) {
-      //   dispatch(getPlaylistTracksWithOffset({ url: playlist.tracks?.next }));
-      // }
-    } else {
-      setGradient(`hsl(0, 0%, 40%)`);
+    if (fetchOffset >= playlistItems?.length && hasMoreTracks !== null) {
+      dispatch(getPlaylistTracksWithOffset(hasMoreTracks));
     }
+  }, [dispatch, fetchOffset, playlist.tracks?.items, playlist.tracks?.next]);
+
+  /** Check if current user has liked one of the playlist tracks */
+  const fetchSavedTracks = useCallback(() => {
+    const list = playlist.tracks?.items;
+    const incrementBy = 50;
+    const startIndex = fetchOffset;
+    const endIndex = fetchOffset + incrementBy;
+
+    if (startIndex < list?.length) {
+      const ids = extractTrackId(list?.slice(startIndex, endIndex));
+      dispatch(checkSavedPlaylistTracks({ startIndex, ids }));
+      setFetchOffset(endIndex);
+    }
+  }, [dispatch, fetchOffset, playlist.tracks?.items]);
+
+  /** Fetch tracks based on the search input */
+  const fetchQueryTracks = useCallback(() => {
+    if (query !== "" && debouncedValue) {
+      dispatch(getAllSearchResults({ q: query, limit: 30 }));
+    }
+  }, [dispatch, query, debouncedValue]);
+
+  /** Calculate the playlist duration after all tracks has been fetched */
+  const setPlaylistdDuration = useCallback(() => {
+    if (playlist.tracks?.next === null) {
+      dispatch(countPlaylistDuration());
+    }
+  }, [dispatch, playlist.tracks?.next]);
+
+  /** Set the background gradient */
+  const setPlaylistBackground = useCallback(() => {
+    playlist.tracks?.items.length > 0
+      ? setGradient(stringToHSL(playlist.name))
+      : setGradient(`hsl(0, 0%, 40%)`);
+  }, [playlist.name, playlist.tracks?.items.length]);
+
+  useEffect(() => {
+    fetchPlaylistInfo();
+    fetchPlaylistIsSaved();
+  }, [fetchPlaylistInfo, fetchPlaylistIsSaved]);
+
+  useEffect(() => {
+    fetchAllPlaylistTracks();
+    setPlaylistBackground();
+    setPlaylistdDuration();
   }, [
-    dispatch,
-    offsetStatus,
-    playlist.name,
-    playlist.tracks?.items.length,
-    playlist.tracks?.next,
+    fetchPlaylistIsSaved,
+    fetchAllPlaylistTracks,
+    setPlaylistBackground,
+    setPlaylistdDuration,
   ]);
 
   useEffect(() => {
-    if (playlist.tracks?.items.length > 0) {
-      const list = playlist.tracks?.items;
-      dispatch(checkSavedPlaylistTracks(extractTrackId(list?.slice(0, 50))));
-    }
-  }, [dispatch, playlist.tracks?.items]);
+    playlist.id !== id ? setFetchOffset(0) : fetchSavedTracks();
+  }, [fetchSavedTracks, id, playlist.id]);
+
+  useEffect(() => {
+    fetchQueryTracks();
+  }, [fetchQueryTracks]);
 
   function handleSaveTrack(isSaved?: boolean) {
     isSaved
@@ -118,6 +154,9 @@ const PlaylistPage = () => {
   }
 
   function handleShowModal() {
+    setPlaylistName(playlist.name);
+    setPlaylistDescription(playlist.description || "");
+
     playlist.owner.id === userId ? setModal(true) : setModal(false);
   }
 
@@ -126,7 +165,6 @@ const PlaylistPage = () => {
     const name = playlistName;
     const description = playlistDescription;
 
-    // Update playlist details in current playlist and list with all playlists
     dispatch(editPlaylistDetails({ id, name, description }));
     dispatch(editCurrentPlaylistDetails({ id, name, description }));
     setModal(false);
@@ -154,7 +192,10 @@ const PlaylistPage = () => {
           <H.HeaderExtraInfo>
             By <PlaylistOwner>{playlist.owner?.display_name}</PlaylistOwner>
           </H.HeaderExtraInfo>
-          <H.HeaderName onClick={() => handleShowModal()}>
+          <H.HeaderName
+            $isOwner={playlist.owner.id === userId}
+            onClick={() => handleShowModal()}
+          >
             {playlist.name?.split("/").join("/ ")}
           </H.HeaderName>
           {playlist.description && (
@@ -174,7 +215,7 @@ const PlaylistPage = () => {
         isSaved={playlist.is_saved}
         handleClick={() => handleSaveTrack(playlist.is_saved)}
       />
-      {playlist.tracks?.items && (
+      {playlist.tracks.items?.length > 0 && (
         <T.TrackList>
           {playlist.tracks?.items.map((item, index) => {
             return "track" in item.track ? (
@@ -191,6 +232,26 @@ const PlaylistPage = () => {
           })}
         </T.TrackList>
       )}
+      {playlist.owner.id === userId ? (
+        <RecommendTracks>
+          <SearchDescription>
+            Let&apos;s find something for your playlist
+          </SearchDescription>
+          <SearchInput
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search for songs"
+          />
+          <T.TrackList>
+            {searchResults.tracks?.items.map((track) => (
+              <Track key={track.id} item={track} variant={"playlist-add"} />
+            ))}
+          </T.TrackList>
+        </RecommendTracks>
+      ) : null}
+
+      {/* Edit playlist modal */}
       <Modal
         isOpen={modal}
         style={EditModal}
@@ -243,6 +304,34 @@ const PlaylistDescription = styled.p`
   margin-top: 8px;
   opacity: 0.8;
   color: #cecece;
+`;
+
+const RecommendTracks = styled.div`
+  margin-top: 16px;
+`;
+
+const SearchDescription = styled.h2`
+  font-size: 20px;
+  margin-bottom: 8px;
+
+  @media (min-width: ${MEDIA.tablet}) {
+    font-size: revert;
+  }
+`;
+
+const SearchInput = styled.input`
+  padding: 4px 8px;
+  width: 400px;
+  max-width: 100%;
+  border-radius: 4px;
+  background-color: #222328;
+  border: 0;
+  color: ${({ theme }) => theme.font.text};
+
+  :active,
+  :focus {
+    outline: 1px solid #464646;
+  }
 `;
 
 const EditModal = {

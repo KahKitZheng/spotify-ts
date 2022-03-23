@@ -46,11 +46,12 @@ const ActionBarWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 24px;
+  margin-top: 16px;
 
   @media (min-width: ${MEDIA.tablet}) {
     flex-direction: row-reverse;
     justify-content: start;
+    margin-top: 24px;
   }
 `;
 
@@ -89,7 +90,8 @@ const ButtonGroup = styled.div`
 
 const SaveButton = styled(Button)<{ $isSaved: boolean }>`
   background-color: transparent;
-  color: ${({ $isSaved }) => ($isSaved ? "#1ed760" : "currentColor")};
+  color: ${({ $isSaved, theme }) =>
+    $isSaved ? theme.colors.spotify : "currentColor"};
   margin-right: 16px;
   padding: 0;
 

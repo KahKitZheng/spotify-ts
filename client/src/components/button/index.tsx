@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { MEDIA } from "../../styles/media";
 import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri";
 
 interface Props {
@@ -8,16 +9,19 @@ interface Props {
 }
 
 const LikeButton = (props: Props) => {
+  const { isSaved, handleClick } = props;
+
   return (
-    <Button $isSaved={props.isSaved} onClick={() => props.handleClick()}>
-      {props.isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}
-    </Button>
+    <StyledLikeButton $isSaved={isSaved} onClick={() => handleClick()}>
+      {isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}
+    </StyledLikeButton>
   );
 };
 
-export const Button = styled.button<{ $isSaved: boolean }>`
-  display: ${({ $isSaved }) => ($isSaved ? "block" : "none")};
-  color: ${({ $isSaved }) => ($isSaved ? "mediumaquamarine" : "currentColor")};
+export const StyledLikeButton = styled.button<{ $isSaved: boolean }>`
+  display: block;
+  color: ${({ $isSaved, theme }) =>
+    $isSaved ? theme.colors.spotify : "currentColor"};
   background-color: transparent;
   border: 0;
   padding: 8px;
@@ -25,8 +29,12 @@ export const Button = styled.button<{ $isSaved: boolean }>`
   margin-right: 8px;
   cursor: pointer;
 
-  :hover {
-    display: block;
+  @media (min-width: ${MEDIA.tablet}) {
+    display: ${({ $isSaved }) => ($isSaved ? "block" : "none")};
+
+    :hover {
+      display: block;
+    }
   }
 `;
 

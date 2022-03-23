@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import LikeButton from "../../components/button";
 import * as T from "../../styles/components/track";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { formatDuration } from "../../utils";
 import { removeSavedAlbumTrack, saveAlbumTrack } from "../../slices/albumSlice";
@@ -15,6 +15,8 @@ import {
   savePopularArtistTrack,
 } from "../../slices/artistSlice";
 import {
+  addTrackToPlaylist,
+  addTrackToPlaylistData,
   removeSavedPlaylistTrack,
   savePlaylistTrack,
 } from "../../slices/playlistSlice";
@@ -25,7 +27,13 @@ import {
 } from "../../types/SpotifyObjects";
 
 interface Props {
-  variant: "album" | "popular-tracks" | "playlist" | "user-top" | "genre";
+  variant:
+    | "album"
+    | "popular-tracks"
+    | "playlist"
+    | "playlist-add"
+    | "user-top"
+    | "genre";
   item: Track | SimplifiedTrack;
   index?: number;
   addedAt?: string;
@@ -44,6 +52,8 @@ const TrackComponent = (props: Props) => {
       return (
         <PlaylistTrack item={item as Track} addedAt={addedAt} index={index} />
       );
+    case "playlist-add":
+      return <PlaylistAddTrack item={item as Track} />;
     case "user-top":
       return (
         <UserTopTrack
@@ -173,6 +183,43 @@ const PlaylistTrack = (props: {
         <span>{formatDuration(item.duration_ms, "track")}</span>
       </T.TrackDuration>
     </T.PlaylistTrack>
+  );
+};
+
+const PlaylistAddTrack = (props: { item: Track }) => {
+  const { item } = props;
+  const { id } = useParams();
+  const dispatch = useDispatch();
+
+  function addTrack() {
+    if (id !== undefined) {
+      dispatch(addTrackToPlaylist({ playlist_id: id, uris: [item.uri] }));
+      dispatch(addTrackToPlaylistData(item.id));
+    }
+  }
+
+  return (
+    <T.PlaylistAddTrack>
+      <T.TrackInfo>
+        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+        <T.TrackDetails>
+          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackArtists>
+            {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+            {renderArtists(item.artists)}
+          </T.TrackArtists>
+        </T.TrackDetails>
+      </T.TrackInfo>
+      <T.TrackAlbum>
+        <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
+      </T.TrackAlbum>
+      <T.TrackDuration>
+        <span>{formatDuration(item.duration_ms, "track")}</span>
+        <T.AddTrackToPlaylist onClick={() => addTrack()}>
+          Add
+        </T.AddTrackToPlaylist>
+      </T.TrackDuration>
+    </T.PlaylistAddTrack>
   );
 };
 

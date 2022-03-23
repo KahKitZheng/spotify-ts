@@ -67,12 +67,12 @@ export const HeaderExtraInfo = styled.span`
   color: #e7e7e7;
 `;
 
-export const HeaderName = styled.h1`
+export const HeaderName = styled.h1<{ $isOwner?: boolean }>`
   font-size: clamp(22px, 1rem + 2vw, 3rem);
   line-height: 1.2;
 
   :hover {
-    cursor: pointer;
+    cursor: ${({ $isOwner }) => $isOwner && "pointer"};
   }
 `;
 
