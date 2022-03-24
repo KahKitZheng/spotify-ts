@@ -28,7 +28,6 @@ import {
   removeSavedPlaylist,
   savePlaylist,
   selectPlaylistStatus,
-  setPlaylistStatus,
 } from "../../slices/playlistSlice";
 import {
   selectPlaylist,
@@ -66,47 +65,45 @@ const PlaylistPage = () => {
   const searchResults = useAppSelector(selectAllSearchResults);
   const recommendedTracks = useAppSelector(selectRecommendedPlaylistTracks);
 
-  /** Fetch playlist info */
+  /** Fetch playlist info plus up to 100 tracks */
   const fetchPlaylistInfo = useCallback(() => {
-    if (playlist.id !== id && playlistStatus === "succeeded") {
-      dispatch(setPlaylistStatus("idle"));
-    }
-
-    if (id !== undefined && playlistStatus === "idle") {
+    if (playlist.id !== id && id !== undefined) {
       dispatch(getPlaylistInfo({ playlist_id: id }));
     }
-  }, [dispatch, id, playlist.id, playlistStatus]);
+  }, [dispatch, id, playlist.id]);
 
-  /** Check whether the current user has liked the playlist */
+  /** Check whether the current user has liked the playlist or not*/
   const fetchPlaylistIsSaved = useCallback(() => {
     if (playlistStatus === "succeeded") {
       dispatch(checkSavedPlaylist({ playlist_id: playlist.id, userId }));
     }
   }, [dispatch, playlist.id, playlistStatus, userId]);
 
-  /** Fetch remaining playlist tracks if there is any */
-  const fetchAllPlaylistTracks = useCallback(() => {
+  /** Fetch the remaining playlist tracks if the initial fetch has not retrieved them all */
+  const fetchOffsetPlaylistTracks = useCallback(() => {
     const playlistItems = playlist.tracks?.items;
-    const hasMoreTracks = playlist.tracks?.next;
+    const url = playlist.tracks?.next;
+    const startIndex = fetchOffset;
 
-    if (fetchOffset >= playlistItems?.length && hasMoreTracks !== null) {
-      dispatch(getPlaylistTracksWithOffset(hasMoreTracks));
+    if (startIndex >= playlistItems?.length && url !== null) {
+      dispatch(getPlaylistTracksWithOffset({ startIndex, url }));
     }
   }, [dispatch, fetchOffset, playlist.tracks?.items, playlist.tracks?.next]);
 
-  /** Check if current user has liked one of the playlist tracks */
+  /** Check which playlist tracks the current user has liked */
   const fetchSavedTracks = useCallback(() => {
     const list = playlist.tracks?.items;
     const incrementBy = 50;
     const startIndex = fetchOffset;
     const endIndex = fetchOffset + incrementBy;
 
-    if (startIndex < list?.length) {
+    if (startIndex < list?.length && startIndex < playlist.tracks?.total) {
       const ids = extractTrackId(list?.slice(startIndex, endIndex));
-      dispatch(checkSavedPlaylistTracks({ startIndex, ids }));
-      setFetchOffset(endIndex);
+      dispatch(checkSavedPlaylistTracks({ startIndex, ids })).then(() => {
+        setFetchOffset(endIndex);
+      });
     }
-  }, [dispatch, fetchOffset, playlist.tracks?.items]);
+  }, [dispatch, fetchOffset, playlist.tracks?.items, playlist.tracks?.total]);
 
   /** Fetch tracks based on the search input */
   const fetchQueryTracks = useCallback(() => {
@@ -115,20 +112,25 @@ const PlaylistPage = () => {
     }
   }, [dispatch, query, debouncedValue]);
 
+  /** Fetch recommended tracks for your playlist based on the existing tracks */
   const fetchRecommendedTracks = useCallback(() => {
     const playlistItems = playlist.tracks?.items;
     const seed = [];
 
-    if (playlistItems?.length === 1) {
-      seed.push(playlistItems[0].track.id);
-    } else if (playlistItems?.length > 1) {
+    if (0 > playlistItems?.length && playlistItems?.length <= 5) {
+      playlistItems.forEach((item) => {
+        seed.push(item.track.id);
+      });
+    }
+
+    if (playlistItems?.length > 5) {
       for (let index = 0; index < 5; index++) {
         const randomSeed = random(1, playlistItems?.length);
         seed.push(playlistItems[randomSeed].track.id);
       }
     }
 
-    if (playlistItems?.length !== 0) {
+    if (seed.length > 0) {
       dispatch(recommendPlaylistTracks({ seed, limit: 20 }));
     }
   }, [dispatch, playlist.tracks?.items]);
@@ -148,26 +150,35 @@ const PlaylistPage = () => {
   }, [playlist.name, playlist.tracks?.items.length]);
 
   useEffect(() => {
+    if (id) {
+      setFetchOffset(0);
+    }
+  }, [id, playlist.id]);
+
+  useEffect(() => {
     fetchPlaylistInfo();
     fetchPlaylistIsSaved();
   }, [fetchPlaylistInfo, fetchPlaylistIsSaved]);
 
   useEffect(() => {
-    fetchAllPlaylistTracks();
-    setPlaylistBackground();
-    setPlaylistdDuration();
-  }, [fetchAllPlaylistTracks, setPlaylistBackground, setPlaylistdDuration]);
+    fetchOffsetPlaylistTracks();
+  }, [fetchOffsetPlaylistTracks]);
 
   useEffect(() => {
-    playlist.id !== id ? setFetchOffset(0) : fetchSavedTracks();
-  }, [fetchSavedTracks, id, playlist.id]);
+    fetchSavedTracks();
+  }, [fetchSavedTracks]);
+
+  useEffect(() => {
+    setPlaylistBackground();
+    setPlaylistdDuration();
+  }, [setPlaylistBackground, setPlaylistdDuration]);
 
   useEffect(() => {
     fetchRecommendedTracks();
     fetchQueryTracks();
   }, [fetchQueryTracks, fetchRecommendedTracks]);
 
-  function handleSaveTrack(isSaved?: boolean) {
+  function handleSavePlaylist(isSaved?: boolean) {
     isSaved
       ? dispatch(removeSavedPlaylist(playlist.id))
       : dispatch(savePlaylist(playlist.id));
@@ -233,7 +244,7 @@ const PlaylistPage = () => {
       </H.HeaderWrapper>
       <ActionBar
         isSaved={playlist.is_saved}
-        handleClick={() => handleSaveTrack(playlist.is_saved)}
+        handleClick={() => handleSavePlaylist(playlist.is_saved)}
       />
       {playlist.tracks.items?.length > 0 && (
         <T.TrackList>
@@ -289,7 +300,6 @@ const PlaylistPage = () => {
         </PlaylistSection>
       ) : null}
 
-      {/* Edit playlist modal */}
       <Modal
         isOpen={modal}
         style={EditModal}

@@ -163,7 +163,10 @@ const PlaylistTrack = (props: {
     <T.PlaylistTrack>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackInfo>
-        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+        <T.TrackAlbumCover
+          src={item.album?.images[0] && item.album?.images[0].url}
+          alt=""
+        />
         <T.TrackDetails>
           <T.TrackName>{item.name}</T.TrackName>
           <T.TrackArtists>

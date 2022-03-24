@@ -1,9 +1,7 @@
 import axios from "axios";
 import { RootState } from "../app/store";
-import { Playlist, PlaylistItem, Track } from "../types/SpotifyObjects";
+import { Playlist, Track } from "../types/SpotifyObjects";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { useAppSelector } from "../app/hooks";
-import { selectCurrentUser } from "./currentUserSlice";
 
 interface PlaylistState {
   playlist: Playlist;
@@ -26,7 +24,7 @@ interface fetchParams {
   market?: string;
 }
 
-// Fetch playlist
+/** Fetch playlist  */
 export const getPlaylistInfo = createAsyncThunk(
   "playlist/getPlaylistInfo",
   async (data: fetchParams) => {
@@ -36,16 +34,16 @@ export const getPlaylistInfo = createAsyncThunk(
   }
 );
 
-// Fetch remaining tracks of playlist
+//** Fetch the offset playlist tracks */
 export const getPlaylistTracksWithOffset = createAsyncThunk(
   "playlist/getPlaylistTracksWithOffset",
-  async (url: string) => {
-    const response = await axios.get(url);
+  async (data: { startIndex: number; url: string }) => {
+    const response = await axios.get(data.url);
     return response.data;
   }
 );
 
-// Check if playlist is already saved in current user's library
+/** Check if the current user has liked the playlist */
 export const checkSavedPlaylist = createAsyncThunk(
   "playlist/checkSavedPlaylist",
   async (data: { playlist_id: string; userId: string }) => {
@@ -56,7 +54,7 @@ export const checkSavedPlaylist = createAsyncThunk(
   }
 );
 
-// Save playlist to current user's library
+/** Save the playlist to current user's library */
 export const savePlaylist = createAsyncThunk(
   "playlist/savePlaylist",
   async (playlist_id: string) => {
@@ -64,7 +62,7 @@ export const savePlaylist = createAsyncThunk(
   }
 );
 
-// Remove playlist from current user's library
+/** Remove the playlist from current user's library */
 export const removeSavedPlaylist = createAsyncThunk(
   "playlist/removeSavedPlaylist",
   async (playlist_id: string) => {
@@ -72,7 +70,7 @@ export const removeSavedPlaylist = createAsyncThunk(
   }
 );
 
-// Check if one or more tracks is already saved in liked songs
+/** Check which playlist tracks the current user has liked */
 export const checkSavedPlaylistTracks = createAsyncThunk(
   "playlist/checkSavedPlaylistTracks",
   async (data: { startIndex: number; ids: string[] }) => {
@@ -81,7 +79,7 @@ export const checkSavedPlaylistTracks = createAsyncThunk(
   }
 );
 
-// Save playlist track to your liked songs
+/** Save playlist track to curent user's liked songs */
 export const savePlaylistTrack = createAsyncThunk(
   "playlist/savePlaylistTrack",
   async (id: string) => {
@@ -90,7 +88,7 @@ export const savePlaylistTrack = createAsyncThunk(
   }
 );
 
-// Remove a liked playlist track from your liked songs
+/** Remove playlist track from current user's liked songs */
 export const removeSavedPlaylistTrack = createAsyncThunk(
   "playlist/removeSavedPlaylistTrack",
   async (id: string) => {
@@ -99,7 +97,7 @@ export const removeSavedPlaylistTrack = createAsyncThunk(
   }
 );
 
-// Edit current playlist details
+/** Edit current playlist details  */
 export const editCurrentPlaylistDetails = createAsyncThunk(
   "playlist/EditCurrentPlaylistDetails",
   async (data: { id: string; name: string; description: string }) => {
@@ -108,7 +106,7 @@ export const editCurrentPlaylistDetails = createAsyncThunk(
   }
 );
 
-// Add track to playlist
+/** Add track to playlist */
 export const addTrackToPlaylist = createAsyncThunk(
   "playlist/AddTrackToPlaylist",
   async (data: { playlist_id: string; uris: string[] }) => {
@@ -120,7 +118,7 @@ export const addTrackToPlaylist = createAsyncThunk(
   }
 );
 
-// Add track to playlist store
+/** Add track to playlist store */
 export const addTrackToPlaylistData = createAsyncThunk(
   "playlist/addTrackToPlaylistData",
   async (id: string, thunkApi) => {
@@ -162,9 +160,7 @@ export const playlistSlice = createSlice({
       state.status = action.payload;
     },
     countPlaylistDuration: (state) => {
-      const tracklist = state.playlist.tracks.items;
-
-      state.playlistDuration = tracklist.reduce(
+      state.playlistDuration = state.playlist.tracks.items.reduce(
         (total, item) => total + item.track.duration_ms,
         0
       );
@@ -174,51 +170,79 @@ export const playlistSlice = createSlice({
     builder.addCase(getPlaylistInfo.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.playlist = action.payload;
+      state.playlist.tracks.items = action.payload.tracks.items.filter(
+        (item: Track) => item.track !== null
+      );
     });
+
     builder.addCase(checkSavedPlaylist.fulfilled, (state, action) => {
       state.playlist.is_saved = action.payload[0];
     });
+
     builder.addCase(savePlaylist.fulfilled, (state) => {
       state.playlist.is_saved = true;
     });
+
     builder.addCase(removeSavedPlaylist.fulfilled, (state) => {
       state.playlist.is_saved = false;
     });
+
+    builder.addCase(savePlaylistTrack.fulfilled, (state, action) => {
+      const list = state.playlist.tracks.items;
+      const index = list.findIndex((item) => item.track.id === action.payload);
+      state.playlist.tracks.items[index].track.is_saved = true;
+    });
+
+    builder.addCase(removeSavedPlaylistTrack.fulfilled, (state, action) => {
+      const list = state.playlist.tracks.items;
+      const index = list.findIndex((item) => item.track.id === action.payload);
+      state.playlist.tracks.items[index].track.is_saved = false;
+    });
+
+    builder.addCase(getPlaylistTracksWithOffset.fulfilled, (state, action) => {
+      const playlistItems = state.playlist.tracks.items;
+      const playlistTotal = state.playlist.tracks.total;
+
+      const startIndex = action.meta.arg.startIndex;
+      const offsetItems = action.payload.items.length;
+      const resultSize = startIndex + offsetItems;
+      const exceedingSize = startIndex + offsetItems * 2;
+
+      if (resultSize <= playlistTotal || exceedingSize - playlistTotal <= 50) {
+        action.payload.next !== null
+          ? (state.offsetStatus = "idle")
+          : (state.offsetStatus = "succeeded");
+
+        state.playlist.tracks.next = action.payload.next;
+        state.playlist.tracks.offset = action.payload.offset;
+
+        for (let index = 0; index < offsetItems.length; index++) {
+          if (action.payload.items[index].track !== null) {
+            playlistItems[startIndex + index] = action.payload.items[index];
+          }
+        }
+      }
+    });
+
     builder.addCase(checkSavedPlaylistTracks.fulfilled, (state, action) => {
       const playlist = state.playlist.tracks.items;
       const startIndex = action.meta.arg.startIndex;
       const verifyList = action.meta.arg.ids;
 
       for (let index = 0; index < verifyList.length; index++) {
-        playlist[startIndex + index].track.is_saved = action.payload[index];
+        if (playlist[startIndex + index].track !== null) {
+          playlist[startIndex + index].track.is_saved = action.payload[index];
+        }
       }
     });
-    builder.addCase(savePlaylistTrack.fulfilled, (state, action) => {
-      const list = state.playlist.tracks.items;
-      const index = list.findIndex((item) => item.track.id === action.payload);
-      state.playlist.tracks.items[index].track.is_saved = true;
-    });
-    builder.addCase(removeSavedPlaylistTrack.fulfilled, (state, action) => {
-      const list = state.playlist.tracks.items;
-      const index = list.findIndex((item) => item.track.id === action.payload);
-      state.playlist.tracks.items[index].track.is_saved = false;
-    });
-    builder.addCase(getPlaylistTracksWithOffset.fulfilled, (state, action) => {
-      action.payload.next !== null
-        ? (state.offsetStatus = "idle")
-        : (state.offsetStatus = "succeeded");
-      state.playlist.tracks.next = action.payload.next;
-      state.playlist.tracks.offset = action.payload.offset;
-      state.playlist.tracks.items = state.playlist.tracks.items.concat(
-        action.payload.items
-      );
-    });
+
     builder.addCase(addTrackToPlaylistData.fulfilled, (state, action) => {
       state.playlist.tracks.items = [
         ...state.playlist.tracks.items,
         action.payload,
       ];
     });
+
     builder.addCase(editCurrentPlaylistDetails.fulfilled, (state, action) => {
       state.playlist.name = action.meta.arg.name;
       state.playlist.description = action.meta.arg.description;
@@ -228,10 +252,6 @@ export const playlistSlice = createSlice({
 
 export const selectPlaylistStatus = (state: RootState) => {
   return state.playlist.status;
-};
-
-export const selectPlaylistOffsetStatus = (state: RootState) => {
-  return state.playlist.offsetStatus;
 };
 
 export const selectPlaylist = (state: RootState) => {

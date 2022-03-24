@@ -198,6 +198,7 @@ const ShortcutLinks = styled(List)`
 
 const TestWrapper = styled.div`
   margin-top: 8px;
+  padding-bottom: 16px;
   border-top: 1px solid #292e32;
   flex: 2 1 auto;
   overflow: hidden;
