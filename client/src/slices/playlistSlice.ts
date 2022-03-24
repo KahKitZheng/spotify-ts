@@ -216,7 +216,7 @@ export const playlistSlice = createSlice({
         state.playlist.tracks.next = action.payload.next;
         state.playlist.tracks.offset = action.payload.offset;
 
-        for (let index = 0; index < offsetItems.length; index++) {
+        for (let index = 0; index < offsetItems; index++) {
           if (action.payload.items[index].track !== null) {
             playlistItems[startIndex + index] = action.payload.items[index];
           }
