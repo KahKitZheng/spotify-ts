@@ -2,45 +2,19 @@ import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import Track from "../../components/track";
 import ActionBar from "../../components/actionbar";
+import EditPlaylistModal from "./EditPlaylistModal";
 import * as H from "../../styles/components/headers";
 import * as T from "../../styles/components/track";
+import * as utils from "../../utils";
 import { useDebounce } from "../../hooks";
 import { useParams } from "react-router-dom";
 import { MEDIA } from "../../styles/media";
 import { MdClose } from "react-icons/md";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
-import {
-  extractTrackId,
-  formatAddedAt,
-  formatDuration,
-  stringToHSL,
-  random,
-} from "../../utils";
-import {
-  checkSavedPlaylist,
-  checkSavedPlaylistTracks,
-  countPlaylistDuration,
-  getPlaylistInfo,
-  getPlaylistTracksWithOffset,
-  removeSavedPlaylist,
-  savePlaylist,
-  selectPlaylistStatus,
-} from "../../slices/playlistSlice";
-import {
-  selectPlaylist,
-  selectPlaylistDuration,
-} from "../../slices/playlistSlice";
-import {
-  getAllSearchResults,
-  selectAllSearchResults,
-} from "../../slices/searchResultSlice";
-import {
-  recommendPlaylistTracks,
-  selectRecommendedPlaylistStatus,
-  selectRecommendedPlaylistTracks,
-} from "../../slices/recommendationSlice";
-import EditPlaylistModal from "./EditPlaylistModal";
+import * as playlistSlice from "../../slices/playlistSlice";
+import * as recommendationSlice from "../../slices/recommendationSlice";
+import * as searchResultSlice from "../../slices/searchResultSlice";
 
 const PlaylistPage = () => {
   // Component state
@@ -55,24 +29,24 @@ const PlaylistPage = () => {
   // Store state
   const dispatch = useAppDispatch();
   const userId = useAppSelector(selectCurrentUserId);
-  const playlist = useAppSelector(selectPlaylist);
-  const playlistStatus = useAppSelector(selectPlaylistStatus);
-  const playlistDuration = useAppSelector(selectPlaylistDuration);
-  const searchResults = useAppSelector(selectAllSearchResults);
-  const recommendStatus = useAppSelector(selectRecommendedPlaylistStatus);
-  const recommendedTracks = useAppSelector(selectRecommendedPlaylistTracks);
+  const playlist = useAppSelector(playlistSlice.selectPlaylist);
+  const playlistStatus = useAppSelector(playlistSlice.selectPlaylistStatus);
+  const playlistDuration = useAppSelector(playlistSlice.selectPlaylistDuration);
+  const searchResults = useAppSelector(searchResultSlice.selectSearchResults);
+  const recommendStatus = useAppSelector(recommendationSlice.selectRecommendedPlaylistStatus);
+  const recommendedTracks = useAppSelector(recommendationSlice.selectRecommendedPlaylistTracks);
 
   /** Fetch playlist info plus up to 100 tracks */
   const fetchPlaylistInfo = useCallback(() => {
     if (playlist.id !== id && id !== undefined) {
-      dispatch(getPlaylistInfo({ playlist_id: id }));
+      dispatch(playlistSlice.getPlaylistInfo({ playlist_id: id }));
     }
   }, [dispatch, id, playlist.id]);
 
   /** Check whether the current user has liked the playlist or not*/
   const fetchPlaylistIsSaved = useCallback(() => {
     if (playlistStatus === "succeeded") {
-      dispatch(checkSavedPlaylist({ playlist_id: playlist.id, userId }));
+      dispatch(playlistSlice.checkSavedPlaylist({ playlist_id: playlist.id, userId }));
     }
   }, [dispatch, playlist.id, playlistStatus, userId]);
 
@@ -83,7 +57,7 @@ const PlaylistPage = () => {
     const startIndex = fetchOffset;
 
     if (startIndex >= playlistItems?.length && url !== null) {
-      dispatch(getPlaylistTracksWithOffset({ startIndex, url }));
+      dispatch(playlistSlice.getPlaylistTracksWithOffset({ startIndex, url }));
     }
   }, [dispatch, fetchOffset, playlist.tracks?.items, playlist.tracks?.next]);
 
@@ -95,8 +69,8 @@ const PlaylistPage = () => {
     const endIndex = fetchOffset + incrementBy;
 
     if (startIndex < list?.length && startIndex < playlist.tracks?.total) {
-      const ids = extractTrackId(list?.slice(startIndex, endIndex));
-      dispatch(checkSavedPlaylistTracks({ startIndex, ids })).then(() => {
+      const ids = utils.extractTrackId(list?.slice(startIndex, endIndex));
+      dispatch(playlistSlice.checkSavedPlaylistTracks({ startIndex, ids })).then(() => {
         setFetchOffset(endIndex);
       });
     }
@@ -105,7 +79,7 @@ const PlaylistPage = () => {
   /** Fetch tracks based on the search input */
   const fetchQueryTracks = useCallback(() => {
     if (query !== "" && debouncedValue) {
-      dispatch(getAllSearchResults({ q: query, limit: 10 }));
+      dispatch(searchResultSlice.getAllSearchResults({ q: query, limit: 10 }));
     }
   }, [dispatch, query, debouncedValue]);
 
@@ -123,13 +97,13 @@ const PlaylistPage = () => {
 
       if (playlistItems?.length > 5) {
         for (let index = 0; index < 5; index++) {
-          const randomSeed = random(1, playlistItems?.length);
+          const randomSeed = utils.random(1, playlistItems?.length);
           seed.push(playlistItems[randomSeed].track.id);
         }
       }
 
       if (seed.length > 0) {
-        dispatch(recommendPlaylistTracks({ seed, limit: 10 }));
+        dispatch(recommendationSlice.recommendPlaylistTracks({ seed, limit: 10 }));
       }
     }
   }, [dispatch, playlist.tracks?.items, recommendStatus]);
@@ -137,14 +111,14 @@ const PlaylistPage = () => {
   /** Calculate the playlist duration after all tracks has been fetched */
   const setPlaylistdDuration = useCallback(() => {
     if (playlist.tracks?.next === null) {
-      dispatch(countPlaylistDuration());
+      dispatch(playlistSlice.countPlaylistDuration());
     }
   }, [dispatch, playlist.tracks?.next]);
 
   /** Set the background gradient */
   const setPlaylistBackground = useCallback(() => {
     playlist.tracks?.items.length > 0
-      ? setGradient(stringToHSL(playlist.name))
+      ? setGradient(utils.stringToHSL(playlist.name))
       : setGradient(`hsl(0, 0%, 40%)`);
   }, [playlist.name, playlist.tracks?.items.length]);
 
@@ -179,8 +153,8 @@ const PlaylistPage = () => {
 
   function handleSavePlaylist(isSaved?: boolean) {
     isSaved
-      ? dispatch(removeSavedPlaylist(playlist.id))
-      : dispatch(savePlaylist(playlist.id));
+      ? dispatch(playlistSlice.removeSavedPlaylist(playlist.id))
+      : dispatch(playlistSlice.savePlaylist(playlist.id));
   }
 
   function handleShowModal() {
@@ -209,22 +183,17 @@ const PlaylistPage = () => {
           <H.HeaderExtraInfo>
             By <PlaylistOwner>{playlist.owner?.display_name}</PlaylistOwner>
           </H.HeaderExtraInfo>
-          <H.HeaderName
-            $isOwner={playlist.owner.id === userId}
-            onClick={() => handleShowModal()}
-          >
+          <H.HeaderName $isOwner={playlist.owner.id === userId} onClick={() => handleShowModal()}>
             {playlist.name?.split("/").join("/ ")}
           </H.HeaderName>
           {playlist.description && (
-            <PlaylistDescription
-              dangerouslySetInnerHTML={{ __html: playlist.description }}
-            />
+            <PlaylistDescription dangerouslySetInnerHTML={{ __html: playlist.description }} />
           )}
           <H.HeaderStats>
             {playlist.followers?.total.toLocaleString()} likes
             <span className="bull">&bull;</span>
             {playlist.tracks?.items.length} songs,{" "}
-            {formatDuration(playlistDuration, "playlist")}
+            {utils.formatDuration(playlistDuration, "playlist")}
           </H.HeaderStats>
         </div>
       </H.HeaderWrapper>
@@ -240,9 +209,7 @@ const PlaylistPage = () => {
               variant="playlist"
               index={index}
               item={item.track}
-              addedAt={
-                item.added_at !== null ? formatAddedAt(item.added_at) : ""
-              }
+              addedAt={item.added_at !== null ? utils.formatAddedAt(item.added_at) : ""}
             />
           ))}
         </T.TrackList>
@@ -274,33 +241,31 @@ const PlaylistPage = () => {
             </T.TrackList>
           )}
         </PlaylistDiscovery>
-      ) : (
-        playlist.tracks?.items.length > 0 && (
-          <PlaylistDiscovery>
-            <PlaylistDiscoveryHeaderWrapper>
-              <div>
-                <PlaylistDiscoveryName>Recommended</PlaylistDiscoveryName>
-                <p>Based on what&apos;s in this playlist</p>
-              </div>
-              <ToggleDiscovery onClick={() => setIsSearching(!isSearching)}>
-                Search songs
-              </ToggleDiscovery>
-            </PlaylistDiscoveryHeaderWrapper>
-            <T.TrackList>
-              {recommendedTracks.tracks?.map((track) => (
-                <Track key={track.id} item={track} variant={"playlist-add"} />
-              ))}
-            </T.TrackList>
-            <RefreshRecommendation>refresh</RefreshRecommendation>
-          </PlaylistDiscovery>
-        )
-      )}
+      ) : null}
 
-      <EditPlaylistModal
-        modal={modal}
-        setModal={setModal}
-        playlist={playlist}
-      />
+      {playlist.owner.id === userId && !isSearching
+        ? playlist.tracks?.items.length > 0 && (
+            <PlaylistDiscovery>
+              <PlaylistDiscoveryHeaderWrapper>
+                <div>
+                  <PlaylistDiscoveryName>Recommended</PlaylistDiscoveryName>
+                  <p>Based on what&apos;s in this playlist</p>
+                </div>
+                <ToggleDiscovery onClick={() => setIsSearching(!isSearching)}>
+                  Search songs
+                </ToggleDiscovery>
+              </PlaylistDiscoveryHeaderWrapper>
+              <T.TrackList>
+                {recommendedTracks.tracks?.map((track) => (
+                  <Track key={track.id} item={track} variant={"playlist-add"} />
+                ))}
+              </T.TrackList>
+              <RefreshRecommendation>refresh</RefreshRecommendation>
+            </PlaylistDiscovery>
+          )
+        : null}
+
+      <EditPlaylistModal modal={modal} setModal={setModal} playlist={playlist} />
     </div>
   ) : null;
 };
