@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Modal from "react-modal";
 import styled from "styled-components";
 import Track from "../../components/track";
 import ActionBar from "../../components/actionbar";
@@ -22,7 +21,6 @@ import {
   checkSavedPlaylist,
   checkSavedPlaylistTracks,
   countPlaylistDuration,
-  editCurrentPlaylistDetails,
   getPlaylistInfo,
   getPlaylistTracksWithOffset,
   removeSavedPlaylist,
@@ -33,7 +31,6 @@ import {
   selectPlaylist,
   selectPlaylistDuration,
 } from "../../slices/playlistSlice";
-import { editPlaylistDetails } from "../../slices/currentUserPlaylistsSlice";
 import {
   getAllSearchResults,
   selectAllSearchResults,
@@ -43,8 +40,7 @@ import {
   selectRecommendedPlaylistStatus,
   selectRecommendedPlaylistTracks,
 } from "../../slices/recommendationSlice";
-
-Modal.setAppElement("#root");
+import EditPlaylistModal from "./EditPlaylistModal";
 
 const PlaylistPage = () => {
   // Component state
@@ -54,8 +50,6 @@ const PlaylistPage = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [query, setQuery] = useState("");
   const [modal, setModal] = useState(false);
-  const [playlistName, setPlaylistName] = useState("");
-  const [playlistDescription, setPlaylistDescription] = useState("");
   const debouncedValue = useDebounce<string>(query, 600);
 
   // Store state
@@ -190,20 +184,7 @@ const PlaylistPage = () => {
   }
 
   function handleShowModal() {
-    setPlaylistName(playlist.name);
-    setPlaylistDescription(playlist.description || "");
-
     playlist.owner.id === userId ? setModal(true) : setModal(false);
-  }
-
-  function handleEditPlaylist() {
-    const id = playlist.id;
-    const name = playlistName;
-    const description = playlistDescription;
-
-    dispatch(editPlaylistDetails({ id, name, description }));
-    dispatch(editCurrentPlaylistDetails({ id, name, description }));
-    setModal(false);
   }
 
   return id === playlist.id ? (
@@ -277,8 +258,8 @@ const PlaylistPage = () => {
               <SearchInput
                 type="text"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search for songs"
+                onChange={(e) => setQuery(e.target.value)}
               />
             </PlaylistDiscoveryHeader>
             <ToggleDiscovery onClick={() => setIsSearching(!isSearching)}>
@@ -293,66 +274,33 @@ const PlaylistPage = () => {
             </T.TrackList>
           )}
         </PlaylistDiscovery>
-      ) : null}
+      ) : (
+        playlist.tracks?.items.length > 0 && (
+          <PlaylistDiscovery>
+            <PlaylistDiscoveryHeaderWrapper>
+              <div>
+                <PlaylistDiscoveryName>Recommended</PlaylistDiscoveryName>
+                <p>Based on what&apos;s in this playlist</p>
+              </div>
+              <ToggleDiscovery onClick={() => setIsSearching(!isSearching)}>
+                Search songs
+              </ToggleDiscovery>
+            </PlaylistDiscoveryHeaderWrapper>
+            <T.TrackList>
+              {recommendedTracks.tracks?.map((track) => (
+                <Track key={track.id} item={track} variant={"playlist-add"} />
+              ))}
+            </T.TrackList>
+            <RefreshRecommendation>refresh</RefreshRecommendation>
+          </PlaylistDiscovery>
+        )
+      )}
 
-      {playlist.owner.id === userId && !isSearching ? (
-        <PlaylistDiscovery>
-          <PlaylistDiscoveryHeaderWrapper>
-            <div>
-              <PlaylistDiscoveryName>Recommended</PlaylistDiscoveryName>
-              <p>Based on what&apos;s in this playlist</p>
-            </div>
-            <ToggleDiscovery onClick={() => setIsSearching(!isSearching)}>
-              Search songs
-            </ToggleDiscovery>
-          </PlaylistDiscoveryHeaderWrapper>
-          <T.TrackList>
-            {recommendedTracks.tracks?.map((track) => (
-              <Track key={track.id} item={track} variant={"playlist-add"} />
-            ))}
-          </T.TrackList>
-          <RefreshRecommendation>refresh</RefreshRecommendation>
-        </PlaylistDiscovery>
-      ) : null}
-
-      <Modal
-        isOpen={modal}
-        style={EditModal}
-        onRequestClose={() => setModal(false)}
-      >
-        <Form action="" method="dialog">
-          <FormHeader>
-            <h1>Edit details</h1>
-            <CloseModal onClick={() => setModal(false)}>
-              <MdClose />
-            </CloseModal>
-          </FormHeader>
-          <FormBody>
-            <FormThumbnail>
-              {playlist.images[0] === undefined ? (
-                <EditThumbnail>{playlist.name.slice(0, 1)}</EditThumbnail>
-              ) : (
-                <img src={playlist.images[0].url} alt="" />
-              )}
-            </FormThumbnail>
-            <FormInputGroup>
-              <EditTitle
-                type="text"
-                value={playlistName}
-                onChange={(e) => setPlaylistName(e.target.value)}
-              />
-              <EditDescription
-                value={playlistDescription}
-                onChange={(e) => setPlaylistDescription(e.target.value)}
-                placeholder="Add an optional description"
-              />
-            </FormInputGroup>
-          </FormBody>
-          <FormFooter>
-            <SaveButton onClick={() => handleEditPlaylist()}>Save</SaveButton>
-          </FormFooter>
-        </Form>
-      </Modal>
+      <EditPlaylistModal
+        modal={modal}
+        setModal={setModal}
+        playlist={playlist}
+      />
     </div>
   ) : null;
 };
@@ -443,135 +391,6 @@ const SearchInput = styled.input`
   :focus {
     outline: 1px solid #464646;
   }
-`;
-
-const EditModal = {
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.75)",
-  },
-  content: {
-    inset: "50% auto auto 50%",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    backgroundColor: "#18191d",
-    border: "0",
-    height: "fit-content",
-  },
-};
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-`;
-
-const FormHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-
-  @media (min-width: ${MEDIA.tablet}) {
-    justify-content: space-between;
-  }
-`;
-
-const EditThumbnail = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.bg.card_thumbnail_placeholder};
-  color: ${({ theme }) => theme.font.title};
-  font-weight: 700;
-  font-size: 82px;
-  height: 200px;
-  width: 200px;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  margin-bottom: 16px;
-  box-shadow: 0 0 32px rgba(0, 0, 0, 0.3);
-
-  @media (min-width: ${MEDIA.tablet}) {
-    margin-bottom: 0;
-  }
-`;
-
-const CloseModal = styled.button`
-  border: 0;
-  background-color: transparent;
-  color: currentColor;
-  cursor: pointer;
-
-  @media (max-width: ${MEDIA.tablet}) {
-    display: none;
-  }
-`;
-
-const FormBody = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 16px;
-
-  @media (min-width: ${MEDIA.tablet}) {
-    align-items: flex-start;
-    flex-direction: row;
-  }
-`;
-
-const FormThumbnail = styled.div`
-  width: auto;
-  max-width: 200px;
-  aspect-ratio: 1;
-`;
-
-const FormInputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 40ch;
-`;
-
-const EditTitle = styled.input`
-  padding: 8px 12px;
-  background-color: #222328;
-  border: 0;
-  color: ${({ theme }) => theme.font.text};
-
-  :active,
-  :focus {
-    outline: 1px solid #464646;
-  }
-`;
-
-const EditDescription = styled.textarea`
-  flex: 2 1 auto;
-  height: 18ch;
-  padding: 8px 12px;
-  background-color: #222328;
-  color: ${({ theme }) => theme.font.text};
-  border: 0;
-  resize: none;
-
-  :active,
-  :focus {
-    outline: 1px solid #464646;
-  }
-`;
-
-const FormFooter = styled.div`
-  height: auto;
-  display: flex;
-  justify-content: center;
-
-  @media (min-width: ${MEDIA.tablet}) {
-    justify-content: flex-end;
-  }
-`;
-
-const SaveButton = styled.button`
-  width: fit-content;
-  margin-top: 16px;
 `;
 
 export default PlaylistPage;
