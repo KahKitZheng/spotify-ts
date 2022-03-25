@@ -1,10 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import styled from "styled-components";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import {
-  TiHomeOutline as HomeOutline,
-  TiHome as HomeFill,
-} from "react-icons/ti";
+import { TiHomeOutline as HomeOutline, TiHome as HomeFill } from "react-icons/ti";
 import {
   IoSearchOutline as SearchOutline,
   IoSearch as SearchFill,
@@ -15,14 +12,7 @@ import {
 } from "react-icons/md";
 import { MdAddBox, MdMusicNote } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  createPlaylist,
-  getCurrentUserPlaylists,
-  getPlaylistWithOffset,
-  selectCurrentUserPlaylists,
-  selectSavedPlaylistsOffsetStatus,
-  selectSavedPlaylistsStatus,
-} from "../../slices/currentUserPlaylistsSlice";
+import * as savedPlaylists from "../../slices/userSavedPlaylistsSlice";
 import { overflowNoScrollbar, textOverflow } from "../../styles/utils";
 import { MEDIA } from "../../styles/media";
 import { selectCurrentUser } from "../../slices/currentUserSlice";
@@ -33,23 +23,23 @@ const Sidebar = () => {
   const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectCurrentUser);
-  const playlists = useAppSelector(selectCurrentUserPlaylists);
-  const status = useAppSelector(selectSavedPlaylistsStatus);
-  const offsetStatus = useAppSelector(selectSavedPlaylistsOffsetStatus);
+  const playlists = useAppSelector(savedPlaylists.selectUserPlaylists);
+  const status = useAppSelector(savedPlaylists.selectPlaylistsStatus);
+  const offsetStatus = useAppSelector(savedPlaylists.selectPlaylistsOffsetStatus);
 
   useEffect(() => {
     if (status === "idle") {
-      dispatch(getCurrentUserPlaylists());
+      dispatch(savedPlaylists.getCurrentUserPlaylists({ limit: 50 }));
     }
     if (offsetStatus === "idle" && playlists.next !== null) {
-      dispatch(getPlaylistWithOffset({ url: playlists.next }));
+      dispatch(savedPlaylists.getPlaylistWithOffset({ url: playlists.next }));
     }
   }, [dispatch, offsetStatus, playlists.next, playlists.offset, status]);
 
   function createNewPlaylist() {
-    dispatch(createPlaylist({ user_id: user.id, name: "New Playlist" })).then(
-      (res) => navigate(`/playlist/${res.payload.id}`)
-    );
+    dispatch(
+      savedPlaylists.createPlaylist({ user_id: user.id, name: "New Playlist" })
+    ).then((res) => navigate(`/playlist/${res.payload.id}`));
   }
 
   return playlists.items ? (
@@ -66,11 +56,7 @@ const Sidebar = () => {
         <li>
           <ListItem to="/search">
             <ListItemIcon>
-              {location.pathname === "/search" ? (
-                <SearchFill />
-              ) : (
-                <SearchOutline />
-              )}
+              {location.pathname === "/search" ? <SearchFill /> : <SearchOutline />}
             </ListItemIcon>
             <ListItemText>Search</ListItemText>
           </ListItem>
@@ -78,11 +64,7 @@ const Sidebar = () => {
         <li>
           <ListItem to="/library">
             <ListItemIcon>
-              {location.pathname === "/library" ? (
-                <LibraryFill />
-              ) : (
-                <LibraryOutline />
-              )}
+              {location.pathname === "/library" ? <LibraryFill /> : <LibraryOutline />}
             </ListItemIcon>
             <ListItemText>Your Library</ListItemText>
           </ListItem>

@@ -4,51 +4,35 @@ import Card from "../../components/card";
 import UserSummary from "./UserSummary";
 import * as S from "../../styles/components/section";
 import { Link } from "react-router-dom";
-import { CollectionOverflow } from "../../components/collection";
 import { random } from "../../utils";
+import { CollectionOverflow } from "../../components/collection";
+import { Artist } from "../../types/SpotifyObjects";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectCurrentUser } from "../../slices/currentUserSlice";
-import { selectCurrentUserPlaylists } from "../../slices/currentUserPlaylistsSlice";
-import {
-  getRecentTracks,
-  selectRecentTracks,
-} from "../../slices/recentTrackSlice";
-import {
-  getTopArtists,
-  getTopTracks,
-  selectTopArtists,
-  selectTopTracks,
-} from "../../slices/topItemsSlice";
-import {
-  recommendArtistTracks,
-  selectRecommendedArtistTracks,
-} from "../../slices/recommendationSlice";
-import {
-  getUserSavedArtists,
-  selectUserSavedArtists,
-} from "../../slices/userSavedArtistsSlice";
-import { Artist } from "../../types/SpotifyObjects";
+import { selectUserPlaylists } from "../../slices/userSavedPlaylistsSlice";
+import { getRecentTracks, selectRecentTracks } from "../../slices/recentTrackSlice";
+import * as topItems from "../../slices/topItemsSlice";
+import * as recommend from "../../slices/recommendationSlice";
+import * as savedArtists from "../../slices/userSavedArtistsSlice";
 
 const HomePage = () => {
   const [seedArtist, setSeedArtist] = useState({} as Artist);
 
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
-  const savedArtists = useAppSelector(selectUserSavedArtists);
-  const userPlaylists = useAppSelector(selectCurrentUserPlaylists);
+  const likedArtists = useAppSelector(savedArtists.selectSavedArtists);
+  const userPlaylists = useAppSelector(selectUserPlaylists);
   const recentTracks = useAppSelector(selectRecentTracks);
-  const topArtists = useAppSelector(selectTopArtists);
-  const topTracks = useAppSelector(selectTopTracks);
-  const recommendArtists = useAppSelector(selectRecommendedArtistTracks);
+  const topArtists = useAppSelector(topItems.selectTopArtists);
+  const topTracks = useAppSelector(topItems.selectTopTracks);
+  const recommendArtists = useAppSelector(recommend.selectRecommendedArtistTracks);
 
   const userSavedArtistsStatus = useSelector(
     (state: RootState) => state.userSavedArtists.status
   );
-  const recentTracksStatus = useSelector(
-    (state: RootState) => state.recentTracks.status
-  );
+  const recentTracksStatus = useSelector((state: RootState) => state.recentTracks.status);
 
   useEffect(() => {
     // Remove the access token in url after signing in
@@ -59,7 +43,7 @@ const HomePage = () => {
     }
 
     if (userSavedArtistsStatus === "idle") {
-      dispatch(getUserSavedArtists({ type: "artist" }));
+      dispatch(savedArtists.getUserSavedArtists({ type: "artist" }));
     }
   }, [dispatch, recentTracksStatus, seedArtist, userSavedArtistsStatus]);
 
@@ -68,16 +52,16 @@ const HomePage = () => {
       const seed = topArtists.short_term?.items[random(0, 11)];
 
       setSeedArtist(seed);
-      dispatch(recommendArtistTracks({ seed: [seed.id], limit: 10 }));
+      dispatch(recommend.recommendArtistTracks({ seed: [seed.id], limit: 10 }));
     }
   }, [dispatch, topArtists.short_term]);
 
   useEffect(() => {
     if (topArtists.short_term === undefined) {
-      dispatch(getTopArtists({ limit: 10, time_range: "short_term" }));
+      dispatch(topItems.getTopArtists({ limit: 10, time_range: "short_term" }));
     }
     if (topTracks.short_term === undefined) {
-      dispatch(getTopTracks({ limit: 10, time_range: "short_term" }));
+      dispatch(topItems.getTopTracks({ limit: 10, time_range: "short_term" }));
     }
   }, [dispatch, topArtists.short_term, topTracks.short_term]);
 
@@ -87,14 +71,12 @@ const HomePage = () => {
         image={user.images && user.images[0].url}
         name={user.display_name || "Not Available"}
         followerCount={user.followers?.total}
-        followingCount={savedArtists.artists?.total}
+        followingCount={likedArtists.artists?.total}
         playlistCount={userPlaylists?.total}
       />
 
       <S.Section>
-        <S.SectionLink to="/genre/recently-played">
-          Recently played
-        </S.SectionLink>
+        <S.SectionLink to="/genre/recently-played">Recently played</S.SectionLink>
         <CollectionOverflow>
           {recentTracks.items?.slice(0, 10).map((item, index) => (
             <Card key={index} variant="recently-played" item={item} overflow />
@@ -124,12 +106,7 @@ const HomePage = () => {
         <S.SectionLink to="/library">Your playlists</S.SectionLink>
         <CollectionOverflow>
           {userPlaylists.items?.slice(0, 10).map((playlist) => (
-            <Card
-              key={playlist.id}
-              variant="playlist"
-              item={playlist}
-              overflow
-            />
+            <Card key={playlist.id} variant="playlist" item={playlist} overflow />
           ))}
         </CollectionOverflow>
       </S.Section>

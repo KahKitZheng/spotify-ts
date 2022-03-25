@@ -24,9 +24,7 @@ export const getUserSavedAlbums = createAsyncThunk(
   async (data?: fetchParams) => {
     if (data) {
       const { limit = 20, offset = 0 } = data;
-      const response = await axios.get(
-        `/me/albums?limit=${limit}&offset=${offset}`
-      );
+      const response = await axios.get(`/me/albums?limit=${limit}&offset=${offset}`);
       return response.data;
     } else {
       const response = await axios.get(`/me/albums?limit=20`);
@@ -54,8 +52,12 @@ export const userSavedAlbumsSlice = createSlice({
   },
 });
 
-export const selectUserSavedAlbums = (state: RootState) => {
+export const selectSavedAlbums = (state: RootState) => {
   return state.userSavedAlbums.followedAlbums;
+};
+
+export const selectSavedAlbumsStatus = (state: RootState) => {
+  return state.userSavedAlbums.status;
 };
 
 export default userSavedAlbumsSlice.reducer;

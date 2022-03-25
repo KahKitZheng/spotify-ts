@@ -13,12 +13,12 @@ const BrowseCategories = () => {
       <h3>Browse all</h3>
       <CategoriesGrid>
         {categories.items?.map((category) => (
-          <Link key={category.id} to={`/category/${category.id}`}>
+          <CategoryWrapper key={category.id} to={`/category/${category.id}`}>
             <CategoryCard bgColor={stringToHSL(category.name)}>
               <CategoryName>{category.name.split("/").join("/ ")}</CategoryName>
               <CategoryCover src={category.icons[0].url} alt="" />
             </CategoryCard>
-          </Link>
+          </CategoryWrapper>
         ))}
       </CategoriesGrid>
     </CategoriesWrapper>
@@ -66,6 +66,12 @@ const CategoriesGrid = styled.div`
 
   @media (min-width: 1560px) {
     --categoryRepeat: 8;
+  }
+`;
+
+const CategoryWrapper = styled(Link)`
+  :hover {
+    text-decoration: none;
   }
 `;
 

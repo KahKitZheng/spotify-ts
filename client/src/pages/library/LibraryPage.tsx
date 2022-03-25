@@ -1,56 +1,39 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import Card from "../../components/card";
-import { CollectionGrid } from "../../components/collection";
-import { overflowNoScrollbar } from "../../styles/utils";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { resetScroll } from "../../utils";
-import {
-  getUserSavedArtists,
-  selectUserSavedArtists,
-} from "../../slices/userSavedArtistsSlice";
-import {
-  getUserSavedAlbums,
-  selectUserSavedAlbums,
-} from "../../slices/userSavedAlbumsSlice";
-import {
-  getCurrentUserPlaylists,
-  selectCurrentUserPlaylists,
-} from "../../slices/currentUserPlaylistsSlice";
+import { overflowNoScrollbar } from "../../styles/utils";
+import { CollectionGrid } from "../../components/collection";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import * as savedArtists from "../../slices/userSavedArtistsSlice";
+import * as savedAlbums from "../../slices/userSavedAlbumsSlice";
+import * as savedPlaylists from "../../slices/userSavedPlaylistsSlice";
 
 const LibraryPage = () => {
   const dispatch = useAppDispatch();
   const tabWrapper = useRef<HTMLDivElement>(null);
 
-  const savedArtists = useAppSelector(selectUserSavedArtists);
-  const savedArtistsStatus = useSelector(
-    (state: RootState) => state.userSavedArtists.status
-  );
+  const likedArtists = useAppSelector(savedArtists.selectSavedArtists);
+  const likedArtistsStatus = useAppSelector(savedArtists.selectSavedArtistsStatus);
 
-  const savedAlbums = useAppSelector(selectUserSavedAlbums);
-  const savedAlbumsStatus = useSelector(
-    (state: RootState) => state.userSavedAlbums.status
-  );
+  const likedAlbums = useAppSelector(savedAlbums.selectSavedAlbums);
+  const likedAlbumsStatus = useAppSelector(savedAlbums.selectSavedAlbumsStatus);
 
-  const savedPlaylists = useAppSelector(selectCurrentUserPlaylists);
-  const savedPlaylistsStatus = useSelector(
-    (state: RootState) => state.currentUserPlaylists.status
-  );
+  const likedPlaylists = useAppSelector(savedPlaylists.selectUserPlaylists);
+  const likedPlaylistsStatus = useAppSelector(savedPlaylists.selectPlaylistsStatus);
 
   useEffect(() => {
-    if (savedArtistsStatus === "idle") {
-      dispatch(getUserSavedArtists({ type: "artist", limit: 50 }));
+    if (likedArtistsStatus === "idle") {
+      dispatch(savedArtists.getUserSavedArtists({ type: "artist", limit: 50 }));
     }
-    if (savedAlbumsStatus === "idle") {
-      dispatch(getUserSavedAlbums({ limit: 50 }));
+    if (likedAlbumsStatus === "idle") {
+      dispatch(savedAlbums.getUserSavedAlbums({ limit: 50 }));
     }
-    if (savedPlaylistsStatus === "idle") {
-      dispatch(getCurrentUserPlaylists({ limit: 50 }));
+    if (likedPlaylistsStatus === "idle") {
+      dispatch(savedPlaylists.getCurrentUserPlaylists({ limit: 50 }));
     }
-  }, [dispatch, savedAlbumsStatus, savedArtistsStatus, savedPlaylistsStatus]);
+  }, [dispatch, likedAlbumsStatus, likedArtistsStatus, likedPlaylistsStatus]);
 
   return (
     <TabsWrapper>
@@ -62,21 +45,21 @@ const LibraryPage = () => {
       <TabPanelWrapper ref={tabWrapper}>
         <TabPanel>
           <CollectionGrid>
-            {savedPlaylists.items?.map((playlist) => (
+            {likedPlaylists.items?.map((playlist) => (
               <Card key={playlist.id} variant="playlist" item={playlist} />
             ))}
           </CollectionGrid>
         </TabPanel>
         <TabPanel>
           <CollectionGrid>
-            {savedArtists.artists?.items.map((artist) => (
+            {likedArtists.artists?.items.map((artist) => (
               <Card key={artist.id} variant="artist" item={artist} />
             ))}
           </CollectionGrid>
         </TabPanel>
         <TabPanel>
           <CollectionGrid>
-            {savedAlbums.items?.map((item) => (
+            {likedAlbums.items?.map((item) => (
               <Card key={item.album.id} variant="album-saved" item={item} />
             ))}
           </CollectionGrid>

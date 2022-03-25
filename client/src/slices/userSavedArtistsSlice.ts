@@ -54,8 +54,12 @@ export const userSavedArtistsSlice = createSlice({
   },
 });
 
-export const selectUserSavedArtists = (state: RootState) => {
+export const selectSavedArtists = (state: RootState) => {
   return state.userSavedArtists.followedArtists;
+};
+
+export const selectSavedArtistsStatus = (state: RootState) => {
+  return state.userSavedArtists.status;
 };
 
 export default userSavedArtistsSlice.reducer;

@@ -5,7 +5,7 @@ import { MEDIA } from "../../styles/media";
 import { MdClose } from "react-icons/md";
 import { useAppDispatch } from "../../app/hooks";
 import { Playlist } from "../../types/SpotifyObjects";
-import { editPlaylistDetails } from "../../slices/currentUserPlaylistsSlice";
+import { editPlaylistDetails } from "../../slices/userSavedPlaylistsSlice";
 import { editCurrentPlaylistDetails } from "../../slices/playlistSlice";
 
 Modal.setAppElement("#root");

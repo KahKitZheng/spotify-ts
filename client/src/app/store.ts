@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import currentUserReducer from "../slices/currentUserSlice";
-import currentUserPlaylistsReducer from "../slices/currentUserPlaylistsSlice";
+import currentUserPlaylistsReducer from "../slices/userSavedPlaylistsSlice";
 import recentTracksReducer from "../slices/recentTrackSlice";
 import topItemsReducer from "../slices/topItemsSlice";
 import recommendationSlice from "../slices/recommendationSlice";
