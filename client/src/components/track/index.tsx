@@ -26,6 +26,7 @@ import {
   SimplifiedTrack,
   Track,
 } from "../../types/SpotifyObjects";
+import { replaceRecommendationTrack } from "../../slices/recommendationSlice";
 
 interface Props {
   variant:
@@ -199,6 +200,7 @@ const PlaylistAddTrack = (props: { item: Track }) => {
     if (id !== undefined) {
       dispatch(addTrackToPlaylist({ playlist_id: id, uris: [item.uri] }));
       dispatch(addTrackToPlaylistData(item.id));
+      dispatch(replaceRecommendationTrack({ id: item.id }));
     }
   }
 
@@ -211,12 +213,16 @@ const PlaylistAddTrack = (props: { item: Track }) => {
           <T.TrackArtists>
             {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
             {renderArtists(item.artists)}
+            <span className="bull"></span>
+            <T.AddPlaylistTrackAlbum>
+              <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
+            </T.AddPlaylistTrackAlbum>
           </T.TrackArtists>
         </T.TrackDetails>
       </T.TrackInfo>
-      <T.TrackAlbum>
+      <T.AddPlaylistTrackAlbumSection>
         <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
-      </T.TrackAlbum>
+      </T.AddPlaylistTrackAlbumSection>
       <T.TrackDuration>
         <span>{formatDuration(item.duration_ms, "track")}</span>
         <T.AddTrackToPlaylist onClick={() => addTrack()}>

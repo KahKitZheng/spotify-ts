@@ -40,6 +40,7 @@ import {
 } from "../../slices/searchResultSlice";
 import {
   recommendPlaylistTracks,
+  selectRecommendedPlaylistStatus,
   selectRecommendedPlaylistTracks,
 } from "../../slices/recommendationSlice";
 
@@ -48,10 +49,11 @@ Modal.setAppElement("#root");
 const PlaylistPage = () => {
   // Component state
   const { id } = useParams();
-  const [query, setQuery] = useState("");
-  const [modal, setModal] = useState(false);
   const [fetchOffset, setFetchOffset] = useState(0);
   const [gradient, setGradient] = useState(`hsl(0, 0%, 40%)`);
+  const [isSearching, setIsSearching] = useState(false);
+  const [query, setQuery] = useState("");
+  const [modal, setModal] = useState(false);
   const [playlistName, setPlaylistName] = useState("");
   const [playlistDescription, setPlaylistDescription] = useState("");
   const debouncedValue = useDebounce<string>(query, 600);
@@ -63,6 +65,7 @@ const PlaylistPage = () => {
   const playlistStatus = useAppSelector(selectPlaylistStatus);
   const playlistDuration = useAppSelector(selectPlaylistDuration);
   const searchResults = useAppSelector(selectAllSearchResults);
+  const recommendStatus = useAppSelector(selectRecommendedPlaylistStatus);
   const recommendedTracks = useAppSelector(selectRecommendedPlaylistTracks);
 
   /** Fetch playlist info plus up to 100 tracks */
@@ -108,7 +111,7 @@ const PlaylistPage = () => {
   /** Fetch tracks based on the search input */
   const fetchQueryTracks = useCallback(() => {
     if (query !== "" && debouncedValue) {
-      dispatch(getAllSearchResults({ q: query, limit: 30 }));
+      dispatch(getAllSearchResults({ q: query, limit: 10 }));
     }
   }, [dispatch, query, debouncedValue]);
 
@@ -117,23 +120,25 @@ const PlaylistPage = () => {
     const playlistItems = playlist.tracks?.items;
     const seed = [];
 
-    if (0 > playlistItems?.length && playlistItems?.length <= 5) {
-      playlistItems.forEach((item) => {
-        seed.push(item.track.id);
-      });
-    }
+    if (recommendStatus === "idle") {
+      if (0 < playlistItems?.length && playlistItems?.length <= 5) {
+        playlistItems.forEach((item) => {
+          seed.push(item.track.id);
+        });
+      }
 
-    if (playlistItems?.length > 5) {
-      for (let index = 0; index < 5; index++) {
-        const randomSeed = random(1, playlistItems?.length);
-        seed.push(playlistItems[randomSeed].track.id);
+      if (playlistItems?.length > 5) {
+        for (let index = 0; index < 5; index++) {
+          const randomSeed = random(1, playlistItems?.length);
+          seed.push(playlistItems[randomSeed].track.id);
+        }
+      }
+
+      if (seed.length > 0) {
+        dispatch(recommendPlaylistTracks({ seed, limit: 10 }));
       }
     }
-
-    if (seed.length > 0) {
-      dispatch(recommendPlaylistTracks({ seed, limit: 20 }));
-    }
-  }, [dispatch, playlist.tracks?.items]);
+  }, [dispatch, playlist.tracks?.items, recommendStatus]);
 
   /** Calculate the playlist duration after all tracks has been fetched */
   const setPlaylistdDuration = useCallback(() => {
@@ -237,7 +242,7 @@ const PlaylistPage = () => {
           <H.HeaderStats>
             {playlist.followers?.total.toLocaleString()} likes
             <span className="bull">&bull;</span>
-            {playlist.tracks?.total} songs,{" "}
+            {playlist.tracks?.items.length} songs,{" "}
             {formatDuration(playlistDuration, "playlist")}
           </H.HeaderStats>
         </div>
@@ -248,33 +253,38 @@ const PlaylistPage = () => {
       />
       {playlist.tracks.items?.length > 0 && (
         <T.TrackList>
-          {playlist.tracks?.items
-            // .filter((i) => i.track !== null)
-            .map((item, index) => (
-              <Track
-                key={item.track.id}
-                variant="playlist"
-                index={index}
-                item={item.track}
-                addedAt={
-                  item.added_at !== null ? formatAddedAt(item.added_at) : ""
-                }
-              />
-            ))}
+          {playlist.tracks?.items.map((item, index) => (
+            <Track
+              key={item.track.id}
+              variant="playlist"
+              index={index}
+              item={item.track}
+              addedAt={
+                item.added_at !== null ? formatAddedAt(item.added_at) : ""
+              }
+            />
+          ))}
         </T.TrackList>
       )}
 
-      {/* {playlist.owner.id === userId ? (
-        <PlaylistSection>
-          <PlaylistSectionName>
-            Let&apos;s find something for your playlist
-          </PlaylistSectionName>
-          <SearchInput
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search for songs"
-          />
+      {playlist.owner.id === userId && isSearching ? (
+        <PlaylistDiscovery>
+          <PlaylistDiscoveryHeaderWrapper>
+            <PlaylistDiscoveryHeader>
+              <PlaylistDiscoveryName>
+                Let&apos;s find something for your playlist
+              </PlaylistDiscoveryName>
+              <SearchInput
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search for songs"
+              />
+            </PlaylistDiscoveryHeader>
+            <ToggleDiscovery onClick={() => setIsSearching(!isSearching)}>
+              <MdClose />
+            </ToggleDiscovery>
+          </PlaylistDiscoveryHeaderWrapper>
           {query !== "" && (
             <T.TrackList>
               {searchResults.tracks?.items.map((track) => (
@@ -282,25 +292,28 @@ const PlaylistPage = () => {
               ))}
             </T.TrackList>
           )}
-        </PlaylistSection>
+        </PlaylistDiscovery>
       ) : null}
 
-      {playlist.owner.id === userId ? (
-        <PlaylistSection>
-          <PlaylistHeader>
+      {playlist.owner.id === userId && !isSearching ? (
+        <PlaylistDiscovery>
+          <PlaylistDiscoveryHeaderWrapper>
             <div>
-              <PlaylistSectionName>Recommended</PlaylistSectionName>
-              <small>Based on what&apos;s in this playlist</small>
+              <PlaylistDiscoveryName>Recommended</PlaylistDiscoveryName>
+              <p>Based on what&apos;s in this playlist</p>
             </div>
-            <RefreshRecommendation>refresh</RefreshRecommendation>
-          </PlaylistHeader>
+            <ToggleDiscovery onClick={() => setIsSearching(!isSearching)}>
+              Search songs
+            </ToggleDiscovery>
+          </PlaylistDiscoveryHeaderWrapper>
           <T.TrackList>
             {recommendedTracks.tracks?.map((track) => (
               <Track key={track.id} item={track} variant={"playlist-add"} />
             ))}
           </T.TrackList>
-        </PlaylistSection>
-      ) : null} */}
+          <RefreshRecommendation>refresh</RefreshRecommendation>
+        </PlaylistDiscovery>
+      ) : null}
 
       <Modal
         isOpen={modal}
@@ -356,23 +369,47 @@ const PlaylistDescription = styled.p`
   color: #cecece;
 `;
 
-const PlaylistSection = styled.section`
+const PlaylistDiscovery = styled.section`
   position: relative;
-  margin-top: 16px;
+  margin-top: 64px;
 `;
 
-const PlaylistHeader = styled.div`
+const PlaylistDiscoveryHeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const PlaylistSectionName = styled.h2`
+const PlaylistDiscoveryHeader = styled.div`
+  flex: 2 1 auto;
+`;
+
+const PlaylistDiscoveryName = styled.h2`
   font-size: 20px;
   line-height: 1.2;
 
   @media (min-width: ${MEDIA.tablet}) {
     font-size: revert;
+  }
+`;
+
+const ToggleDiscovery = styled.button`
+  flex: 0 1 auto;
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.white};
+  border: 0;
+  margin-left: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  cursor: pointer;
+
+  @media (max-width: ${MEDIA.mobile}) {
+    display: none;
+  }
+
+  @media (min-width: ${MEDIA.tablet}) {
+    font-size: 14px;
   }
 `;
 
@@ -382,7 +419,7 @@ const RefreshRecommendation = styled.button`
   border: 0;
   margin-right: 16px;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.1s ease-in;
@@ -395,8 +432,8 @@ const RefreshRecommendation = styled.button`
 const SearchInput = styled.input`
   margin-top: 12px;
   padding: 4px 8px;
-  width: 400px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 400px;
   border-radius: 4px;
   background-color: #222328;
   border: 0;

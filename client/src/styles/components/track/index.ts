@@ -44,6 +44,13 @@ export const Track = styled.div`
   }
 `;
 
+export const OrderedTrack = styled(Track)`
+  @media (min-width: ${MEDIA.mobile}) {
+    grid-template-columns: 24px 10fr 80px;
+    grid-template-areas: "track-index track-info track-duration";
+  }
+`;
+
 export const TrackDiscInfo = styled(Track)`
   grid-template-columns: 24px 80px;
   grid-template-areas: "disc-icon disc-number";
@@ -60,13 +67,6 @@ export const TrackDiscInfo = styled(Track)`
   }
 `;
 
-export const OrderedTrack = styled(Track)`
-  @media (min-width: ${MEDIA.mobile}) {
-    grid-template-columns: 24px 10fr 80px;
-    grid-template-areas: "track-index track-info track-duration";
-  }
-`;
-
 export const PlaylistTrack = styled(OrderedTrack)`
   @media (min-width: ${MEDIA.tablet}) {
     grid-template-columns: 24px 6fr 4fr 80px;
@@ -80,9 +80,12 @@ export const PlaylistTrack = styled(OrderedTrack)`
 `;
 
 export const PlaylistAddTrack = styled(Track)`
-  @media (min-width: ${MEDIA.tablet}) {
-    grid-template-columns: 6fr 4fr 80px;
-    grid-template-areas: "track-info track-album track-duration";
+  grid-template-columns: 1fr 160px;
+  grid-template-areas: "track-info track-duration";
+
+  @media (min-width: ${MEDIA.laptop}) {
+    grid-template-columns: 6fr 4fr 160px;
+    grid-template-areas: "track-info add-playlist-track-album track-duration";
   }
 `;
 
@@ -122,6 +125,14 @@ export const TrackAlbum = styled.div`
   }
 
   @media (max-width: ${MEDIA.tablet}) {
+    display: none;
+  }
+`;
+
+export const AddPlaylistTrackAlbumSection = styled.div`
+  grid-area: add-playlist-track-album;
+
+  @media (max-width: ${MEDIA.laptop}) {
     display: none;
   }
 `;
@@ -173,6 +184,12 @@ export const TrackArtists = styled.p`
 
   a {
     color: ${({ theme }) => theme.font.text};
+  }
+`;
+
+export const AddPlaylistTrackAlbum = styled.span`
+  @media (min-width: ${MEDIA.laptop}) {
+    display: none;
   }
 `;
 

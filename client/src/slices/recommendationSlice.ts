@@ -1,4 +1,5 @@
 import axios from "axios";
+import { random } from "../utils";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RecommendationSeed, Track } from "../types/SpotifyObjects";
@@ -11,23 +12,20 @@ interface RecommendationResponse {
 interface RecommendationState {
   artists: RecommendationResponse;
   playlistTracks: RecommendationResponse;
-  status: "idle" | "loading" | "succeeded" | "failed";
+  artistTracksStatus: "idle" | "loading" | "succeeded" | "failed";
+  playlistTracksStatus: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: RecommendationState = {
   artists: {} as RecommendationResponse,
   playlistTracks: {} as RecommendationResponse,
-  status: "idle",
-};
-
-type fetchParams = {
-  seed: string[];
-  limit: number;
+  artistTracksStatus: "idle",
+  playlistTracksStatus: "idle",
 };
 
 export const recommendArtistTracks = createAsyncThunk(
   "recommendation/recommendArtistTracks",
-  async (data: fetchParams) => {
+  async (data: { seed: string[]; limit?: number }) => {
     const { seed, limit = 20 } = data;
     const response = await axios.get(
       `/recommendations?seed_artists=${seed.join()}&limit=${limit}`
@@ -38,10 +36,37 @@ export const recommendArtistTracks = createAsyncThunk(
 
 export const recommendPlaylistTracks = createAsyncThunk(
   "recommendation/recommendPlaylistTracks",
-  async (data: fetchParams) => {
+  async (data: { seed: string[]; limit?: number }) => {
     const { seed, limit = 20 } = data;
     const response = await axios.get(
       `/recommendations?seed_tracks=${seed.join()}&limit=${limit}`
+    );
+    return response.data;
+  }
+);
+
+export const replaceRecommendationTrack = createAsyncThunk(
+  "recommendation/replaceRecommendationTrack",
+  async (data: { id: string }, thunkApi) => {
+    const seed = [];
+    const state = thunkApi.getState() as RootState;
+    const playlistItems = state.recommendations.playlistTracks;
+
+    if (0 < playlistItems.tracks?.length && playlistItems.tracks?.length <= 5) {
+      playlistItems.tracks.forEach((item) => {
+        seed.push(item.id);
+      });
+    }
+
+    if (playlistItems.tracks?.length > 5) {
+      for (let index = 0; index < 5; index++) {
+        const randomSeed = random(1, playlistItems.tracks?.length);
+        seed.push(playlistItems.tracks[randomSeed].id);
+      }
+    }
+
+    const response = await axios.get(
+      `/recommendations?seed_tracks=${seed.join()}&limit=1`
     );
     return response.data;
   }
@@ -54,15 +79,28 @@ export const recommendationSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(recommendArtistTracks.fulfilled, (state, action) => {
       state.artists = action.payload;
+      state.artistTracksStatus = "succeeded";
     });
     builder.addCase(recommendPlaylistTracks.fulfilled, (state, action) => {
       state.playlistTracks = action.payload;
+      state.playlistTracksStatus = "succeeded";
+    });
+    builder.addCase(replaceRecommendationTrack.fulfilled, (state, action) => {
+      const tracks = state.playlistTracks.tracks;
+      const trackId = action.meta.arg.id;
+      const trackIndex = tracks.findIndex((track) => track.id === trackId);
+
+      state.playlistTracks.tracks[trackIndex] = action.payload.tracks[0];
     });
   },
 });
 
-export const selectRecommendedStatus = (state: RootState) => {
-  return state.recommendations.status;
+export const selectRecommendedArtistStatus = (state: RootState) => {
+  return state.recommendations.artistTracksStatus;
+};
+
+export const selectRecommendedPlaylistStatus = (state: RootState) => {
+  return state.recommendations.playlistTracksStatus;
 };
 
 export const selectRecommendedArtistTracks = (state: RootState) => {
