@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Sidebar from "./sidebar";
+import { BottomTabs, Sidebar } from "./navigation";
 import MainViewWrapper from "./MainViewWrapper";
-import BottomTabs from "./navigation/BottomTabs";
 
 import HomePage from "../pages/home";
 import PageNotFound from "../pages/404";
