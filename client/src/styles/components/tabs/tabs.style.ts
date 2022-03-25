@@ -10,21 +10,18 @@ export const PageWrapper = styled.div`
 
 export const TabHeader = styled.ul`
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   list-style: none;
-  position: fixed;
-  z-index: 5;
-  margin: -16px;
+  margin: -16px -16px -32px;
   padding: 16px;
   background-color: ${({ theme }) => theme.bg.main};
   border-bottom: 1px solid #21242f;
-  width: 100%;
 `;
 
-export const Tab = styled.button<{ $isActive: boolean }>`
-  background-color: ${({ $isActive }) =>
-    $isActive ? "#21242f" : "transparent"};
-  color: ${({ $isActive, theme }) =>
-    $isActive ? theme.font.title : "currentColor"};
+export const Tab = styled.button<{ $isActive?: boolean }>`
+  background-color: ${({ $isActive }) => ($isActive ? "#21242f" : "transparent")};
+  color: ${({ $isActive, theme }) => ($isActive ? theme.font.title : "currentColor")};
   font-size: 14px;
   border: 0;
   border-radius: 4px;
