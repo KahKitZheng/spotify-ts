@@ -10,14 +10,14 @@ interface RecommendationResponse {
 }
 
 interface RecommendationState {
-  artists: RecommendationResponse;
+  artistsTracks: RecommendationResponse;
   playlistTracks: RecommendationResponse;
   artistTracksStatus: "idle" | "loading" | "succeeded" | "failed";
   playlistTracksStatus: "idle" | "loading" | "succeeded" | "failed";
 }
 
 const initialState: RecommendationState = {
-  artists: {} as RecommendationResponse,
+  artistsTracks: {} as RecommendationResponse,
   playlistTracks: {} as RecommendationResponse,
   artistTracksStatus: "idle",
   playlistTracksStatus: "idle",
@@ -78,7 +78,7 @@ export const recommendationSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(recommendArtistTracks.fulfilled, (state, action) => {
-      state.artists = action.payload;
+      state.artistsTracks = action.payload;
       state.artistTracksStatus = "succeeded";
     });
     builder.addCase(recommendPlaylistTracks.fulfilled, (state, action) => {
@@ -104,7 +104,7 @@ export const selectRecommendedPlaylistStatus = (state: RootState) => {
 };
 
 export const selectRecommendedArtistTracks = (state: RootState) => {
-  return state.recommendations.artists;
+  return state.recommendations.artistsTracks;
 };
 
 export const selectRecommendedPlaylistTracks = (state: RootState) => {

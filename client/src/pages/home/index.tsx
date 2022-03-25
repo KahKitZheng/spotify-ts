@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../../components/card";
 import UserSummary from "./UserSummary";
@@ -9,10 +9,7 @@ import { random } from "../../utils";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import {
-  selectCurrentUser,
-  selectCurrentUserStatus,
-} from "../../slices/currentUserSlice";
+import { selectCurrentUser } from "../../slices/currentUserSlice";
 import { selectCurrentUserPlaylists } from "../../slices/currentUserPlaylistsSlice";
 import {
   getRecentTracks,
@@ -32,22 +29,20 @@ import {
   getUserSavedArtists,
   selectUserSavedArtists,
 } from "../../slices/userSavedArtistsSlice";
+import { Artist } from "../../types/SpotifyObjects";
 
 const HomePage = () => {
+  const [seedArtist, setSeedArtist] = useState({} as Artist);
+
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectCurrentUser);
-  const userStatus = useAppSelector(selectCurrentUserStatus);
   const savedArtists = useAppSelector(selectUserSavedArtists);
   const userPlaylists = useAppSelector(selectCurrentUserPlaylists);
   const recentTracks = useAppSelector(selectRecentTracks);
   const topArtists = useAppSelector(selectTopArtists);
   const topTracks = useAppSelector(selectTopTracks);
   const recommendArtists = useAppSelector(selectRecommendedArtistTracks);
-  const seedArtist = topArtists.short_term?.items[random(0, 11)];
 
-  const userPlaylistsStatus = useSelector(
-    (state: RootState) => state.currentUserPlaylists.status
-  );
   const userSavedArtistsStatus = useSelector(
     (state: RootState) => state.userSavedArtists.status
   );
@@ -62,21 +57,20 @@ const HomePage = () => {
     if (recentTracksStatus === "idle") {
       dispatch(getRecentTracks({ limit: 10 }));
     }
-    if (topArtists.short_term?.items.length > 0) {
-      const artistSeed = topArtists.short_term.items[0].id;
-      dispatch(recommendArtistTracks({ seed: [artistSeed], limit: 10 }));
-    }
+
     if (userSavedArtistsStatus === "idle") {
       dispatch(getUserSavedArtists({ type: "artist" }));
     }
-  }, [
-    dispatch,
-    recentTracksStatus,
-    topArtists.short_term?.items,
-    userPlaylistsStatus,
-    userSavedArtistsStatus,
-    userStatus,
-  ]);
+  }, [dispatch, recentTracksStatus, seedArtist, userSavedArtistsStatus]);
+
+  useEffect(() => {
+    if (topArtists.short_term) {
+      const seed = topArtists.short_term?.items[random(0, 11)];
+
+      setSeedArtist(seed);
+      dispatch(recommendArtistTracks({ seed: [seed.id], limit: 10 }));
+    }
+  }, [dispatch, topArtists.short_term]);
 
   useEffect(() => {
     if (topArtists.short_term === undefined) {
