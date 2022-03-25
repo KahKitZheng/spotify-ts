@@ -10,6 +10,7 @@ interface AlbumState {
   albumDisc: SimplifiedTrack[][];
   albumDiscography: Paging<Album>;
   status: "idle" | "loading" | "succeeded" | "failed";
+  offsetStatus: "idle" | "loading" | "succeeded" | "failed";
 }
 
 export const initialState: AlbumState = {
@@ -18,19 +19,28 @@ export const initialState: AlbumState = {
   albumDisc: [] as SimplifiedTrack[][],
   albumDiscography: {} as Paging<Album>,
   status: "idle",
+  offsetStatus: "idle",
 };
 
-// Fetch albums of an artist
+/** Fetch album */
 export const getAlbum = createAsyncThunk(
   "album/getAlbum",
   async (data: { id: string; query?: string }) => {
-    const { id } = data;
-    const response = await axios.get(`/albums/${id}`);
+    const response = await axios.get(`/albums/${data.id}`);
     return response.data;
   }
 );
 
-// Fetch 10 albums of an artist
+/** Fetch the offset album tracks */
+export const getOffsetAlbumTracks = createAsyncThunk(
+  "album/getOffsetAlbumTracks",
+  async (data: { startIndex: number; url: string }) => {
+    const response = await axios.get(data.url);
+    return response.data;
+  }
+);
+
+/** Fetch ten albums of an artist */
 export const getAlbumDiscography = createAsyncThunk(
   "album/getAlbumDiscography",
   async (data: { id: string }) => {
@@ -41,7 +51,7 @@ export const getAlbumDiscography = createAsyncThunk(
   }
 );
 
-// Check if album is saved in current user's library
+/** Check if the current user has liked the album */
 export const checkSavedAlbum = createAsyncThunk(
   "album/checkSavedAlbum",
   async (id: string) => {
@@ -50,7 +60,7 @@ export const checkSavedAlbum = createAsyncThunk(
   }
 );
 
-// Save album to current user's library
+/** Save album to current user's library */
 export const saveAlbum = createAsyncThunk(
   "album/saveAlbum",
   async (id: string) => {
@@ -59,7 +69,7 @@ export const saveAlbum = createAsyncThunk(
   }
 );
 
-// Remove album from current user's library
+/** Remove album from current user's library */
 export const removeSavedAlbum = createAsyncThunk(
   "album/removeAlbum",
   async (id: string) => {
@@ -68,16 +78,16 @@ export const removeSavedAlbum = createAsyncThunk(
   }
 );
 
-// Check if one or more tracks is already saved in liked songs
+/** Check if current user has liked any of album tracks */
 export const checkSavedAlbumTracks = createAsyncThunk(
-  "album/checkSavedAlbumTrack",
-  async (ids: string[]) => {
-    const response = await axios.get(`/me/tracks/contains?ids=${ids}`);
+  "album/checkSavedAlbumTracks",
+  async (data: { startIndex: number; ids: string[] }) => {
+    const response = await axios.get(`/me/tracks/contains?ids=${data.ids}`);
     return response.data;
   }
 );
 
-// Save an album track to your liked songs
+/** Save album track to current user's liked songs */
 export const saveAlbumTrack = createAsyncThunk(
   "album/saveAlbumTrack",
   async (id: string) => {
@@ -86,7 +96,7 @@ export const saveAlbumTrack = createAsyncThunk(
   }
 );
 
-// Remove an album track from your liked songs
+/** Remove album track from current user's liked songs */
 export const removeSavedAlbumTrack = createAsyncThunk(
   "album/removeTrack",
   async (id: string) => {
@@ -96,54 +106,88 @@ export const removeSavedAlbumTrack = createAsyncThunk(
 );
 
 export const AlbumSlice = createSlice({
-  name: "Album",
+  name: "album",
   initialState: initialState,
   reducers: {
     countAlbumDuration: (state) => {
-      let albumDuration = 0;
-      const albumTracks = state.album.tracks.items;
-      albumTracks.forEach((item) => (albumDuration += item.duration_ms));
-      state.albumDuration = albumDuration;
+      state.albumDuration = state.album.tracks.items.reduce(
+        (total, item) => total + item.duration_ms,
+        0
+      );
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getAlbum.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getAlbum.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.album = action.payload;
-      })
-      .addCase(getAlbum.rejected, (state) => {
-        state.status = "failed";
-      });
+    builder.addCase(getAlbum.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.album = action.payload;
+      state.album.tracks.items = action.payload.tracks.items.filter(
+        (item: Album) => item !== null
+      );
+    });
+
+    builder.addCase(getOffsetAlbumTracks.fulfilled, (state, action) => {
+      const albumItems = state.album.tracks.items;
+      const albumTotal = state.album.tracks.total;
+
+      const startIndex = action.meta.arg.startIndex;
+      const offsetItems = action.payload.items.length;
+      const resultSize = startIndex + offsetItems;
+      const exceedingSize = startIndex + offsetItems * 2;
+
+      if (resultSize <= albumTotal || exceedingSize - albumTotal <= 50) {
+        action.payload.next !== null
+          ? (state.offsetStatus = "idle")
+          : (state.offsetStatus = "succeeded");
+
+        state.album.tracks.next = action.payload.next;
+        state.album.tracks.offset = action.payload.offset;
+
+        for (let index = 0; index < offsetItems; index++) {
+          if (action.payload.items[index].track !== null) {
+            albumItems[startIndex + index] = action.payload.items[index];
+          }
+        }
+      }
+    });
+
     builder.addCase(getAlbumDiscography.fulfilled, (state, action) => {
       state.albumDiscography = action.payload;
     });
+
     builder.addCase(checkSavedAlbum.fulfilled, (state, action) => {
       state.album.is_saved = action.payload[0];
     });
+
     builder.addCase(saveAlbum.fulfilled, (state) => {
       state.album.is_saved = true;
     });
+
     builder.addCase(removeSavedAlbum.fulfilled, (state) => {
       state.album.is_saved = false;
     });
+
     builder.addCase(checkSavedAlbumTracks.fulfilled, (state, action) => {
-      state.album.tracks.items?.map((track, index) => {
-        track.is_saved = action.payload[index];
-      });
+      const album = state.album.tracks.items;
+      const startIndex = action.meta.arg.startIndex;
+      const verifyList = action.meta.arg.ids;
+
+      for (let index = 0; index < verifyList.length; index++) {
+        if (album[startIndex + index] !== null) {
+          album[startIndex + index].is_saved = action.payload[index];
+        }
+      }
 
       const groupedTrack = groupBy(state.album.tracks?.items, "disc_number");
       const albumDisc = Object.keys(groupedTrack).map((i) => groupedTrack[i]);
       state.albumDisc = albumDisc;
     });
+
     builder.addCase(saveAlbumTrack.fulfilled, (state, action) => {
       const list = state.album.tracks.items;
       const index = list.findIndex((track) => track.id === action.payload);
       state.album.tracks.items[index].is_saved = true;
     });
+
     builder.addCase(removeSavedAlbumTrack.fulfilled, (state, action) => {
       const list = state.album.tracks.items;
       const index = list.findIndex((track) => track.id === action.payload);

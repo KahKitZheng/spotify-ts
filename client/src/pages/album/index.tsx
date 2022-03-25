@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../../components/card";
 import Track from "../../components/track";
@@ -10,13 +10,14 @@ import { BsDisc } from "react-icons/bs";
 import { CollectionOverflow } from "../../components/collection";
 import { Link, useParams } from "react-router-dom";
 import { extractTrackId, formatDuration, stringToHSL } from "../../utils";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   checkSavedAlbum,
   checkSavedAlbumTracks,
   countAlbumDuration,
   getAlbum,
   getAlbumDiscography,
+  getOffsetAlbumTracks,
   removeSavedAlbum,
   saveAlbum,
   selectAlbum,
@@ -28,41 +29,97 @@ import {
 
 const AlbumPage = () => {
   const { id } = useParams();
-  const [gradient, setGradient] = useState("");
+  const [fetchOffset, setFetchOffset] = useState(0);
+  const [gradient, setGradient] = useState(`hsl(0, 0%, 40%)`);
 
-  const dispatch = useDispatch();
-  const album = useSelector(selectAlbum);
-  const albumStatus = useSelector(selectAlbumStatus);
-  const albumDuration = useSelector(selectAlbumDuration);
-  const albumDisc = useSelector(selectAlbumDisc);
-  const albumDiscography = useSelector(selectAlbumDiscography);
+  const dispatch = useAppDispatch();
+  const album = useAppSelector(selectAlbum);
+  const albumStatus = useAppSelector(selectAlbumStatus);
+  const albumDuration = useAppSelector(selectAlbumDuration);
+  const albumDisc = useAppSelector(selectAlbumDisc);
+  const albumDiscography = useAppSelector(selectAlbumDiscography);
 
-  console.log(albumDisc);
-
-  useEffect(() => {
-    if (id) {
+  const fetchAlbumInfo = useCallback(() => {
+    if (album.id !== id && id !== undefined) {
       dispatch(getAlbum({ id }));
-      dispatch(checkSavedAlbum(id));
     }
+  }, [album.id, dispatch, id]);
 
-    if (album.tracks?.items.length > 0) {
-      dispatch(countAlbumDuration());
-      setGradient(stringToHSL(album.name));
-    }
-  }, [album.name, album.tracks?.items.length, dispatch, id]);
-
-  useEffect(() => {
+  const fetchIsAlbumSaved = useCallback(() => {
     if (albumStatus === "succeeded") {
-      const list = album.tracks?.items;
-      dispatch(checkSavedAlbumTracks(extractTrackId(list)));
+      dispatch(checkSavedAlbum(album.id));
     }
-  }, [album.tracks?.items, albumStatus, dispatch]);
+  }, [album.id, albumStatus, dispatch]);
 
-  useEffect(() => {
+  const fetchOffsetAlbumTracks = useCallback(() => {
+    const albumItems = album.tracks?.items;
+    const url = album.tracks?.next;
+    const startIndex = fetchOffset;
+
+    if (startIndex >= albumItems?.length && url !== null) {
+      dispatch(getOffsetAlbumTracks({ startIndex, url }));
+    }
+  }, [album.tracks?.items, album.tracks?.next, dispatch, fetchOffset]);
+
+  const fetchSavedAlbumTracks = useCallback(() => {
+    const list = album.tracks?.items;
+    const incrementBy = 50;
+    const startIndex = fetchOffset;
+    const endIndex = fetchOffset + incrementBy;
+
+    if (startIndex < list?.length && startIndex < album.tracks?.total) {
+      const ids = extractTrackId(list?.slice(startIndex, endIndex));
+      dispatch(checkSavedAlbumTracks({ startIndex, ids })).then(() => {
+        setFetchOffset(endIndex);
+      });
+    }
+  }, [dispatch, fetchOffset, album.tracks?.items, album.tracks?.total]);
+
+  const fetchRelatedAlbums = useCallback(() => {
     if (album.artists) {
       dispatch(getAlbumDiscography({ id: album.artists[0].id }));
     }
-  }, [album, dispatch]);
+  }, [album.artists, dispatch]);
+
+  const setAlbumDuration = useCallback(() => {
+    if (album.tracks?.next === null) {
+      dispatch(countAlbumDuration());
+    }
+  }, [album.tracks?.next, dispatch]);
+
+  const setBgGradient = useCallback(() => {
+    album.tracks?.items.length > 0
+      ? setGradient(stringToHSL(album.name))
+      : setGradient(`hsl(0, 0%, 40%)`);
+  }, [album.name, album.tracks?.items.length]);
+
+  useEffect(() => {
+    if (id) {
+      setFetchOffset(0);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchAlbumInfo();
+    fetchIsAlbumSaved();
+  }, [fetchAlbumInfo, fetchIsAlbumSaved]);
+
+  useEffect(() => {
+    fetchOffsetAlbumTracks();
+  }, [fetchOffsetAlbumTracks]);
+
+  useEffect(() => {
+    fetchSavedAlbumTracks();
+  }, [fetchSavedAlbumTracks]);
+
+  useEffect(() => {
+    fetchRelatedAlbums();
+  }, [fetchRelatedAlbums]);
+
+  useEffect(() => {
+    setBgGradient();
+    setAlbumDuration();
+  }, [setAlbumDuration, setBgGradient]);
 
   function renderCopyright(type: string, text: string) {
     if (type === "C") {
@@ -72,7 +129,7 @@ const AlbumPage = () => {
     }
   }
 
-  function handleOnclick(isSaved?: boolean) {
+  function handleSaveAlbumTrack(isSaved?: boolean) {
     isSaved
       ? dispatch(removeSavedAlbum(album.id))
       : dispatch(saveAlbum(album.id));
@@ -104,7 +161,7 @@ const AlbumPage = () => {
 
       <ActionBar
         isSaved={album.is_saved}
-        handleClick={() => handleOnclick(album.is_saved)}
+        handleClick={() => handleSaveAlbumTrack(album.is_saved)}
       />
 
       <div>

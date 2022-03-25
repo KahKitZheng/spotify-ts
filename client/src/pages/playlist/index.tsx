@@ -153,7 +153,7 @@ const PlaylistPage = () => {
     if (id) {
       setFetchOffset(0);
     }
-  }, [id, playlist.id]);
+  }, [id]);
 
   useEffect(() => {
     fetchPlaylistInfo();
@@ -248,21 +248,23 @@ const PlaylistPage = () => {
       />
       {playlist.tracks.items?.length > 0 && (
         <T.TrackList>
-          {playlist.tracks?.items.map((item, index) => (
-            <Track
-              key={item.track.id}
-              variant="playlist"
-              index={index}
-              item={item.track}
-              addedAt={
-                item.added_at !== null ? formatAddedAt(item.added_at) : ""
-              }
-            />
-          ))}
+          {playlist.tracks?.items
+            // .filter((i) => i.track !== null)
+            .map((item, index) => (
+              <Track
+                key={item.track.id}
+                variant="playlist"
+                index={index}
+                item={item.track}
+                addedAt={
+                  item.added_at !== null ? formatAddedAt(item.added_at) : ""
+                }
+              />
+            ))}
         </T.TrackList>
       )}
 
-      {playlist.owner.id === userId ? (
+      {/* {playlist.owner.id === userId ? (
         <PlaylistSection>
           <PlaylistSectionName>
             Let&apos;s find something for your playlist
@@ -298,7 +300,7 @@ const PlaylistPage = () => {
             ))}
           </T.TrackList>
         </PlaylistSection>
-      ) : null}
+      ) : null} */}
 
       <Modal
         isOpen={modal}
