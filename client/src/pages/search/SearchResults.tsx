@@ -1,17 +1,18 @@
 import React from "react";
 import styled from "styled-components";
 import Card from "../../components/card";
-import { TabPanel } from "react-tabs";
+import * as Tab from "../../styles/components/tabs";
 import { SearchResponse } from "../../types/SpotifyResponses";
 import { CollectionGrid } from "../../components/collection";
 
 type Props = {
   query: string;
   searchResults: SearchResponse;
+  currentTab: string;
 };
 
 const SearchResults = (props: Props) => {
-  const { query, searchResults } = props;
+  const { query, searchResults, currentTab } = props;
 
   return query === "" ? (
     <NoResult>
@@ -20,34 +21,42 @@ const SearchResults = (props: Props) => {
     </NoResult>
   ) : (
     <>
-      <TabPanel>
-        <CollectionGrid>
-          {searchResults.artists?.items.map((artist) => (
-            <Card key={artist.id} variant="artist" item={artist} />
-          ))}
-        </CollectionGrid>
-      </TabPanel>
-      <TabPanel>
-        <CollectionGrid>
-          {searchResults.albums?.items.map((album) => (
-            <Card key={album.id} variant="album" item={album} />
-          ))}
-        </CollectionGrid>
-      </TabPanel>
-      <TabPanel>
-        <CollectionGrid>
-          {searchResults.tracks?.items.map((track) => (
-            <Card key={track.id} variant="track" item={track} />
-          ))}
-        </CollectionGrid>
-      </TabPanel>
-      <TabPanel>
-        <CollectionGrid>
-          {searchResults.playlists?.items.map((playlist) => (
-            <Card key={playlist.id} variant="playlist" item={playlist} />
-          ))}
-        </CollectionGrid>
-      </TabPanel>
+      {currentTab === "artists" && (
+        <Tab.TabView>
+          <CollectionGrid>
+            {searchResults.artists?.items.map((artist) => (
+              <Card key={artist.id} variant="artist" item={artist} />
+            ))}
+          </CollectionGrid>
+        </Tab.TabView>
+      )}
+      {currentTab === "albums" && (
+        <Tab.TabView>
+          <CollectionGrid>
+            {searchResults.albums?.items.map((album) => (
+              <Card key={album.id} variant="album" item={album} />
+            ))}
+          </CollectionGrid>
+        </Tab.TabView>
+      )}
+      {currentTab === "tracks" && (
+        <Tab.TabView>
+          <CollectionGrid>
+            {searchResults.tracks?.items.map((track) => (
+              <Card key={track.id} variant="track" item={track} />
+            ))}
+          </CollectionGrid>
+        </Tab.TabView>
+      )}
+      {currentTab === "playlists" && (
+        <Tab.TabView>
+          <CollectionGrid>
+            {searchResults.playlists?.items.map((playlist) => (
+              <Card key={playlist.id} variant="playlist" item={playlist} />
+            ))}
+          </CollectionGrid>
+        </Tab.TabView>
+      )}
     </>
   );
 };
@@ -68,12 +77,6 @@ const MessageLarge = styled.p`
   font-size: 20px;
   text-align: center;
   margin-bottom: 4px;
-`;
-
-const CardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, calc(50% - 8px));
-  grid-gap: 16px;
 `;
 
 export default SearchResults;

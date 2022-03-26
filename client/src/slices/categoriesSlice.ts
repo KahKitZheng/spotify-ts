@@ -30,9 +30,7 @@ export const getCategories = createAsyncThunk(
   async (data?: fetchParams) => {
     if (data) {
       const { limit = 20, country } = data;
-      const response = await axios.get(
-        `/browse/categories?limit=${limit}&country=${country}`
-      );
+      const response = await axios.get(`/browse/categories?limit=${limit}&country=${country}`);
       return response.data.categories;
     } else {
       const response = await axios.get(`/browse/categories`);
@@ -45,9 +43,7 @@ export const getCategoryInfo = createAsyncThunk(
   "categories/getCategoryInfo",
   async (data: { category_id: string; country?: string }) => {
     const { category_id, country } = data;
-    const response = await axios.get(
-      `browse/categories/${category_id}?country=${country}`
-    );
+    const response = await axios.get(`browse/categories/${category_id}?country=${country}`);
     return response.data;
   }
 );
@@ -103,6 +99,10 @@ export const categoriesSlice = createSlice({
       });
   },
 });
+
+export const selectCategoriesStatus = (state: RootState) => {
+  return state.categories.status;
+};
 
 export const selectCategories = (state: RootState) => {
   return state.categories.categories;

@@ -1,115 +1,70 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import BrowseCategories from "./BrowseCategories";
+import SearchTabs from "./SearchTabs";
 import SearchResults from "./SearchResults";
-import { Tab, Tabs, TabList } from "react-tabs";
-import { resetScroll } from "../../utils";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
+import BrowseCategories from "./BrowseCategories";
+import * as Tabs from "../../styles/components/tabs";
+import { DebounceInput } from "react-debounce-input";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getCategories } from "../../slices/categoriesSlice";
-import {
-  startSearch,
-  getAllSearchResults,
-  selectAllSearchResults,
-} from "../../slices/searchResultSlice";
-import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
+import * as categoriesSlice from "../../slices/categoriesSlice";
+import * as searchResultSlice from "../../slices/searchResultSlice";
+import * as currentUserSlice from "../../slices/currentUserSlice";
+
+const tabs = ["artists", "albums", "tracks", "playlists"];
+export type resultsTabs = "artists" | "albums" | "tracks" | "playlists";
 
 const SearchPage = () => {
+  const [activeTab, setActiveTab] = useState(tabs[0] as resultsTabs);
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const tabContainer = useRef<HTMLDivElement>(null);
 
   const dispatch = useAppDispatch();
-  const userCountry = useSelector(selectCurrentUserCountry);
-  const searchResults = useAppSelector(selectAllSearchResults);
+  const userCountry = useAppSelector(currentUserSlice.selectCurrentUserCountry);
+  const searchResults = useAppSelector(searchResultSlice.selectSearchResults);
+  const categoriesStatus = useAppSelector(categoriesSlice.selectCategoriesStatus);
 
-  const categoriesStatus = useSelector(
-    (state: RootState) => state.categories.status
-  );
-  const searchResultStatus = useSelector(
-    (state: RootState) => state.searchResults.status
-  );
-
-  // Fetch all categories on render
-  useEffect(() => {
+  const fetchCategories = useCallback(() => {
     if (categoriesStatus === "idle" && userCountry !== undefined) {
-      dispatch(getCategories({ limit: 50, country: userCountry }));
+      dispatch(categoriesSlice.getCategories({ limit: 50, country: userCountry }));
     }
   }, [categoriesStatus, dispatch, userCountry]);
 
-  // Fetch user's search query after a delay
   useEffect(() => {
-    const timeOutId = setTimeout(() => {
-      if (searchResultStatus === "idle" && query !== "") {
-        dispatch(getAllSearchResults({ q: query, limit: 30 }));
-      }
-    }, 600);
+    fetchCategories();
+  }, [fetchCategories]);
 
-    return () => clearTimeout(timeOutId);
-  }, [query, searchResultStatus, dispatch, searchResults]);
-
-  function handleOnChange(e: React.FormEvent<HTMLInputElement>) {
-    setQuery(e.currentTarget.value);
-    dispatch(startSearch());
+  function handleOnChange(searchValue: string) {
+    setQuery(searchValue);
+    dispatch(searchResultSlice.getAllSearchResults({ q: searchValue, limit: 30 }));
   }
 
   return (
-    <PageWrapper>
+    <Tabs.PageWrapper>
       <SearchHeader>
-        <SearchTitle $isSearching={isSearching || query !== ""}>
-          Search
-        </SearchTitle>
-        <SearchInput
-          type="text"
+        <SearchTitle $isSearching={isSearching || query !== ""}>Search</SearchTitle>
+        <DebounceInput
           value={query}
           placeholder="Artists, tracks or podcasts"
+          element={SearchInput}
+          debounceTimeout={600}
           onBlur={() => setIsSearching(false)}
           onFocus={() => setIsSearching(true)}
-          onChange={(e) => handleOnChange(e)}
+          onChange={(event) => handleOnChange(event.target.value)}
           $isSearching={isSearching || query !== ""}
         />
         {query !== "" && (
-          <TabFilterList
-            $isSearching={searchResultStatus === "succeeded" || query !== ""}
-          >
-            <FilterTab onClick={() => resetScroll(tabContainer)}>
-              Artist
-            </FilterTab>
-            <FilterTab onClick={() => resetScroll(tabContainer)}>
-              Album
-            </FilterTab>
-            <FilterTab onClick={() => resetScroll(tabContainer)}>
-              Track
-            </FilterTab>
-            <FilterTab onClick={() => resetScroll(tabContainer)}>
-              Playlist
-            </FilterTab>
-          </TabFilterList>
+          <SearchTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
         )}
       </SearchHeader>
-      <Container ref={tabContainer} $isSearching={isSearching || query !== ""}>
-        {isSearching || query !== "" ? (
-          /**
-           * Difficult to split TabPanels into a separate component, a temporary
-           * workaround to render the component is to use it as a function.
-           *
-           * src: https://github.com/reactjs/react-tabs/issues/253
-           */
-          SearchResults({ query, searchResults })
-        ) : (
-          <BrowseCategories />
-        )}
-      </Container>
-    </PageWrapper>
+
+      {isSearching || query !== "" ? (
+        <SearchResults query={query} searchResults={searchResults} currentTab={activeTab} />
+      ) : (
+        <BrowseCategories />
+      )}
+    </Tabs.PageWrapper>
   );
 };
-
-const PageWrapper = styled(Tabs)`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-`;
 
 const SearchHeader = styled.div`
   position: relative;
@@ -119,8 +74,7 @@ const SearchTitle = styled.h1<{ $isSearching: boolean }>`
   visibility: ${({ $isSearching }) => $isSearching && "hidden"};
   transform: ${({ $isSearching }) => $isSearching && `translateY(-100%)`};
   opacity: ${({ $isSearching }) => $isSearching && 0};
-  transition: visibility 0.6s ease-in-out,
-    opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+  transition: visibility 0.6s ease-in-out, opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
     transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 `;
 
@@ -136,57 +90,6 @@ const SearchInput = styled.input<{ $isSearching: boolean }>`
   font-weight: 600;
   transform: ${({ $isSearching }) => $isSearching && `translateY(-100%)`};
   transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-`;
-
-const TabFilterList = styled(TabList)<{ $isSearching: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  align-items: center;
-  position: absolute;
-  top: 32px;
-  width: 100%;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  visibility: ${({ $isSearching }) => ($isSearching ? `visible` : `hidden`)};
-  transform: ${({ $isSearching }) => $isSearching && `translateY(32px)`};
-  opacity: ${({ $isSearching }) => $isSearching && 1};
-  transition: visibility 0.2s ease-in-out,
-    opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
-    transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-`;
-
-const FilterTab = styled(Tab)`
-  flex: 1;
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.colors.white};
-  border-radius: 6px;
-  padding: 2px 12px;
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.white};
-  text-align: center;
-
-  &:not(:first-of-type) {
-    margin-left: 8px;
-  }
-
-  &.react-tabs__tab--selected {
-    font-weight: 600;
-    color: white;
-    border-color: #12ce66;
-    background-color: #128454;
-  }
-`;
-
-const Container = styled.div<{ $isSearching: boolean }>`
-  display: flex;
-  flex-direction: column;
-  margin-top: 16px;
-  margin-bottom: -16px;
-  padding-bottom: 16px;
-  overflow: ${({ $isSearching }) => $isSearching && "auto"};
-  flex: 1;
 `;
 
 export default SearchPage;

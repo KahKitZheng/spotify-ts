@@ -28,9 +28,7 @@ export const getAllSearchResults = createAsyncThunk(
   async (data?: fetchParams) => {
     if (data) {
       const { q, type = "artist,album,track,playlist", limit = 20 } = data;
-      const response = await axios.get(
-        `/search?q=${q}&type=${type}&limit=${limit}`
-      );
+      const response = await axios.get(`/search?q=${q}&type=${type}&limit=${limit}`);
       return response.data;
     }
   }
@@ -45,22 +43,18 @@ export const searchResultSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(getAllSearchResults.pending, (state) => {
-        state.status = "loading";
-        state.searchResults = {};
-      })
-      .addCase(getAllSearchResults.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.searchResults = action.payload;
-      })
-      .addCase(getAllSearchResults.rejected, (state) => {
-        state.status = "failed";
-      });
+    builder.addCase(getAllSearchResults.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.searchResults = action.payload;
+    });
   },
 });
 
-export const selectAllSearchResults = (state: RootState) => {
+export const selectSearchResultsStatus = (state: RootState) => {
+  return state.searchResults.status;
+};
+
+export const selectSearchResults = (state: RootState) => {
   return state.searchResults.searchResults;
 };
 
