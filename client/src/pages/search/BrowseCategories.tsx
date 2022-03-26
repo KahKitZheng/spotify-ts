@@ -28,6 +28,7 @@ const BrowseCategories = () => {
 
 const CategoriesWrapper = styled.div`
   margin-top: 16px;
+  padding-bottom: 16px;
 `;
 
 const CategoryCardWrapper = styled(Link)`
