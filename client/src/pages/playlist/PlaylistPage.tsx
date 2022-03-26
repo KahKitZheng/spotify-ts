@@ -36,6 +36,28 @@ const PlaylistPage = () => {
   const recommendStatus = useAppSelector(recommendationSlice.selectRecommendedPlaylistStatus);
   const recommendedTracks = useAppSelector(recommendationSlice.selectRecommendedPlaylistTracks);
 
+  const refreshRecommendations = useCallback(() => {
+    const playlistItems = playlist.tracks?.items;
+    const seed = [];
+
+    if (0 < playlistItems?.length && playlistItems?.length <= 5) {
+      playlistItems.forEach((item) => {
+        seed.push(item.track.id);
+      });
+    }
+
+    if (playlistItems?.length > 5) {
+      for (let index = 0; index < 5; index++) {
+        const randomSeed = utils.random(1, playlistItems?.length);
+        seed.push(playlistItems[randomSeed].track.id);
+      }
+    }
+
+    if (seed.length > 0) {
+      dispatch(recommendationSlice.recommendPlaylistTracks({ seed, limit: 10 }));
+    }
+  }, [dispatch, playlist.tracks?.items]);
+
   /** Fetch playlist info plus up to 100 tracks */
   const fetchPlaylistInfo = useCallback(() => {
     if (playlist.id !== id && id !== undefined) {
@@ -85,28 +107,10 @@ const PlaylistPage = () => {
 
   /** Fetch recommended tracks for your playlist based on the existing tracks */
   const fetchRecommendedTracks = useCallback(() => {
-    const playlistItems = playlist.tracks?.items;
-    const seed = [];
-
     if (recommendStatus === "idle") {
-      if (0 < playlistItems?.length && playlistItems?.length <= 5) {
-        playlistItems.forEach((item) => {
-          seed.push(item.track.id);
-        });
-      }
-
-      if (playlistItems?.length > 5) {
-        for (let index = 0; index < 5; index++) {
-          const randomSeed = utils.random(1, playlistItems?.length);
-          seed.push(playlistItems[randomSeed].track.id);
-        }
-      }
-
-      if (seed.length > 0) {
-        dispatch(recommendationSlice.recommendPlaylistTracks({ seed, limit: 10 }));
-      }
+      refreshRecommendations();
     }
-  }, [dispatch, playlist.tracks?.items, recommendStatus]);
+  }, [recommendStatus, refreshRecommendations]);
 
   /** Calculate the playlist duration after all tracks has been fetched */
   const setPlaylistdDuration = useCallback(() => {
@@ -260,7 +264,9 @@ const PlaylistPage = () => {
                   <Track key={track.id} item={track} variant={"playlist-add"} />
                 ))}
               </T.TrackList>
-              <RefreshRecommendation>refresh</RefreshRecommendation>
+              <RefreshButtonWrapper>
+                <RefreshButton onClick={refreshRecommendations}>refresh</RefreshButton>
+              </RefreshButtonWrapper>
             </PlaylistDiscovery>
           )
         : null}
@@ -326,20 +332,22 @@ const ToggleDiscovery = styled.button`
   }
 `;
 
-const RefreshRecommendation = styled.button`
+const RefreshButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+const RefreshButton = styled.button`
   background-color: transparent;
   color: ${({ theme }) => theme.colors.white};
   border: 0;
-  margin-right: 16px;
+  margin-right: 10px;
   text-transform: uppercase;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.1s ease-in;
-
-  &:hover {
-    transform: scale(1.1);
-  }
 `;
 
 const SearchInput = styled.input`
