@@ -44,39 +44,26 @@ export const getOffsetAlbumTracks = createAsyncThunk(
 export const getAlbumDiscography = createAsyncThunk(
   "album/getAlbumDiscography",
   async (data: { id: string }) => {
-    const response = await axios.get(
-      `/artists/${data.id}/albums/?include_groups=album&limit=10`
-    );
+    const response = await axios.get(`/artists/${data.id}/albums/?include_groups=album&limit=10`);
     return response.data;
   }
 );
 
 /** Check if the current user has liked the album */
-export const checkSavedAlbum = createAsyncThunk(
-  "album/checkSavedAlbum",
-  async (id: string) => {
-    const response = await axios.get(`/me/albums/contains?ids=${id}`);
-    return response.data;
-  }
-);
+export const checkSavedAlbum = createAsyncThunk("album/checkSavedAlbum", async (id: string) => {
+  const response = await axios.get(`/me/albums/contains?ids=${id}`);
+  return response.data;
+});
 
 /** Save album to current user's library */
-export const saveAlbum = createAsyncThunk(
-  "album/saveAlbum",
-  async (id: string) => {
-    await axios.put(`/me/albums?ids=${id}`, {});
-    // return id;
-  }
-);
+export const saveAlbum = createAsyncThunk("album/saveAlbum", async (id: string) => {
+  await axios.put(`/me/albums?ids=${id}`, {});
+});
 
 /** Remove album from current user's library */
-export const removeSavedAlbum = createAsyncThunk(
-  "album/removeAlbum",
-  async (id: string) => {
-    await axios.delete(`/me/albums?ids=${id}`, {});
-    // return id;
-  }
-);
+export const removeSavedAlbum = createAsyncThunk("album/removeAlbum", async (id: string) => {
+  await axios.delete(`/me/albums?ids=${id}`, {});
+});
 
 /** Check if current user has liked any of album tracks */
 export const checkSavedAlbumTracks = createAsyncThunk(
@@ -88,22 +75,16 @@ export const checkSavedAlbumTracks = createAsyncThunk(
 );
 
 /** Save album track to current user's liked songs */
-export const saveAlbumTrack = createAsyncThunk(
-  "album/saveAlbumTrack",
-  async (id: string) => {
-    await axios.put(`/me/tracks?ids=${id}`, {});
-    return id;
-  }
-);
+export const saveAlbumTrack = createAsyncThunk("album/saveAlbumTrack", async (id: string) => {
+  await axios.put(`/me/tracks?ids=${id}`, {});
+  return id;
+});
 
 /** Remove album track from current user's liked songs */
-export const removeSavedAlbumTrack = createAsyncThunk(
-  "album/removeTrack",
-  async (id: string) => {
-    await axios.delete(`/me/tracks?ids=${id}`, {});
-    return id;
-  }
-);
+export const removeSavedAlbumTrack = createAsyncThunk("album/removeTrack", async (id: string) => {
+  await axios.delete(`/me/tracks?ids=${id}`, {});
+  return id;
+});
 
 export const AlbumSlice = createSlice({
   name: "album",
@@ -120,9 +101,7 @@ export const AlbumSlice = createSlice({
     builder.addCase(getAlbum.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.album = action.payload;
-      state.album.tracks.items = action.payload.tracks.items.filter(
-        (item: Album) => item !== null
-      );
+      state.album.tracks.items = action.payload.tracks.items.filter((item: Album) => item !== null);
     });
 
     builder.addCase(getOffsetAlbumTracks.fulfilled, (state, action) => {
@@ -183,15 +162,23 @@ export const AlbumSlice = createSlice({
     });
 
     builder.addCase(saveAlbumTrack.fulfilled, (state, action) => {
-      const list = state.album.tracks.items;
-      const index = list.findIndex((track) => track.id === action.payload);
-      state.album.tracks.items[index].is_saved = true;
+      state.albumDisc.map((disc, discIndex) => {
+        const trackIndex = disc.findIndex((track) => track.id === action.payload);
+
+        if (trackIndex !== -1) {
+          state.albumDisc[discIndex][trackIndex].is_saved = true;
+        }
+      });
     });
 
     builder.addCase(removeSavedAlbumTrack.fulfilled, (state, action) => {
-      const list = state.album.tracks.items;
-      const index = list.findIndex((track) => track.id === action.payload);
-      state.album.tracks.items[index].is_saved = false;
+      state.albumDisc.map((disc, discIndex) => {
+        const trackIndex = disc.findIndex((track) => track.id === action.payload);
+
+        if (trackIndex !== -1) {
+          state.albumDisc[discIndex][trackIndex].is_saved = false;
+        }
+      });
     });
   },
 });
