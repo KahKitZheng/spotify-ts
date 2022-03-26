@@ -2,10 +2,7 @@ import React, { Fragment, useEffect } from "react";
 import styled from "styled-components";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { TiHomeOutline as HomeOutline, TiHome as HomeFill } from "react-icons/ti";
-import {
-  IoSearchOutline as SearchOutline,
-  IoSearch as SearchFill,
-} from "react-icons/io5";
+import { IoSearchOutline as SearchOutline, IoSearch as SearchFill } from "react-icons/io5";
 import {
   MdOutlineLibraryMusic as LibraryOutline,
   MdLibraryMusic as LibraryFill,
@@ -37,9 +34,9 @@ const Sidebar = () => {
   }, [dispatch, offsetStatus, playlists.next, playlists.offset, status]);
 
   function createNewPlaylist() {
-    dispatch(
-      savedPlaylists.createPlaylist({ user_id: user.id, name: "New Playlist" })
-    ).then((res) => navigate(`/playlist/${res.payload.id}`));
+    dispatch(savedPlaylists.createPlaylist({ user_id: user.id, name: "New Playlist" })).then(
+      (res) => navigate(`/playlist/${res.payload.id}`)
+    );
   }
 
   return playlists.items ? (
@@ -70,7 +67,7 @@ const Sidebar = () => {
           </ListItem>
         </li>
         <li>
-          <CreatePlaylist onClick={() => createNewPlaylist()}>
+          <CreatePlaylist onClick={createNewPlaylist}>
             <ListItemIcon>
               <MdAddBox />
             </ListItemIcon>
