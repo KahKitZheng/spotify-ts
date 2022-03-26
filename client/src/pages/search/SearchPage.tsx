@@ -23,15 +23,11 @@ const SearchPage = () => {
   const searchResults = useAppSelector(searchResultSlice.selectSearchResults);
   const categoriesStatus = useAppSelector(categoriesSlice.selectCategoriesStatus);
 
-  const fetchCategories = useCallback(() => {
+  useEffect(() => {
     if (categoriesStatus === "idle" && userCountry !== undefined) {
       dispatch(categoriesSlice.getCategories({ limit: 50, country: userCountry }));
     }
   }, [categoriesStatus, dispatch, userCountry]);
-
-  useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
 
   function handleOnChange(searchValue: string) {
     setQuery(searchValue);
