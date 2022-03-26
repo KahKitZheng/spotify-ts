@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { stringToHSL } from "../../utils";
+import { CollectionGrid } from "../../components/collection";
 import { useAppSelector } from "../../app/hooks";
 import { selectCategories } from "../../slices/categoriesSlice";
 
@@ -10,17 +11,17 @@ const BrowseCategories = () => {
 
   return (
     <CategoriesWrapper>
-      <h3>Browse all</h3>
-      <CategoriesGrid>
+      <CategoryTitle>Browse all</CategoryTitle>
+      <CollectionGrid>
         {categories.items?.map((category) => (
-          <CategoryWrapper key={category.id} to={`/category/${category.id}`}>
+          <CategoryCardWrapper key={category.id} to={`/category/${category.id}`}>
             <CategoryCard bgColor={stringToHSL(category.name)}>
               <CategoryName>{category.name.split("/").join("/ ")}</CategoryName>
               <CategoryCover src={category.icons[0].url} alt="" />
             </CategoryCard>
-          </CategoryWrapper>
+          </CategoryCardWrapper>
         ))}
-      </CategoriesGrid>
+      </CollectionGrid>
     </CategoriesWrapper>
   );
 };
@@ -29,50 +30,15 @@ const CategoriesWrapper = styled.div`
   margin-top: 16px;
 `;
 
-const CategoriesGrid = styled.div`
-  --categoryRepeat: 2;
-  --categoryWidth: calc((100% / var(--categoryRepeat)) - var(--categoryGap));
-  --categoryGap: 16px;
-  display: grid;
-  grid-template-columns: repeat(
-    var(--categoryRepeat),
-    minmax(var(--categoryGap), 1fr)
-  );
-
-  grid-template-rows: 100%;
-  grid-template-rows: auto;
-  grid-gap: var(--categoryGap);
-  margin-top: 8px;
-
-  @media (min-width: 560px) {
-    --categoryRepeat: 3;
-  }
-
-  @media (min-width: 760px) {
-    --categoryRepeat: 4;
-  }
-
-  @media (min-width: 960px) {
-    --categoryRepeat: 5;
-  }
-
-  @media (min-width: 1160px) {
-    --categoryRepeat: 6;
-  }
-
-  @media (min-width: 1360px) {
-    --categoryRepeat: 7;
-  }
-
-  @media (min-width: 1560px) {
-    --categoryRepeat: 8;
-  }
-`;
-
-const CategoryWrapper = styled(Link)`
+const CategoryCardWrapper = styled(Link)`
   :hover {
     text-decoration: none;
   }
+`;
+
+const CategoryTitle = styled.h3`
+  margin-top: 16px;
+  margin-bottom: 8px;
 `;
 
 const CategoryCard = styled.div<{ bgColor: string }>`
