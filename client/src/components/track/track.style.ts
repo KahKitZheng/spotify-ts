@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { MEDIA } from "../../media";
-import { textOverflow } from "../../utils";
-import { StyledLikeButton } from "../../../components/button/Button";
+import { MEDIA } from "../../styles/media";
+import { textOverflow } from "../../styles/utils";
+import { StyledLikeButton } from "../button/Button";
 
 // Containers for collection of tracks
 export const TrackDisc = styled.div`

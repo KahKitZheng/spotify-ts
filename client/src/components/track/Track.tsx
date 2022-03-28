@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import LikeButton from "../../components/button";
-import * as T from "../../styles/components/track";
+import * as T from "./track.style";
 import { Link, useParams } from "react-router-dom";
 import { BiPlus } from "react-icons/bi";
 import { MEDIA } from "../../styles/media";

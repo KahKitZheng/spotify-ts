@@ -7,14 +7,14 @@ import PlaylistSearchTracks from "./PlaylistSearchTracks";
 import PlaylistRecommendTracks from "./PlaylistRecommendTracks";
 import SearchTrackModal from "./SearchTrackModal";
 import EditPlaylistModal from "./EditPlaylistModal";
-import * as T from "../../styles/components/track";
+import * as T from "../../components/track/track.style";
 import * as utils from "../../utils";
+import { MEDIA } from "../../styles/media";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import * as playlistSlice from "../../slices/playlistSlice";
 import * as recommendationSlice from "../../slices/recommendationSlice";
-import { MEDIA } from "../../styles/media";
 
 const PlaylistPage = () => {
   const { id } = useParams();

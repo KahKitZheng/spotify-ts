@@ -2,13 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Track from "../../components/track";
 import { useParams } from "react-router-dom";
-import { TrackList } from "../../styles/components/track";
+import { TrackList } from "../../components/track/track.style";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
-import {
-  recommendGenreTracks,
-  selectGenreTracks,
-} from "../../slices/genreSlice";
+import { recommendGenreTracks, selectGenreTracks } from "../../slices/genreSlice";
 import { stringToHSL } from "../../utils";
 
 const GenrePage = () => {

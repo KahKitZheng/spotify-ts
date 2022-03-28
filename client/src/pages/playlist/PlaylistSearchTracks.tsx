@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import styled from "styled-components";
 import Track from "../../components/track";
 import * as P from "./playlist.style";
-import * as T from "../../styles/components/track";
+import * as T from "../../components/track/track.style";
 import { MEDIA } from "../../styles/media";
 import { MdClose } from "react-icons/md";
 import { DebounceInput } from "react-debounce-input";

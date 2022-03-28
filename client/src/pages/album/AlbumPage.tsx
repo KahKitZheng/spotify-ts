@@ -4,7 +4,7 @@ import Card from "../../components/card";
 import Track from "../../components/track";
 import ActionBar from "../../components/actionbar";
 import * as H from "../../styles/components/headers";
-import * as T from "../../styles/components/track";
+import * as T from "../../components/track/track.style";
 import * as S from "../../styles/components/section";
 import { BsDisc } from "react-icons/bs";
 import { CollectionOverflow } from "../../components/collection";
@@ -130,9 +130,7 @@ const AlbumPage = () => {
   }
 
   function handleSaveAlbumTrack(isSaved?: boolean) {
-    isSaved
-      ? dispatch(removeSavedAlbum(album.id))
-      : dispatch(saveAlbum(album.id));
+    isSaved ? dispatch(removeSavedAlbum(album.id)) : dispatch(saveAlbum(album.id));
   }
 
   return id === album.id ? (
@@ -177,12 +175,7 @@ const AlbumPage = () => {
             )}
             <T.TrackList>
               {disc?.map((track, index) => (
-                <Track
-                  key={track.id}
-                  variant="album"
-                  item={track}
-                  index={index}
-                />
+                <Track key={track.id} variant="album" item={track} index={index} />
               ))}
             </T.TrackList>
           </T.TrackDisc>
@@ -191,9 +184,7 @@ const AlbumPage = () => {
 
       <CopyrightWrapper>
         {album.copyrights.map((copyright, index) => (
-          <Copyright key={index}>
-            {renderCopyright(copyright.type, copyright.text)}
-          </Copyright>
+          <Copyright key={index}>{renderCopyright(copyright.type, copyright.text)}</Copyright>
         ))}
       </CopyrightWrapper>
 

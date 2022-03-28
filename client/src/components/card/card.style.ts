@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { textOverflow } from "../../utils";
+import { textOverflow } from "../../styles/utils";
 
 export const CardLink = styled(Link)`
   :hover,
@@ -30,8 +30,7 @@ export const CardCover = styled.img<{
 }>`
   aspect-ratio: 1 / 1;
   width: 100%;
-  min-width: ${({ $overflow }) =>
-    $overflow && `calc(var(--column-width) - 32px)`};
+  min-width: ${({ $overflow }) => $overflow && `calc(var(--column-width) - 32px)`};
   object-fit: cover;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   border-radius: ${({ $isArtist }) => $isArtist && "50%"};
@@ -47,8 +46,7 @@ export const CardCoverPlaceholder = styled.div<{ $overflow: boolean }>`
   font-size: 64px;
   aspect-ratio: 1 / 1;
   width: 100%;
-  min-width: ${({ $overflow }) =>
-    $overflow && `calc(var(--column-width) - 32px)`};
+  min-width: ${({ $overflow }) => $overflow && `calc(var(--column-width) - 32px)`};
   object-fit: cover;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 `;

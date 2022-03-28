@@ -4,7 +4,7 @@ import Track from "../../components/track";
 import ActionBar from "../../components/actionbar";
 import * as H from "../../styles/components/headers";
 import * as S from "../../styles/components/section";
-import * as T from "../../styles/components/track";
+import * as T from "../../components/track/track.style";
 import { Link, useParams } from "react-router-dom";
 import { extractTrackId, stringToHSL } from "../../utils";
 import { CollectionOverflow } from "../../components/collection";
@@ -38,15 +38,9 @@ const ArtistPage = () => {
   const topTracks = useSelector(selectArtistTopTracks);
   const relatedArtists = useSelector(selectRelatedArtists);
 
-  const albums = discography.items?.filter(
-    (album) => album.album_group === "album"
-  );
-  const singles = discography.items?.filter(
-    (album) => album.album_group === "single"
-  );
-  const appearsOn = discography.items?.filter(
-    (album) => album.album_group === "appears_on"
-  );
+  const albums = discography.items?.filter((album) => album.album_group === "album");
+  const singles = discography.items?.filter((album) => album.album_group === "single");
+  const appearsOn = discography.items?.filter((album) => album.album_group === "appears_on");
 
   useEffect(() => {
     if (id) {
@@ -80,9 +74,7 @@ const ArtistPage = () => {
   }, [artistStatus, dispatch, topTracks.tracks]);
 
   function handleOnclick(isSaved?: boolean) {
-    isSaved
-      ? dispatch(removeSavedArtist(artist.id))
-      : dispatch(saveArtist(artist.id));
+    isSaved ? dispatch(removeSavedArtist(artist.id)) : dispatch(saveArtist(artist.id));
   }
 
   return id === artist.id ? (
@@ -103,22 +95,14 @@ const ArtistPage = () => {
         </div>
       </H.HeaderWrapper>
 
-      <ActionBar
-        isSaved={artist.is_saved}
-        handleClick={() => handleOnclick(artist.is_saved)}
-      />
+      <ActionBar isSaved={artist.is_saved} handleClick={() => handleOnclick(artist.is_saved)} />
 
       {topTracks.tracks?.length > 0 && (
         <S.Section>
           <S.SectionName>Popular</S.SectionName>
           <T.TrackList>
             {topTracks.tracks?.slice(0, 10).map((track, index) => (
-              <Track
-                key={track.id}
-                variant="popular-tracks"
-                item={track}
-                index={index}
-              />
+              <Track key={track.id} variant="popular-tracks" item={track} index={index} />
             ))}
           </T.TrackList>
         </S.Section>
@@ -129,12 +113,7 @@ const ArtistPage = () => {
           <S.SectionName>Albums</S.SectionName>
           <CollectionOverflow>
             {albums?.slice(0, 10).map((album) => (
-              <Card
-                key={album.id}
-                variant="album-discography"
-                item={album}
-                overflow
-              />
+              <Card key={album.id} variant="album-discography" item={album} overflow />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -145,12 +124,7 @@ const ArtistPage = () => {
           <S.SectionName>Singles and EPs</S.SectionName>
           <CollectionOverflow>
             {singles?.slice(0, 10).map((album) => (
-              <Card
-                key={album.id}
-                variant="album-discography"
-                item={album}
-                overflow
-              />
+              <Card key={album.id} variant="album-discography" item={album} overflow />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -161,12 +135,7 @@ const ArtistPage = () => {
           <S.SectionName>Appears On</S.SectionName>
           <CollectionOverflow>
             {appearsOn?.slice(0, 10).map((album) => (
-              <Card
-                key={album.id}
-                variant="album-discography"
-                item={album}
-                overflow
-              />
+              <Card key={album.id} variant="album-discography" item={album} overflow />
             ))}
           </CollectionOverflow>
         </S.Section>

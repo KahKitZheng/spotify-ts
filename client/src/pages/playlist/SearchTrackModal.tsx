@@ -3,7 +3,7 @@ import Modal from "react-modal";
 import styled from "styled-components";
 import Track from "../../components/track";
 import * as P from "./playlist.style";
-import * as T from "../../styles/components/track";
+import * as T from "../../components/track/track.style";
 import { MdClose } from "react-icons/md";
 import { DebounceInput } from "react-debounce-input";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";

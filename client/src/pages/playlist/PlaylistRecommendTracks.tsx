@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { useAppSelector } from "../../app/hooks";
 import Track from "../../components/track";
 import * as P from "./playlist.style";
-import * as T from "../../styles/components/track";
+import * as T from "../../components/track/track.style";
 import * as recommendationSlice from "../../slices/recommendationSlice";
 
 interface Props {

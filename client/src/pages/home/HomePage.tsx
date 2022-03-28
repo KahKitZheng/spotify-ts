@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Card from "../../components/card";
 import UserSummary from "./UserSummary";
 import * as S from "../../styles/components/section";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { random } from "../../utils";
 import { CollectionOverflow } from "../../components/collection";
-import { Artist } from "../../types/SpotifyObjects";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
@@ -18,9 +17,8 @@ import * as recommend from "../../slices/recommendationSlice";
 import * as savedArtists from "../../slices/userSavedArtistsSlice";
 
 const HomePage = () => {
-  const [seedArtist, setSeedArtist] = useState({} as Artist);
-
   const dispatch = useAppDispatch();
+  const location = useLocation();
   const user = useAppSelector(selectCurrentUser);
   const likedArtists = useAppSelector(savedArtists.selectSavedArtists);
   const userPlaylists = useAppSelector(selectUserPlaylists);
@@ -28,42 +26,40 @@ const HomePage = () => {
   const topArtists = useAppSelector(topItems.selectTopArtists);
   const topTracks = useAppSelector(topItems.selectTopTracks);
   const recommendArtists = useAppSelector(recommend.selectRecommendedArtistTracks);
-
-  const userSavedArtistsStatus = useSelector(
-    (state: RootState) => state.userSavedArtists.status
-  );
+  const seedArtist = useAppSelector(recommend.selectHomeSeedArtist);
+  const userSavedArtistsStatus = useSelector((state: RootState) => state.userSavedArtists.status);
   const recentTracksStatus = useSelector((state: RootState) => state.recentTracks.status);
 
   useEffect(() => {
     // Remove the access token in url after signing in
     window.history.replaceState(null, "", "/");
 
-    if (recentTracksStatus === "idle") {
+    if (location) {
       dispatch(getRecentTracks({ limit: 10 }));
     }
 
     if (userSavedArtistsStatus === "idle") {
       dispatch(savedArtists.getUserSavedArtists({ type: "artist" }));
     }
-  }, [dispatch, recentTracksStatus, seedArtist, userSavedArtistsStatus]);
+  }, [dispatch, location, userSavedArtistsStatus]);
 
   useEffect(() => {
-    if (topArtists.short_term) {
-      const seed = topArtists.short_term?.items[random(0, 11)];
-
-      setSeedArtist(seed);
-      dispatch(recommend.recommendArtistTracks({ seed: [seed.id], limit: 10 }));
-    }
-  }, [dispatch, topArtists.short_term]);
-
-  useEffect(() => {
-    if (topArtists.short_term === undefined) {
+    if (topArtists.short_term?.items === undefined) {
       dispatch(topItems.getTopArtists({ limit: 10, time_range: "short_term" }));
     }
-    if (topTracks.short_term === undefined) {
+    if (topTracks.short_term?.items === undefined) {
       dispatch(topItems.getTopTracks({ limit: 10, time_range: "short_term" }));
     }
   }, [dispatch, topArtists.short_term, topTracks.short_term]);
+
+  useEffect(() => {
+    if (topArtists.short_term?.items.length > 0) {
+      const seed = topArtists.short_term?.items[random(0, 11)];
+
+      dispatch(recommend.setHomeSeedArtist(seed));
+      dispatch(recommend.recommendArtistTracks({ seed: [seed.id], limit: 10 }));
+    }
+  }, [dispatch, topArtists.short_term?.items]);
 
   return (
     <div>
@@ -87,7 +83,7 @@ const HomePage = () => {
       <S.Section>
         <S.SectionLink to="/top-artists">Your top artists</S.SectionLink>
         <CollectionOverflow>
-          {topArtists.short_term?.items?.slice(0, 10).map((artist) => (
+          {topArtists.short_term?.items.slice(0, 10).map((artist) => (
             <Card key={artist.id} variant="artist" item={artist} overflow />
           ))}
         </CollectionOverflow>
@@ -96,35 +92,35 @@ const HomePage = () => {
       <S.Section>
         <S.SectionLink to="/top-tracks">Your top tracks</S.SectionLink>
         <CollectionOverflow>
-          {topTracks.short_term?.items?.slice(0, 10).map((track) => (
+          {topTracks.short_term?.items.slice(0, 10).map((track) => (
             <Card key={track.id} variant="track" item={track} overflow />
           ))}
         </CollectionOverflow>
       </S.Section>
 
-      <S.Section>
-        <S.SectionLink to="/library">Your playlists</S.SectionLink>
-        <CollectionOverflow>
-          {userPlaylists.items?.slice(0, 10).map((playlist) => (
-            <Card key={playlist.id} variant="playlist" item={playlist} overflow />
-          ))}
-        </CollectionOverflow>
-      </S.Section>
+      {userPlaylists.items?.length > 0 && (
+        <S.Section>
+          <S.SectionLink to="/library">Your playlists</S.SectionLink>
+          <CollectionOverflow>
+            {userPlaylists.items?.slice(0, 10).map((playlist) => (
+              <Card key={playlist.id} variant="playlist" item={playlist} overflow />
+            ))}
+          </CollectionOverflow>
+        </S.Section>
+      )}
 
-      {recommendArtists.tracks?.length > 0 && seedArtist && (
+      {recommendArtists.tracks?.length > 0 && (
         <S.Section>
           <SeedArtist>
             <Link to={`/artist/${seedArtist.id}`}>
               <SeedArtistCover
-                src={seedArtist.images ? seedArtist.images[0].url : ""}
+                src={seedArtist.images.length > 0 ? seedArtist.images[0].url : ""}
                 alt=""
               />
             </Link>
             <SeedArtistInfo>
               <SeedArtistDescription>Based on</SeedArtistDescription>
-              <SeedArtistName to={`/artist/${seedArtist.id}`}>
-                {seedArtist.name}
-              </SeedArtistName>
+              <SeedArtistName to={`/artist/${seedArtist.id}`}>{seedArtist.name}</SeedArtistName>
             </SeedArtistInfo>
           </SeedArtist>
           <CollectionOverflow>

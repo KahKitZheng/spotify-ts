@@ -2,7 +2,7 @@ import axios from "axios";
 import { random } from "../utils";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RecommendationSeed, Track } from "../types/SpotifyObjects";
+import { Artist, RecommendationSeed, Track } from "../types/SpotifyObjects";
 
 interface RecommendationResponse {
   seeds: RecommendationSeed[];
@@ -10,6 +10,7 @@ interface RecommendationResponse {
 }
 
 interface RecommendationState {
+  homeSeedArtist: Artist;
   artistsTracks: RecommendationResponse;
   playlistTracks: RecommendationResponse;
   artistTracksStatus: "idle" | "loading" | "succeeded" | "failed";
@@ -17,6 +18,7 @@ interface RecommendationState {
 }
 
 const initialState: RecommendationState = {
+  homeSeedArtist: {} as Artist,
   artistsTracks: {} as RecommendationResponse,
   playlistTracks: {} as RecommendationResponse,
   artistTracksStatus: "idle",
@@ -27,9 +29,7 @@ export const recommendArtistTracks = createAsyncThunk(
   "recommendation/recommendArtistTracks",
   async (data: { seed: string[]; limit?: number }) => {
     const { seed, limit = 20 } = data;
-    const response = await axios.get(
-      `/recommendations?seed_artists=${seed.join()}&limit=${limit}`
-    );
+    const response = await axios.get(`/recommendations?seed_artists=${seed.join()}&limit=${limit}`);
     return response.data;
   }
 );
@@ -38,9 +38,7 @@ export const recommendPlaylistTracks = createAsyncThunk(
   "recommendation/recommendPlaylistTracks",
   async (data: { seed: string[]; limit?: number }) => {
     const { seed, limit = 20 } = data;
-    const response = await axios.get(
-      `/recommendations?seed_tracks=${seed.join()}&limit=${limit}`
-    );
+    const response = await axios.get(`/recommendations?seed_tracks=${seed.join()}&limit=${limit}`);
     return response.data;
   }
 );
@@ -65,9 +63,7 @@ export const replaceRecommendationTrack = createAsyncThunk(
       }
     }
 
-    const response = await axios.get(
-      `/recommendations?seed_tracks=${seed.join()}&limit=1`
-    );
+    const response = await axios.get(`/recommendations?seed_tracks=${seed.join()}&limit=1`);
     return response.data;
   }
 );
@@ -75,7 +71,11 @@ export const replaceRecommendationTrack = createAsyncThunk(
 export const recommendationSlice = createSlice({
   name: "recommendation",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    setHomeSeedArtist: (state, action) => {
+      state.homeSeedArtist = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(recommendArtistTracks.fulfilled, (state, action) => {
       state.artistsTracks = action.payload;
@@ -110,5 +110,11 @@ export const selectRecommendedArtistTracks = (state: RootState) => {
 export const selectRecommendedPlaylistTracks = (state: RootState) => {
   return state.recommendations.playlistTracks;
 };
+
+export const selectHomeSeedArtist = (state: RootState) => {
+  return state.recommendations.homeSeedArtist;
+};
+
+export const { setHomeSeedArtist } = recommendationSlice.actions;
 
 export default recommendationSlice.reducer;
