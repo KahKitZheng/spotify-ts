@@ -3,17 +3,13 @@ import { MEDIA } from "../../styles/media";
 
 export const PlaylistDiscovery = styled.section`
   position: relative;
-  margin-top: 64px;
+  margin: 64px 0 32px;
 `;
 
 export const PlaylistDiscoveryHeaderWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-`;
-
-export const PlaylistDiscoveryHeader = styled.div`
-  flex: 2 1 auto;
 `;
 
 export const PlaylistDiscoveryName = styled.h2`
@@ -49,13 +45,14 @@ export const RefreshButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  margin-top: 8px;
+  margin-right: 10px;
 `;
 
 export const RefreshButton = styled.button`
   background-color: transparent;
   color: ${({ theme }) => theme.colors.white};
   border: 0;
-  margin-right: 10px;
   text-transform: uppercase;
   font-size: 14px;
   font-weight: 600;

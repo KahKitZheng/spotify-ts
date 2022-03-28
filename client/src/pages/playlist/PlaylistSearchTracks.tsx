@@ -1,11 +1,13 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
+import styled from "styled-components";
 import Track from "../../components/track";
 import * as P from "./playlist.style";
 import * as T from "../../styles/components/track";
+import { MEDIA } from "../../styles/media";
 import { MdClose } from "react-icons/md";
 import { DebounceInput } from "react-debounce-input";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import * as searchResultSlice from "../../slices/searchResultSlice";
+import { getAllSearchResults, selectSearchResults } from "../../slices/searchResultSlice";
 
 interface Props {
   isSearching: boolean;
@@ -17,20 +19,20 @@ const PlaylistSearchTracks = (props: Props) => {
   const [query, setQuery] = useState("");
 
   const dispatch = useAppDispatch();
-  const searchResults = useAppSelector(searchResultSlice.selectSearchResults);
+  const searchResults = useAppSelector(selectSearchResults);
 
   function handleOnChange(searchValue: string) {
     setQuery(searchValue);
 
     if (searchValue.length > 0) {
-      dispatch(searchResultSlice.getAllSearchResults({ q: searchValue, limit: 10 }));
+      dispatch(getAllSearchResults({ q: searchValue, limit: 10 }));
     }
   }
 
   return (
-    <P.PlaylistDiscovery>
+    <PlaylistSearchWrapper>
       <P.PlaylistDiscoveryHeaderWrapper>
-        <P.PlaylistDiscoveryHeader>
+        <div>
           <P.PlaylistDiscoveryName>
             Let&apos;s find something for your playlist
           </P.PlaylistDiscoveryName>
@@ -41,7 +43,7 @@ const PlaylistSearchTracks = (props: Props) => {
             debounceTimeout={600}
             onChange={(event) => handleOnChange(event.target.value)}
           />
-        </P.PlaylistDiscoveryHeader>
+        </div>
         <P.ToggleDiscovery
           $hide={props.isSearching && props.playlistSize === 0}
           onClick={() => props.setIsSearching(!props.isSearching)}
@@ -58,8 +60,14 @@ const PlaylistSearchTracks = (props: Props) => {
           </T.TrackList>
         )}
       </P.TracklistWrapper>
-    </P.PlaylistDiscovery>
+    </PlaylistSearchWrapper>
   );
 };
+
+const PlaylistSearchWrapper = styled(P.PlaylistDiscovery)`
+  @media (max-width: ${MEDIA.tablet}) {
+    display: none;
+  } ;
+`;
 
 export default PlaylistSearchTracks;

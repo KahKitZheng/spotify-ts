@@ -8,8 +8,6 @@ import { Playlist } from "../../types/SpotifyObjects";
 import { editPlaylistDetails } from "../../slices/userSavedPlaylistsSlice";
 import { editCurrentPlaylistDetails } from "../../slices/playlistSlice";
 
-Modal.setAppElement("#root");
-
 interface Props {
   modal: boolean;
   setModal: Dispatch<SetStateAction<boolean>>;
@@ -21,9 +19,7 @@ const EditPlaylistModal = (props: Props) => {
 
   const dispatch = useAppDispatch();
   const [playlistName, setPlaylistName] = useState(playlist.name);
-  const [playlistDescription, setPlaylistDescription] = useState(
-    playlist.description || ""
-  );
+  const [playlistDescription, setPlaylistDescription] = useState(playlist.description || "");
 
   function handleEditPlaylist() {
     const id = playlist.id;

@@ -10,17 +10,17 @@ import { selectPlaylistDuration } from "../../slices/playlistSlice";
 interface Props {
   bgGradient: string;
   playlist: Playlist;
-  setModal: Dispatch<SetStateAction<boolean>>;
+  setEditModal: Dispatch<SetStateAction<boolean>>;
 }
 
 const PlaylistHeader = (props: Props) => {
-  const { playlist, bgGradient, setModal } = props;
+  const { playlist, bgGradient, setEditModal } = props;
 
   const userId = useAppSelector(selectCurrentUserId);
   const playlistDuration = useAppSelector(selectPlaylistDuration);
 
   function handleShowModal() {
-    playlist.owner.id === userId ? setModal(true) : setModal(false);
+    playlist.owner.id === userId ? setEditModal(true) : setEditModal(false);
   }
 
   return (

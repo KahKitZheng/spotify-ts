@@ -2,40 +2,20 @@ import React, { Fragment } from "react";
 import LikeButton from "../../components/button";
 import * as T from "../../styles/components/track";
 import { Link, useParams } from "react-router-dom";
+import { BiPlus } from "react-icons/bi";
+import { MEDIA } from "../../styles/media";
 import { useDispatch } from "react-redux";
 import { formatDuration } from "../../utils";
+import { useViewportWidth } from "../../hooks/useViewportWidth";
 import { removeSavedAlbumTrack, saveAlbumTrack } from "../../slices/albumSlice";
-import {
-  removeSavedTopTrack,
-  saveTopTrack,
-  TimeRange,
-} from "../../slices/topItemsSlice";
-import {
-  removeSavedPopularArtistTrack,
-  savePopularArtistTrack,
-} from "../../slices/artistSlice";
-import {
-  addTrackToPlaylist,
-  addTrackToPlaylistData,
-  removeSavedPlaylistTrack,
-  savePlaylistTrack,
-} from "../../slices/playlistSlice";
-import {
-  Episode,
-  SimplifiedArtist,
-  SimplifiedTrack,
-  Track,
-} from "../../types/SpotifyObjects";
+import { removeSavedTopTrack, saveTopTrack, TimeRange } from "../../slices/topItemsSlice";
+import { removeSavedPopularArtistTrack, savePopularArtistTrack } from "../../slices/artistSlice";
+import * as playlistSlice from "../../slices/playlistSlice";
+import { Episode, SimplifiedArtist, SimplifiedTrack, Track } from "../../types/SpotifyObjects";
 import { replaceRecommendationTrack } from "../../slices/recommendationSlice";
 
 interface Props {
-  variant:
-    | "album"
-    | "popular-tracks"
-    | "playlist"
-    | "playlist-add"
-    | "user-top"
-    | "genre";
+  variant: "album" | "popular-tracks" | "playlist" | "playlist-add" | "user-top" | "genre";
   item: Track | SimplifiedTrack | Episode;
   index?: number;
   addedAt?: string;
@@ -51,19 +31,11 @@ const TrackComponent = (props: Props) => {
     case "popular-tracks":
       return <PopularArtistTrack item={item as Track} index={index} />;
     case "playlist":
-      return (
-        <PlaylistTrack item={item as Track} addedAt={addedAt} index={index} />
-      );
+      return <PlaylistTrack item={item as Track} addedAt={addedAt} index={index} />;
     case "playlist-add":
       return <PlaylistAddTrack item={item as Track} />;
     case "user-top":
-      return (
-        <UserTopTrack
-          item={item as Track}
-          index={index}
-          timeRange={timeRange}
-        />
-      );
+      return <UserTopTrack item={item as Track} index={index} timeRange={timeRange} />;
     case "genre":
       return <GenreTrack item={item as Track} />;
   }
@@ -85,9 +57,7 @@ const AlbumTrack = (props: { item: SimplifiedTrack }) => {
   const dispatch = useDispatch();
 
   function handleOnclick(isSaved?: boolean) {
-    isSaved
-      ? dispatch(removeSavedAlbumTrack(item.id))
-      : dispatch(saveAlbumTrack(item.id));
+    isSaved ? dispatch(removeSavedAlbumTrack(item.id)) : dispatch(saveAlbumTrack(item.id));
   }
 
   return (
@@ -102,13 +72,10 @@ const AlbumTrack = (props: { item: SimplifiedTrack }) => {
           </T.TrackArtists>
         </T.TrackDetails>
       </T.TrackInfo>
-      <T.TrackDuration>
-        <LikeButton
-          isSaved={item.is_saved}
-          handleClick={() => handleOnclick(item.is_saved)}
-        />
-        <span>{formatDuration(item.duration_ms, "track")}</span>
-      </T.TrackDuration>
+      <T.TrackOptions>
+        <LikeButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
+        <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+      </T.TrackOptions>
     </T.OrderedTrack>
   );
 };
@@ -134,40 +101,30 @@ const PopularArtistTrack = (props: { item: Track; index?: number }) => {
           {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
         </T.TrackDetails>
       </T.TrackInfo>
-      <T.TrackDuration>
-        <LikeButton
-          isSaved={item.is_saved}
-          handleClick={() => handleOnclick(item.is_saved)}
-        />
-        <span>{formatDuration(item.duration_ms, "track")}</span>
-      </T.TrackDuration>
+      <T.TrackOptions>
+        <LikeButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
+        <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+      </T.TrackOptions>
     </T.OrderedTrack>
   );
 };
 
 // Album Cover + Track Name + Track Artists
-const PlaylistTrack = (props: {
-  item: Track;
-  index?: number;
-  addedAt?: string;
-}) => {
+const PlaylistTrack = (props: { item: Track; index?: number; addedAt?: string }) => {
   const { index, item, addedAt } = props;
   const dispatch = useDispatch();
 
   function handleOnclick(isSaved?: boolean) {
     isSaved
-      ? dispatch(removeSavedPlaylistTrack(item.id))
-      : dispatch(savePlaylistTrack(item.id));
+      ? dispatch(playlistSlice.removeSavedPlaylistTrack(item.id))
+      : dispatch(playlistSlice.savePlaylistTrack(item.id));
   }
 
   return (
     <T.PlaylistTrack>
       {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
       <T.TrackInfo>
-        <T.TrackAlbumCover
-          src={item.album?.images[0] && item.album?.images[0].url}
-          alt=""
-        />
+        <T.TrackAlbumCover src={item.album?.images[0] && item.album?.images[0].url} alt="" />
         <T.TrackDetails>
           <T.TrackName>{item.name}</T.TrackName>
           <T.TrackArtists>
@@ -180,13 +137,10 @@ const PlaylistTrack = (props: {
         <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
       </T.TrackAlbum>
       {addedAt !== null && <T.TrackDateAdded>{addedAt}</T.TrackDateAdded>}
-      <T.TrackDuration>
-        <LikeButton
-          isSaved={item.is_saved}
-          handleClick={() => handleOnclick(item.is_saved)}
-        />
-        <span>{formatDuration(item.duration_ms, "track")}</span>
-      </T.TrackDuration>
+      <T.TrackOptions>
+        <LikeButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
+        <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+      </T.TrackOptions>
     </T.PlaylistTrack>
   );
 };
@@ -195,11 +149,12 @@ const PlaylistAddTrack = (props: { item: Track }) => {
   const { item } = props;
   const { id } = useParams();
   const dispatch = useDispatch();
+  const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
 
   function addTrack() {
     if (id !== undefined) {
-      dispatch(addTrackToPlaylist({ playlist_id: id, uris: [item.uri] }));
-      dispatch(addTrackToPlaylistData(item.id));
+      dispatch(playlistSlice.addTrackToPlaylist({ playlist_id: id, uris: [item.uri] }));
+      dispatch(playlistSlice.addTrackToPlaylistData(item.id));
       dispatch(replaceRecommendationTrack({ id: item.id }));
     }
   }
@@ -213,8 +168,8 @@ const PlaylistAddTrack = (props: { item: Track }) => {
           <T.TrackArtists>
             {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
             {renderArtists(item.artists)}
-            <span className="bull"></span>
             <T.AddPlaylistTrackAlbum>
+              <span className="bull">&bull;</span>
               <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
             </T.AddPlaylistTrackAlbum>
           </T.TrackArtists>
@@ -223,22 +178,18 @@ const PlaylistAddTrack = (props: { item: Track }) => {
       <T.AddPlaylistTrackAlbumSection>
         <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
       </T.AddPlaylistTrackAlbumSection>
-      <T.TrackDuration>
-        <span>{formatDuration(item.duration_ms, "track")}</span>
+      <T.TrackOptions>
+        <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
         <T.AddTrackToPlaylist onClick={() => addTrack()}>
-          Add
+          {isDesktop ? "Add" : <BiPlus />}
         </T.AddTrackToPlaylist>
-      </T.TrackDuration>
+      </T.TrackOptions>
     </T.PlaylistAddTrack>
   );
 };
 
 // Album Cover + Track Name + Track Artists
-const UserTopTrack = (props: {
-  item: Track;
-  index?: number;
-  timeRange?: TimeRange;
-}) => {
+const UserTopTrack = (props: { item: Track; index?: number; timeRange?: TimeRange }) => {
   const { index, item, timeRange } = props;
   const dispatch = useDispatch();
 
@@ -265,15 +216,12 @@ const UserTopTrack = (props: {
       <T.TrackAlbum>
         <Link to={`/album/${item.album?.id}`}>{item.album?.name}</Link>
       </T.TrackAlbum>
-      <T.TrackDuration>
+      <T.TrackOptions>
         {timeRange !== undefined && (
-          <LikeButton
-            isSaved={item.is_saved}
-            handleClick={() => handleOnclick(item.is_saved)}
-          />
+          <LikeButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
         )}
-        <span>{formatDuration(item.duration_ms, "track")}</span>
-      </T.TrackDuration>
+        <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+      </T.TrackOptions>
     </T.TopTrack>
   );
 };
@@ -294,9 +242,9 @@ const GenreTrack = (props: { item: Track }) => {
           </T.TrackArtists>
         </T.TrackDetails>
       </T.TrackInfo>
-      <T.TrackDuration>
-        <span>{formatDuration(item.duration_ms, "track")}</span>
-      </T.TrackDuration>
+      <T.TrackOptions>
+        <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+      </T.TrackOptions>
     </T.Track>
   );
 };

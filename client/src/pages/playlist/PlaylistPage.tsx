@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
+import styled from "styled-components";
 import Track from "../../components/track";
 import ActionBar from "../../components/actionbar";
 import PlaylistHeader from "./PlaylistHeader";
 import PlaylistSearchTracks from "./PlaylistSearchTracks";
 import PlaylistRecommendTracks from "./PlaylistRecommendTracks";
+import SearchTrackModal from "./SearchTrackModal";
 import EditPlaylistModal from "./EditPlaylistModal";
 import * as T from "../../styles/components/track";
 import * as utils from "../../utils";
@@ -12,13 +14,15 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import * as playlistSlice from "../../slices/playlistSlice";
 import * as recommendationSlice from "../../slices/recommendationSlice";
+import { MEDIA } from "../../styles/media";
 
 const PlaylistPage = () => {
   const { id } = useParams();
   const [fetchOffset, setFetchOffset] = useState(0);
   const [bgGradient, setBgGradient] = useState(`hsl(0, 0%, 40%)`);
-  const [isSearching, setIsSearching] = useState(false);
-  const [modal, setModal] = useState(false);
+  const [isSearching, setIsSearching] = useState(true);
+  const [editModal, setEditModal] = useState(false);
+  const [searchModal, setSearchModal] = useState(false);
 
   const dispatch = useAppDispatch();
   const userId = useAppSelector(selectCurrentUserId);
@@ -111,8 +115,8 @@ const PlaylistPage = () => {
   }, [playlist.name, playlistSize]);
 
   useEffect(() => {
-    if (id) setFetchOffset(0);
-    if (playlistSize === 0) setIsSearching(true);
+    id && setFetchOffset(0);
+    playlistSize > 0 ? setIsSearching(false) : setIsSearching(true);
   }, [id, playlistSize]);
 
   useEffect(() => {
@@ -145,11 +149,15 @@ const PlaylistPage = () => {
 
   return id === playlist.id ? (
     <div>
-      <PlaylistHeader bgGradient={bgGradient} playlist={playlist} setModal={setModal} />
+      <PlaylistHeader bgGradient={bgGradient} playlist={playlist} setEditModal={setEditModal} />
       <ActionBar
         isSaved={playlist.is_saved}
         handleClick={() => handleSavePlaylist(playlist.is_saved)}
       />
+
+      <AddTracksWrapper>
+        <AddTracksMobile onClick={() => setSearchModal(true)}>Add songs</AddTracksMobile>
+      </AddTracksWrapper>
 
       {playlist.tracks.items?.length > 0 && (
         <T.TrackList>
@@ -181,9 +189,33 @@ const PlaylistPage = () => {
         />
       ) : null}
 
-      <EditPlaylistModal modal={modal} setModal={setModal} playlist={playlist} />
+      <SearchTrackModal modal={searchModal} setModal={setSearchModal} />
+      <EditPlaylistModal modal={editModal} setModal={setEditModal} playlist={playlist} />
     </div>
   ) : null;
 };
+
+const AddTracksWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  margin-bottom: 32px;
+`;
+
+const AddTracksMobile = styled.button`
+  background-color: transparent;
+  color: ${({ theme }) => theme.colors.white};
+  padding: 4px 24px;
+  border-radius: 24px;
+  border: 1px solid #4d5155;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  @media (min-width: ${MEDIA.tablet}) {
+    display: none;
+  }
+`;
 
 export default PlaylistPage;
