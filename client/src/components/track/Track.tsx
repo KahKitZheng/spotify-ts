@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import LikeButton from "../../components/button";
+import TrackSaveButton from "./TrackSaveButton";
 import * as T from "./track.style";
 import { Link, useParams } from "react-router-dom";
 import { BiPlus } from "react-icons/bi";
@@ -13,6 +13,7 @@ import { removeSavedPopularArtistTrack, savePopularArtistTrack } from "../../sli
 import * as playlistSlice from "../../slices/playlistSlice";
 import { Episode, SimplifiedArtist, SimplifiedTrack, Track } from "../../types/SpotifyObjects";
 import { replaceRecommendationTrack } from "../../slices/recommendationSlice";
+import TrackOptions from "./TrackOptions";
 
 interface Props {
   variant: "album" | "popular-tracks" | "playlist" | "playlist-add" | "user-top" | "genre";
@@ -73,8 +74,9 @@ const AlbumTrack = (props: { item: SimplifiedTrack }) => {
         </T.TrackDetails>
       </T.TrackInfo>
       <T.TrackOptions>
-        <LikeButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
+        <TrackSaveButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
         <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+        <TrackOptions />
       </T.TrackOptions>
     </T.OrderedTrack>
   );
@@ -102,8 +104,9 @@ const PopularArtistTrack = (props: { item: Track; index?: number }) => {
         </T.TrackDetails>
       </T.TrackInfo>
       <T.TrackOptions>
-        <LikeButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
+        <TrackSaveButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
         <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+        <TrackOptions />
       </T.TrackOptions>
     </T.OrderedTrack>
   );
@@ -138,8 +141,9 @@ const PlaylistTrack = (props: { item: Track; index?: number; addedAt?: string })
       </T.TrackAlbum>
       {addedAt !== null && <T.TrackDateAdded>{addedAt}</T.TrackDateAdded>}
       <T.TrackOptions>
-        <LikeButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
+        <TrackSaveButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
         <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+        <TrackOptions />
       </T.TrackOptions>
     </T.PlaylistTrack>
   );
@@ -218,9 +222,13 @@ const UserTopTrack = (props: { item: Track; index?: number; timeRange?: TimeRang
       </T.TrackAlbum>
       <T.TrackOptions>
         {timeRange !== undefined && (
-          <LikeButton isSaved={item.is_saved} handleClick={() => handleOnclick(item.is_saved)} />
+          <TrackSaveButton
+            isSaved={item.is_saved}
+            handleClick={() => handleOnclick(item.is_saved)}
+          />
         )}
         <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+        <TrackOptions />
       </T.TrackOptions>
     </T.TopTrack>
   );
@@ -244,6 +252,7 @@ const GenreTrack = (props: { item: Track }) => {
       </T.TrackInfo>
       <T.TrackOptions>
         <T.TrackDuration>{formatDuration(item.duration_ms, "track")}</T.TrackDuration>
+        <TrackOptions />
       </T.TrackOptions>
     </T.Track>
   );

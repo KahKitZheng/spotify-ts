@@ -28,7 +28,6 @@ const HomePage = () => {
   const recommendArtists = useAppSelector(recommend.selectRecommendedArtistTracks);
   const seedArtist = useAppSelector(recommend.selectHomeSeedArtist);
   const userSavedArtistsStatus = useSelector((state: RootState) => state.userSavedArtists.status);
-  const recentTracksStatus = useSelector((state: RootState) => state.recentTracks.status);
 
   useEffect(() => {
     // Remove the access token in url after signing in

@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import { MEDIA } from "../../styles/media";
+import { TrackSave } from "./TrackSaveButton";
 import { textOverflow } from "../../styles/utils";
-import { StyledLikeButton } from "../button/Button";
 
-// Containers for collection of tracks
+/////////////////////////////////////////
+// Containers for collection of tracks //
+/////////////////////////////////////////
 export const TrackDisc = styled.div`
   margin-top: 16px;
 
@@ -56,14 +58,16 @@ export const AddPlaylistTrackAlbum = styled.span`
   }
 `;
 
-export const TrackDuration = styled.span``;
+export const TrackDuration = styled.span`
+  padding: 0 16px;
+`;
 
 export const AddTrackToPlaylist = styled.button`
   background-color: transparent;
   color: ${({ theme }) => theme.colors.white};
   border: 1px solid #4d5155;
   border-radius: 16px;
-  margin-left: 32px;
+  margin-left: 8px;
   padding: 4px 24px;
   text-transform: uppercase;
   font-size: 12px;
@@ -130,7 +134,7 @@ export const TrackAlbum = styled.div`
 `;
 
 export const AddPlaylistTrackAlbumSection = styled.div`
-  grid-area: add-playlist-track-album;
+  grid-area: playlist-add-track-album;
 
   @media (max-width: ${MEDIA.laptop}) {
     display: none;
@@ -138,7 +142,7 @@ export const AddPlaylistTrackAlbumSection = styled.div`
 `;
 
 export const TrackDateAdded = styled.span`
-  grid-area: track-date-added;
+  grid-area: playlist-date-added;
   font-size: 14px;
   padding-left: 48px;
 
@@ -153,44 +157,52 @@ export const TrackOptions = styled.div`
   align-items: center;
   justify-content: flex-end;
   font-size: 14px;
-  padding-right: 8px;
 `;
 
 ///////////////////////////
 // Track layout variants //
 ///////////////////////////
 export const Track = styled.div`
+  --track-section-index: 24px;
+  --track-section-info: 1fr;
+  --track-section-album: 120px;
+  --track-section-playlist-add-track: 120px;
+  --track-section-playlist-date-added: 3fr;
+  --track-section-options: auto;
+
   display: grid;
   align-items: center;
-  grid-template-columns: 10fr 80px;
+  grid-template-columns: var(--track-section-info) var(--track-section-options);
   grid-template-areas: "track-info track-options";
   grid-gap: 16px;
   margin: -8px;
   padding: 8px;
 
-  :last-of-type {
-    margin-bottom: 0;
-  }
-
   :hover {
     background-color: #1a1c25;
   }
+  :hover ${TrackSave} {
+    visibility: visible;
+  }
 
-  :hover ${StyledLikeButton} {
-    display: block;
+  @media (min-width: ${MEDIA.tablet}) {
+    --track-section-info: 6fr;
+    --track-section-album: 4fr;
   }
 `;
 
 export const OrderedTrack = styled(Track)`
   @media (min-width: ${MEDIA.mobile}) {
-    grid-template-columns: 24px 10fr 80px;
+    grid-template-columns:
+      var(--track-section-index)
+      var(--track-section-info)
+      var(--track-section-options);
     grid-template-areas: "track-index track-info track-options";
   }
 `;
 
 export const TrackDiscInfo = styled(Track)`
-  grid-template-columns: 24px 80px;
-  grid-template-areas: "disc-icon disc-number";
+  grid-template-columns: var(--track-section-index) var(--track-section-info);
   font-weight: 600;
   font-size: 18px;
 
@@ -206,40 +218,60 @@ export const TrackDiscInfo = styled(Track)`
 
 export const PlaylistTrack = styled(OrderedTrack)`
   @media (min-width: ${MEDIA.tablet}) {
-    grid-template-columns: 24px 6fr 4fr 80px;
+    --track-section-info: 6fr;
+    --track-section-album: 4fr;
+
     grid-template-areas: "track-index track-info track-album track-options";
+    grid-template-columns:
+      var(--track-section-index)
+      var(--track-section-info)
+      var(--track-section-album)
+      var(--track-section-options);
   }
 
   @media (min-width: ${MEDIA.laptop}) {
-    grid-template-columns: 24px 6fr 4fr 3fr 80px;
-    grid-template-areas: "track-index track-info track-album track-date-added track-options";
+    grid-template-areas: "track-index track-info track-album playlist-date-added track-options";
+    grid-template-columns:
+      var(--track-section-index)
+      var(--track-section-info)
+      var(--track-section-album)
+      var(--track-section-playlist-date-added)
+      var(--track-section-options);
   }
 `;
 
 export const PlaylistAddTrack = styled(Track)`
-  grid-template-columns: 1fr 80px;
   grid-template-areas: "track-info track-options";
+  grid-template-columns: var(--track-section-info) var(--track-section-options);
 
   @media (max-width: ${MEDIA.tablet}) {
-    ${TrackAlbumCover}, ${TrackDuration} {
+    ${TrackDuration},
+    ${TrackAlbumCover} {
       display: none;
     }
   }
 
   @media (min-width: ${MEDIA.tablet}) {
-    grid-template-columns: 1fr 160px;
     grid-template-areas: "track-info track-options";
+    grid-template-columns: var(--track-section-info) var(--track-section-options);
   }
 
   @media (min-width: ${MEDIA.laptop}) {
-    grid-template-columns: 6fr 4fr 160px;
-    grid-template-areas: "track-info add-playlist-track-album track-options";
+    grid-template-areas: "track-info playlist-add-track-album track-options";
+    grid-template-columns:
+      var(--track-section-info)
+      var(--track-section-playlist-date-added)
+      var(--track-section-options);
   }
 `;
 
 export const TopTrack = styled(OrderedTrack)`
   @media (min-width: ${MEDIA.tablet}) {
-    grid-template-columns: 24px 6fr 4fr 80px;
     grid-template-areas: "track-index track-info track-album track-options";
+    grid-template-columns:
+      var(--track-section-index)
+      var(--track-section-info)
+      var(--track-section-album)
+      var(--track-section-options);
   }
 `;
