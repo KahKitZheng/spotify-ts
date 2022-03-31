@@ -1,6 +1,12 @@
 import axios from "axios";
 import { RootState } from "../app/store";
-import { Playlist, Track } from "../types/SpotifyObjects";
+import {
+  Playlist,
+  PlaylistItem,
+  PublicUser,
+  Track,
+  VideoThumbnail,
+} from "../types/SpotifyObjects";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface PlaylistState {
@@ -139,14 +145,14 @@ export const addTrackToPlaylistData = createAsyncThunk(
         images: user.images,
         type: "user" as User,
         uri: user.uri,
-      },
+      } as PublicUser,
       is_local: false,
       primary_color: null,
       track: response.data as Track,
       video_thumbnail: {
         url: null,
-      },
-    };
+      } as VideoThumbnail,
+    } as PlaylistItem;
 
     return playlistItem;
   }

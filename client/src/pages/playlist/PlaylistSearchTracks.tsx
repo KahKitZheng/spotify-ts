@@ -2,12 +2,12 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import styled from "styled-components";
 import Track from "../../components/track";
 import * as P from "./playlist.style";
-import * as T from "../../components/track/track.style";
+import * as T from "../../components/track/Track.style";
 import { MEDIA } from "../../styles/media";
 import { MdClose } from "react-icons/md";
 import { DebounceInput } from "react-debounce-input";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getAllSearchResults, selectSearchResults } from "../../slices/searchResultSlice";
+import * as searchResultSlice from "../../slices/searchResultSlice";
 
 interface Props {
   isSearching: boolean;
@@ -19,13 +19,14 @@ const PlaylistSearchTracks = (props: Props) => {
   const [query, setQuery] = useState("");
 
   const dispatch = useAppDispatch();
-  const searchResults = useAppSelector(selectSearchResults);
+  const searchResults = useAppSelector(searchResultSlice.selectSearchResults);
 
   function handleOnChange(searchValue: string) {
     setQuery(searchValue);
 
     if (searchValue.length > 0) {
-      dispatch(getAllSearchResults({ q: searchValue, limit: 10 }));
+      const payload = { q: searchValue, limit: 10 };
+      dispatch(searchResultSlice.getAllSearchResults(payload));
     }
   }
 
@@ -55,7 +56,11 @@ const PlaylistSearchTracks = (props: Props) => {
         {query !== "" && (
           <T.TrackList>
             {searchResults.tracks?.items.map((track) => (
-              <Track key={track.id} item={track} variant={"playlist-add"} />
+              <Track
+                key={track.id}
+                item={track}
+                variant={"playlist-add-track"}
+              />
             ))}
           </T.TrackList>
         )}

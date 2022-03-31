@@ -110,7 +110,7 @@ export const checkSavedPopularTracks = createAsyncThunk(
   }
 );
 
-// Save track to your liked songs
+// Save artist track to your liked songs
 export const savePopularArtistTrack = createAsyncThunk(
   "artist/savePopularArtistTrack",
   async (id: string) => {
@@ -133,48 +133,47 @@ export const ArtistSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getArtist.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getArtist.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.artist = action.payload;
-      })
-      .addCase(getArtist.rejected, (state) => {
-        state.status = "failed";
-      });
-    builder.addCase(getArtistAlbums.fulfilled, (state, action) => {
+    builder.addCase(getArtist.fulfilled, (state, action) => {
       state.status = "succeeded";
+      state.artist = action.payload;
+    });
+
+    builder.addCase(getArtistAlbums.fulfilled, (state, action) => {
       state.albums = action.payload;
     });
+
     builder.addCase(getArtistTopTracks.fulfilled, (state, action) => {
-      state.status = "succeeded";
       state.topTracks = action.payload;
     });
+
     builder.addCase(getRelatedArtists.fulfilled, (state, action) => {
-      state.status = "succeeded";
       state.relatedArtists = action.payload;
     });
+
     builder.addCase(checkSavedArtist.fulfilled, (state, action) => {
       state.artist.is_saved = action.payload[0];
     });
+
     builder.addCase(saveArtist.fulfilled, (state) => {
       state.artist.is_saved = true;
     });
+
     builder.addCase(removeSavedArtist.fulfilled, (state) => {
       state.artist.is_saved = false;
     });
+
     builder.addCase(checkSavedPopularTracks.fulfilled, (state, action) => {
       state.topTracks.tracks?.map((track, index) => {
         track.is_saved = action.payload[index];
       });
     });
+
     builder.addCase(savePopularArtistTrack.fulfilled, (state, action) => {
       const list = state.topTracks.tracks;
       const index = list.findIndex((track) => track.id === action.payload);
       state.topTracks.tracks[index].is_saved = true;
     });
+
     builder.addCase(
       removeSavedPopularArtistTrack.fulfilled,
       (state, action) => {
@@ -200,10 +199,6 @@ export const selectArtistTopTracks = (state: RootState) => {
 
 export const selectRelatedArtists = (state: RootState) => {
   return state.artist.relatedArtists;
-};
-
-export const selectArtistStatus = (state: RootState) => {
-  return state.artist.status;
 };
 
 export default ArtistSlice.reducer;

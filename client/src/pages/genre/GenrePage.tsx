@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Track from "../../components/track";
 import { useParams } from "react-router-dom";
-import { TrackList } from "../../components/track/track.style";
+import { TrackList } from "../../components/track/Track.style";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
-import { recommendGenreTracks, selectGenreTracks } from "../../slices/genreSlice";
+import * as genreSlice from "../../slices/genreSlice";
 import { stringToHSL } from "../../utils";
 
 const GenrePage = () => {
@@ -13,12 +13,13 @@ const GenrePage = () => {
   const { category, artist } = useParams();
 
   const dispatch = useDispatch();
-  const genre = useSelector(selectGenreTracks);
+  const genre = useSelector(genreSlice.selectGenreTracks);
   const market = useSelector(selectCurrentUserCountry);
 
   useEffect(() => {
     if (category && artist && market) {
-      dispatch(recommendGenreTracks({ category, artist, limit: 30, market }));
+      const payload = { category, artist, limit: 30, market };
+      dispatch(genreSlice.recommendGenreTracks(payload));
       setColor(stringToHSL(category));
     }
   }, [dispatch, category, market, artist]);

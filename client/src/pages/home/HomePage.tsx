@@ -11,7 +11,10 @@ import { RootState } from "../../app/store";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectCurrentUser } from "../../slices/currentUserSlice";
 import { selectUserPlaylists } from "../../slices/userSavedPlaylistsSlice";
-import { getRecentTracks, selectRecentTracks } from "../../slices/recentTrackSlice";
+import {
+  getRecentTracks,
+  selectRecentTracks,
+} from "../../slices/recentTrackSlice";
 import * as topItems from "../../slices/topItemsSlice";
 import * as recommend from "../../slices/recommendationSlice";
 import * as savedArtists from "../../slices/userSavedArtistsSlice";
@@ -25,9 +28,13 @@ const HomePage = () => {
   const recentTracks = useAppSelector(selectRecentTracks);
   const topArtists = useAppSelector(topItems.selectTopArtists);
   const topTracks = useAppSelector(topItems.selectTopTracks);
-  const recommendArtists = useAppSelector(recommend.selectRecommendedArtistTracks);
+  const recommendArtists = useAppSelector(
+    recommend.selectRecommendedArtistTracks
+  );
   const seedArtist = useAppSelector(recommend.selectHomeSeedArtist);
-  const userSavedArtistsStatus = useSelector((state: RootState) => state.userSavedArtists.status);
+  const userSavedArtistsStatus = useSelector(
+    (state: RootState) => state.userSavedArtists.status
+  );
 
   useEffect(() => {
     // Remove the access token in url after signing in
@@ -56,7 +63,9 @@ const HomePage = () => {
       const seed = topArtists.short_term?.items[random(0, 11)];
 
       dispatch(recommend.setHomeSeedArtist(seed));
-      dispatch(recommend.recommendArtistTracks({ seed: [seed.id], limit: 10 }));
+      dispatch(
+        recommend.recommendArtistTracks({ seed: [seed?.id], limit: 10 })
+      );
     }
   }, [dispatch, topArtists.short_term?.items]);
 
@@ -71,7 +80,9 @@ const HomePage = () => {
       />
 
       <S.Section>
-        <S.SectionLink to="/genre/recently-played">Recently played</S.SectionLink>
+        <S.SectionLink to="/genre/recently-played">
+          Recently played
+        </S.SectionLink>
         <CollectionOverflow>
           {recentTracks.items?.slice(0, 10).map((item, index) => (
             <Card key={index} variant="recently-played" item={item} overflow />
@@ -102,7 +113,12 @@ const HomePage = () => {
           <S.SectionLink to="/library">Your playlists</S.SectionLink>
           <CollectionOverflow>
             {userPlaylists.items?.slice(0, 10).map((playlist) => (
-              <Card key={playlist.id} variant="playlist" item={playlist} overflow />
+              <Card
+                key={playlist.id}
+                variant="playlist"
+                item={playlist}
+                overflow
+              />
             ))}
           </CollectionOverflow>
         </S.Section>
@@ -113,13 +129,17 @@ const HomePage = () => {
           <SeedArtist>
             <Link to={`/artist/${seedArtist.id}`}>
               <SeedArtistCover
-                src={seedArtist.images.length > 0 ? seedArtist.images[0].url : ""}
+                src={
+                  seedArtist.images.length > 0 ? seedArtist.images[0].url : ""
+                }
                 alt=""
               />
             </Link>
             <SeedArtistInfo>
               <SeedArtistDescription>Based on</SeedArtistDescription>
-              <SeedArtistName to={`/artist/${seedArtist.id}`}>{seedArtist.name}</SeedArtistName>
+              <SeedArtistName to={`/artist/${seedArtist.id}`}>
+                {seedArtist.name}
+              </SeedArtistName>
             </SeedArtistInfo>
           </SeedArtist>
           <CollectionOverflow>

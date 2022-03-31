@@ -4,28 +4,14 @@ import Card from "../../components/card";
 import Track from "../../components/track";
 import ActionBar from "../../components/actionbar";
 import * as H from "../../styles/components/headers";
-import * as T from "../../components/track/track.style";
+import * as T from "../../components/track/Track.style";
 import * as S from "../../styles/components/section";
 import { BsDisc } from "react-icons/bs";
 import { CollectionOverflow } from "../../components/collection";
 import { Link, useParams } from "react-router-dom";
 import { extractTrackId, formatDuration, stringToHSL } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import {
-  checkSavedAlbum,
-  checkSavedAlbumTracks,
-  countAlbumDuration,
-  getAlbum,
-  getAlbumDiscography,
-  getOffsetAlbumTracks,
-  removeSavedAlbum,
-  saveAlbum,
-  selectAlbum,
-  selectAlbumDisc,
-  selectAlbumDiscography,
-  selectAlbumDuration,
-  selectAlbumStatus,
-} from "../../slices/albumSlice";
+import * as albumSlice from "../../slices/albumSlice";
 
 const AlbumPage = () => {
   const { id } = useParams();
@@ -33,21 +19,21 @@ const AlbumPage = () => {
   const [gradient, setGradient] = useState(`hsl(0, 0%, 40%)`);
 
   const dispatch = useAppDispatch();
-  const album = useAppSelector(selectAlbum);
-  const albumStatus = useAppSelector(selectAlbumStatus);
-  const albumDuration = useAppSelector(selectAlbumDuration);
-  const albumDisc = useAppSelector(selectAlbumDisc);
-  const albumDiscography = useAppSelector(selectAlbumDiscography);
+  const album = useAppSelector(albumSlice.selectAlbum);
+  const albumStatus = useAppSelector(albumSlice.selectAlbumStatus);
+  const albumDuration = useAppSelector(albumSlice.selectAlbumDuration);
+  const albumDisc = useAppSelector(albumSlice.selectAlbumDisc);
+  const albumDiscography = useAppSelector(albumSlice.selectAlbumDiscography);
 
   const fetchAlbumInfo = useCallback(() => {
     if (album.id !== id && id !== undefined) {
-      dispatch(getAlbum({ id }));
+      dispatch(albumSlice.getAlbum({ id }));
     }
   }, [album.id, dispatch, id]);
 
   const fetchIsAlbumSaved = useCallback(() => {
     if (albumStatus === "succeeded") {
-      dispatch(checkSavedAlbum(album.id));
+      dispatch(albumSlice.checkSavedAlbum(album.id));
     }
   }, [album.id, albumStatus, dispatch]);
 
@@ -57,7 +43,7 @@ const AlbumPage = () => {
     const startIndex = fetchOffset;
 
     if (startIndex >= albumItems?.length && url !== null) {
-      dispatch(getOffsetAlbumTracks({ startIndex, url }));
+      dispatch(albumSlice.getOffsetAlbumTracks({ startIndex, url }));
     }
   }, [album.tracks?.items, album.tracks?.next, dispatch, fetchOffset]);
 
@@ -69,21 +55,21 @@ const AlbumPage = () => {
 
     if (startIndex < list?.length && startIndex < album.tracks?.total) {
       const ids = extractTrackId(list?.slice(startIndex, endIndex));
-      dispatch(checkSavedAlbumTracks({ startIndex, ids })).then(() => {
-        setFetchOffset(endIndex);
-      });
+      dispatch(albumSlice.checkSavedAlbumTracks({ startIndex, ids })).then(() =>
+        setFetchOffset(endIndex)
+      );
     }
   }, [dispatch, fetchOffset, album.tracks?.items, album.tracks?.total]);
 
   const fetchRelatedAlbums = useCallback(() => {
     if (album.artists) {
-      dispatch(getAlbumDiscography({ id: album.artists[0].id }));
+      dispatch(albumSlice.getAlbumDiscography({ id: album.artists[0].id }));
     }
   }, [album.artists, dispatch]);
 
   const setAlbumDuration = useCallback(() => {
     if (album.tracks?.next === null) {
-      dispatch(countAlbumDuration());
+      dispatch(albumSlice.countAlbumDuration());
     }
   }, [album.tracks?.next, dispatch]);
 
@@ -130,7 +116,9 @@ const AlbumPage = () => {
   }
 
   function handleSaveAlbumTrack(isSaved?: boolean) {
-    isSaved ? dispatch(removeSavedAlbum(album.id)) : dispatch(saveAlbum(album.id));
+    isSaved
+      ? dispatch(albumSlice.removeSavedAlbum(album.id))
+      : dispatch(albumSlice.saveAlbum(album.id));
   }
 
   return id === album.id ? (
@@ -174,8 +162,8 @@ const AlbumPage = () => {
               </T.TrackDiscInfo>
             )}
             <T.TrackList>
-              {disc?.map((track, index) => (
-                <Track key={track.id} variant="album" item={track} index={index} />
+              {disc?.map((track) => (
+                <Track key={track.id} variant="album" item={track} />
               ))}
             </T.TrackList>
           </T.TrackDisc>
@@ -184,7 +172,9 @@ const AlbumPage = () => {
 
       <CopyrightWrapper>
         {album.copyrights.map((copyright, index) => (
-          <Copyright key={index}>{renderCopyright(copyright.type, copyright.text)}</Copyright>
+          <Copyright key={index}>
+            {renderCopyright(copyright.type, copyright.text)}
+          </Copyright>
         ))}
       </CopyrightWrapper>
 

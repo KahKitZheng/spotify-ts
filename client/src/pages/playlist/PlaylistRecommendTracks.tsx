@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { useAppSelector } from "../../app/hooks";
 import Track from "../../components/track";
 import * as P from "./playlist.style";
-import * as T from "../../components/track/track.style";
+import * as T from "../../components/track/Track.style";
 import * as recommendationSlice from "../../slices/recommendationSlice";
 
 interface Props {
@@ -12,7 +12,9 @@ interface Props {
 }
 
 const PlaylistRecommendTracks = (props: Props) => {
-  const recommendedTracks = useAppSelector(recommendationSlice.selectRecommendedPlaylistTracks);
+  const recommendedTracks = useAppSelector(
+    recommendationSlice.selectRecommendedPlaylistTracks
+  );
 
   return (
     <P.PlaylistDiscovery>
@@ -21,18 +23,22 @@ const PlaylistRecommendTracks = (props: Props) => {
           <P.PlaylistDiscoveryName>Recommended</P.PlaylistDiscoveryName>
           <p>Based on what&apos;s in this playlist</p>
         </div>
-        <P.ToggleDiscovery onClick={() => props.setIsSearching(!props.isSearching)}>
+        <P.ToggleDiscovery
+          onClick={() => props.setIsSearching(!props.isSearching)}
+        >
           Search songs
         </P.ToggleDiscovery>
       </P.PlaylistDiscoveryHeaderWrapper>
       <P.TracklistWrapper>
         <T.TrackList>
           {recommendedTracks.tracks?.map((track) => (
-            <Track key={track.id} item={track} variant={"playlist-add"} />
+            <Track key={track.id} item={track} variant={"playlist-add-track"} />
           ))}
         </T.TrackList>
         <P.RefreshButtonWrapper>
-          <P.RefreshButton onClick={props.refreshRecommendations}>refresh</P.RefreshButton>
+          <P.RefreshButton onClick={props.refreshRecommendations}>
+            refresh
+          </P.RefreshButton>
         </P.RefreshButtonWrapper>
       </P.TracklistWrapper>
     </P.PlaylistDiscovery>

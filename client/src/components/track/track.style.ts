@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { MEDIA } from "../../styles/media";
 import { TrackSave } from "./TrackSaveButton";
+import { TrackOptionsWrapper } from "./TrackOptions";
 import { textOverflow } from "../../styles/utils";
 
 /////////////////////////////////////////
@@ -59,7 +60,7 @@ export const AddPlaylistTrackAlbum = styled.span`
 `;
 
 export const TrackDuration = styled.span`
-  padding: 0 16px;
+  padding-left: 16px;
 `;
 
 export const AddTrackToPlaylist = styled.button`
@@ -67,7 +68,8 @@ export const AddTrackToPlaylist = styled.button`
   color: ${({ theme }) => theme.colors.white};
   border: 1px solid #4d5155;
   border-radius: 16px;
-  margin-left: 8px;
+  margin-left: 16px;
+  margin-right: 8px;
   padding: 4px 24px;
   text-transform: uppercase;
   font-size: 12px;
@@ -81,7 +83,6 @@ export const AddTrackToPlaylist = styled.button`
 
   @media (max-width: ${MEDIA.tablet}) {
     padding: 4px;
-    margin-left: 16px;
   }
 `;
 
@@ -168,7 +169,7 @@ export const Track = styled.div`
   --track-section-album: 120px;
   --track-section-playlist-add-track: 120px;
   --track-section-playlist-date-added: 3fr;
-  --track-section-options: auto;
+  --track-section-options: 100px;
 
   display: grid;
   align-items: center;
@@ -181,13 +182,18 @@ export const Track = styled.div`
   :hover {
     background-color: #1a1c25;
   }
-  :hover ${TrackSave} {
+  :hover ${TrackOptionsWrapper}, :hover ${TrackSave} {
     visibility: visible;
+  }
+
+  :focus-within {
+    background-color: #2d2f39;
   }
 
   @media (min-width: ${MEDIA.tablet}) {
     --track-section-info: 6fr;
     --track-section-album: 4fr;
+    --track-section-options: 160px;
   }
 `;
 
@@ -253,7 +259,9 @@ export const PlaylistAddTrack = styled(Track)`
 
   @media (min-width: ${MEDIA.tablet}) {
     grid-template-areas: "track-info track-options";
-    grid-template-columns: var(--track-section-info) var(--track-section-options);
+    grid-template-columns: var(--track-section-info) var(
+        --track-section-options
+      );
   }
 
   @media (min-width: ${MEDIA.laptop}) {

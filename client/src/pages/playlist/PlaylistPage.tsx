@@ -7,7 +7,7 @@ import PlaylistSearchTracks from "./PlaylistSearchTracks";
 import PlaylistRecommendTracks from "./PlaylistRecommendTracks";
 import SearchTrackModal from "./SearchTrackModal";
 import EditPlaylistModal from "./EditPlaylistModal";
-import * as T from "../../components/track/track.style";
+import * as T from "../../components/track/Track.style";
 import * as utils from "../../utils";
 import { MEDIA } from "../../styles/media";
 import { useParams } from "react-router-dom";
@@ -29,7 +29,9 @@ const PlaylistPage = () => {
   const playlist = useAppSelector(playlistSlice.selectPlaylist);
   const playlistSize = playlist.tracks?.items.length;
   const playlistStatus = useAppSelector(playlistSlice.selectPlaylistStatus);
-  const recommendStatus = useAppSelector(recommendationSlice.selectRecommendedPlaylistStatus);
+  const recommendStatus = useAppSelector(
+    recommendationSlice.selectRecommendedPlaylistStatus
+  );
 
   /** Fetch playlist info with up to 100 tracks */
   const fetchPlaylistInfo = useCallback(() => {
@@ -41,7 +43,9 @@ const PlaylistPage = () => {
   /** Check whether the current user has liked the playlist or not*/
   const fetchPlaylistIsSaved = useCallback(() => {
     if (playlistStatus === "succeeded") {
-      dispatch(playlistSlice.checkSavedPlaylist({ playlist_id: playlist.id, userId }));
+      dispatch(
+        playlistSlice.checkSavedPlaylist({ playlist_id: playlist.id, userId })
+      );
     }
   }, [dispatch, playlist.id, playlistStatus, userId]);
 
@@ -63,12 +67,22 @@ const PlaylistPage = () => {
     const endIndex = fetchOffset + incrementBy;
 
     if (startIndex < playlistSize && startIndex < playlist.tracks?.total) {
-      const ids = utils.extractTrackId(playlistItems?.slice(startIndex, endIndex));
-      dispatch(playlistSlice.checkSavedPlaylistTracks({ startIndex, ids })).then(() => {
+      const ids = utils.extractTrackId(
+        playlistItems?.slice(startIndex, endIndex)
+      );
+      dispatch(
+        playlistSlice.checkSavedPlaylistTracks({ startIndex, ids })
+      ).then(() => {
         setFetchOffset(endIndex);
       });
     }
-  }, [dispatch, fetchOffset, playlist.tracks?.items, playlist.tracks?.total, playlistSize]);
+  }, [
+    dispatch,
+    fetchOffset,
+    playlist.tracks?.items,
+    playlist.tracks?.total,
+    playlistSize,
+  ]);
 
   /** Create recommendation seeders based on the already added playlist tracks */
   const fetchRecommendations = useCallback(() => {
@@ -89,7 +103,9 @@ const PlaylistPage = () => {
     }
 
     if (seed.length > 0) {
-      dispatch(recommendationSlice.recommendPlaylistTracks({ seed, limit: 10 }));
+      dispatch(
+        recommendationSlice.recommendPlaylistTracks({ seed, limit: 10 })
+      );
     }
   }, [dispatch, playlist.tracks?.items, playlistSize]);
 
@@ -149,25 +165,34 @@ const PlaylistPage = () => {
 
   return id === playlist.id ? (
     <div>
-      <PlaylistHeader bgGradient={bgGradient} playlist={playlist} setEditModal={setEditModal} />
+      <PlaylistHeader
+        bgGradient={bgGradient}
+        playlist={playlist}
+        setEditModal={setEditModal}
+      />
       <ActionBar
         isSaved={playlist.is_saved}
         handleClick={() => handleSavePlaylist(playlist.is_saved)}
       />
 
       <AddTracksWrapper>
-        <AddTracksMobile onClick={() => setSearchModal(true)}>Add songs</AddTracksMobile>
+        <AddTracksMobile onClick={() => setSearchModal(true)}>
+          Add songs
+        </AddTracksMobile>
       </AddTracksWrapper>
 
       {playlist.tracks.items?.length > 0 && (
         <T.TrackList>
           {playlist.tracks?.items.map((item, index) => (
             <Track
-              key={item.track.id}
+              key={item.track.id + index}
               variant="playlist"
               index={index}
-              item={item.track}
-              addedAt={item.added_at !== null ? utils.formatAddedAt(item.added_at) : ""}
+              item={item}
+              addedAt={
+                item.added_at !== null ? utils.formatAddedAt(item.added_at) : ""
+              }
+              isOwner={playlist.owner.id === userId}
             />
           ))}
         </T.TrackList>
@@ -190,7 +215,11 @@ const PlaylistPage = () => {
       ) : null}
 
       <SearchTrackModal modal={searchModal} setModal={setSearchModal} />
-      <EditPlaylistModal modal={editModal} setModal={setEditModal} playlist={playlist} />
+      <EditPlaylistModal
+        modal={editModal}
+        setModal={setEditModal}
+        playlist={playlist}
+      />
     </div>
   ) : null;
 };

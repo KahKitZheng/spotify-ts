@@ -1,20 +1,20 @@
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import Track from "../../components/track";
 import * as P from "./playlist.style";
-import * as T from "../../components/track/track.style";
+import * as T from "../../components/track/Track.style";
+import { MEDIA } from "../../styles/media";
 import { MdClose } from "react-icons/md";
 import { DebounceInput } from "react-debounce-input";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getAllSearchResults, selectSearchResults } from "../../slices/searchResultSlice";
-import { overflowNoScrollbar } from "../../styles/utils";
 import { useViewportWidth } from "../../hooks/useViewportWidth";
-import { MEDIA } from "../../styles/media";
+import { overflowNoScrollbar } from "../../styles/utils";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import * as searchResultSlice from "../../slices/searchResultSlice";
 
 interface Props {
   modal: boolean;
-  setModal: Dispatch<SetStateAction<boolean>>;
+  setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SearchTrackModal = (props: Props) => {
@@ -22,7 +22,7 @@ const SearchTrackModal = (props: Props) => {
 
   const [query, setQuery] = useState("");
   const dispatch = useAppDispatch();
-  const searchResults = useAppSelector(selectSearchResults);
+  const searchResults = useAppSelector(searchResultSlice.selectSearchResults);
   const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
 
   const closeModal = useCallback(() => {
@@ -38,7 +38,9 @@ const SearchTrackModal = (props: Props) => {
     setQuery(searchValue);
 
     if (searchValue.length > 0) {
-      dispatch(getAllSearchResults({ q: searchValue, limit: 10 }));
+      dispatch(
+        searchResultSlice.getAllSearchResults({ q: searchValue, limit: 10 })
+      );
     }
   }
 
@@ -60,7 +62,7 @@ const SearchTrackModal = (props: Props) => {
       {query !== "" && (
         <TrackList>
           {searchResults.tracks?.items.map((track) => (
-            <Track key={track.id} item={track} variant={"playlist-add"} />
+            <Track key={track.id} item={track} variant={"playlist-add-track"} />
           ))}
         </TrackList>
       )}

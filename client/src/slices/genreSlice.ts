@@ -36,22 +36,45 @@ export const recommendGenreTracks = createAsyncThunk(
   }
 );
 
+// Save genre track to your liked songs
+export const saveGenreTrack = createAsyncThunk(
+  "genre/saveGenreTrack",
+  async (id: string) => {
+    await axios.put(`/me/tracks?ids=${id}`, {});
+    return id;
+  }
+);
+
+// Remove a liked genre artist track from your liked songs
+export const removeGenreTrack = createAsyncThunk(
+  "genre/removeGenreTrack",
+  async (id: string) => {
+    await axios.delete(`/me/tracks?ids=${id}`, {});
+    return id;
+  }
+);
+
 export const genreSlice = createSlice({
   name: "genre",
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(recommendGenreTracks.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(recommendGenreTracks.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.genreTracks = action.payload;
-      })
-      .addCase(recommendGenreTracks.rejected, (state) => {
-        state.status = "failed";
-      });
+    builder.addCase(recommendGenreTracks.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.genreTracks = action.payload;
+    });
+
+    builder.addCase(saveGenreTrack.fulfilled, (state, action) => {
+      const list = state.genreTracks.tracks;
+      const index = list.findIndex((track) => track.id === action.payload);
+      state.genreTracks.tracks[index].is_saved = true;
+    });
+
+    builder.addCase(removeGenreTrack.fulfilled, (state, action) => {
+      const list = state.genreTracks.tracks;
+      const index = list.findIndex((track) => track.id === action.payload);
+      state.genreTracks.tracks[index].is_saved = false;
+    });
   },
 });
 

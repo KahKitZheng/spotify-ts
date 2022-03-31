@@ -45,7 +45,7 @@ export const RefreshButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-top: 8px;
+  margin-top: 24px;
   margin-right: 10px;
 `;
 
