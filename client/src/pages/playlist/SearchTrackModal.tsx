@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import Track from "../../components/track";
+import Track from "../../components/Track";
 import * as P from "./playlist.style";
-import * as T from "../../components/track/Track.style";
+import * as T from "../../components/Track/Track.style";
 import { MEDIA } from "../../styles/media";
 import { MdClose } from "react-icons/md";
 import { DebounceInput } from "react-debounce-input";

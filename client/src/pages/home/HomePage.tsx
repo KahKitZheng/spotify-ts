@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import Card from "../../components/card";
+import Card from "../../components/Card";
 import UserSummary from "./UserSummary";
 import * as S from "../../styles/components/section";
 import { Link, useLocation } from "react-router-dom";
 import { random } from "../../utils";
-import { CollectionOverflow } from "../../components/collection";
+import { CollectionOverflow } from "../../components/Collection";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";

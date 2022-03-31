@@ -26,7 +26,10 @@ const PlaylistHeader = (props: Props) => {
   return (
     <H.HeaderWrapper $bgGradient={bgGradient}>
       {playlist.images[0] === undefined ? (
-        <H.ThumbnailPlaceholder $isOwner={playlist.owner.id === userId} onClick={handleShowModal}>
+        <H.ThumbnailPlaceholder
+          $isOwner={playlist.owner.id === userId}
+          onClick={handleShowModal}
+        >
           {playlist.name.slice(0, 1)}
         </H.ThumbnailPlaceholder>
       ) : (
@@ -41,16 +44,22 @@ const PlaylistHeader = (props: Props) => {
         <H.HeaderExtraInfo>
           By <PlaylistOwner>{playlist.owner?.display_name}</PlaylistOwner>
         </H.HeaderExtraInfo>
-        <H.HeaderName $isOwner={playlist.owner.id === userId} onClick={handleShowModal}>
+        <H.HeaderName
+          $isOwner={playlist.owner.id === userId}
+          onClick={handleShowModal}
+        >
           {playlist.name?.split("/").join("/ ")}
         </H.HeaderName>
         {playlist.description && (
-          <PlaylistDescription dangerouslySetInnerHTML={{ __html: playlist.description }} />
+          <PlaylistDescription
+            dangerouslySetInnerHTML={{ __html: playlist.description }}
+          />
         )}
         <H.HeaderStats>
           {playlist.followers?.total.toLocaleString()} likes
           <span className="bull">&bull;</span>
-          {playlist.tracks?.items.length} songs, {formatDuration(playlistDuration, "playlist")}
+          {playlist.tracks?.items.length} songs,{" "}
+          {formatDuration(playlistDuration, "playlist")}
         </H.HeaderStats>
       </div>
     </H.HeaderWrapper>

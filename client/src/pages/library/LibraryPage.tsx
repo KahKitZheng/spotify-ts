@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Card from "../../components/card";
+import Card from "../../components/Card";
 import * as Tab from "../../styles/components/tabs";
 import { MEDIA } from "../../styles/media";
 import { BiPlus } from "react-icons/bi";
-import { CollectionGrid } from "../../components/collection";
+import { CollectionGrid } from "../../components/Collection";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import * as savedArtists from "../../slices/userSavedArtistsSlice";
 import * as savedAlbums from "../../slices/userSavedAlbumsSlice";
@@ -21,11 +21,15 @@ const LibraryPage = () => {
   const navigate = useNavigate();
   const user = useAppSelector(selectCurrentUser);
   const likedArtists = useAppSelector(savedArtists.selectSavedArtists);
-  const likedArtistsStatus = useAppSelector(savedArtists.selectSavedArtistsStatus);
+  const likedArtistsStatus = useAppSelector(
+    savedArtists.selectSavedArtistsStatus
+  );
   const likedAlbums = useAppSelector(savedAlbums.selectSavedAlbums);
   const likedAlbumsStatus = useAppSelector(savedAlbums.selectSavedAlbumsStatus);
   const likedPlaylists = useAppSelector(savedPlaylists.selectUserPlaylists);
-  const likedPlaylistsStatus = useAppSelector(savedPlaylists.selectPlaylistsStatus);
+  const likedPlaylistsStatus = useAppSelector(
+    savedPlaylists.selectPlaylistsStatus
+  );
 
   useEffect(() => {
     if (likedArtistsStatus === "idle") {
@@ -40,22 +44,31 @@ const LibraryPage = () => {
   }, [dispatch, likedAlbumsStatus, likedArtistsStatus, likedPlaylistsStatus]);
 
   function createNewPlaylist() {
-    dispatch(savedPlaylists.createPlaylist({ user_id: user.id, name: "New Playlist" })).then(
-      (res) => navigate(`/playlist/${res.payload.id}`)
-    );
+    dispatch(
+      savedPlaylists.createPlaylist({ user_id: user.id, name: "New Playlist" })
+    ).then((res) => navigate(`/playlist/${res.payload.id}`));
   }
 
   return (
     <Tab.PageWrapper>
       <Tab.TabHeader>
         <div>
-          <Tab.Tab $isActive={activeTab === "playlists"} onClick={() => setActiveTab("playlists")}>
+          <Tab.Tab
+            $isActive={activeTab === "playlists"}
+            onClick={() => setActiveTab("playlists")}
+          >
             Playlists
           </Tab.Tab>
-          <Tab.Tab $isActive={activeTab === "artists"} onClick={() => setActiveTab("artists")}>
+          <Tab.Tab
+            $isActive={activeTab === "artists"}
+            onClick={() => setActiveTab("artists")}
+          >
             Artists
           </Tab.Tab>
-          <Tab.Tab $isActive={activeTab === "albums"} onClick={() => setActiveTab("albums")}>
+          <Tab.Tab
+            $isActive={activeTab === "albums"}
+            onClick={() => setActiveTab("albums")}
+          >
             Albums
           </Tab.Tab>
         </div>

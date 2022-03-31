@@ -1,13 +1,13 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import Card from "../../components/card";
-import Track from "../../components/track";
-import ActionBar from "../../components/actionbar";
+import Card from "../../components/Card";
+import Track from "../../components/Track";
+import ActionBar from "../../components/ActionBar";
 import * as H from "../../styles/components/headers";
-import * as T from "../../components/track/Track.style";
+import * as T from "../../components/Track/Track.style";
 import * as S from "../../styles/components/section";
 import { BsDisc } from "react-icons/bs";
-import { CollectionOverflow } from "../../components/collection";
+import { CollectionOverflow } from "../../components/Collection";
 import { Link, useParams } from "react-router-dom";
 import { extractTrackId, formatDuration, stringToHSL } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";

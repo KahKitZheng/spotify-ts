@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import MainViewWrapper from "./MainViewWrapper";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { BottomTabs, Sidebar } from "./navigation";
+import { BottomTabs, Sidebar } from "./Navigation";
 import { MEDIA } from "../styles/media";
 
 import HomePage from "../pages/home";

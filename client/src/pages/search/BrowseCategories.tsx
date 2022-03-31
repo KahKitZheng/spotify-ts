@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { stringToHSL } from "../../utils";
-import { CollectionGrid } from "../../components/collection";
+import { CollectionGrid } from "../../components/Collection";
 import { useAppSelector } from "../../app/hooks";
 import { selectCategories } from "../../slices/categoriesSlice";
 
@@ -14,7 +14,10 @@ const BrowseCategories = () => {
       <CategoryTitle>Browse all</CategoryTitle>
       <CollectionGrid>
         {categories.items?.map((category) => (
-          <CategoryCardWrapper key={category.id} to={`/category/${category.id}`}>
+          <CategoryCardWrapper
+            key={category.id}
+            to={`/category/${category.id}`}
+          >
             <CategoryCard bgColor={stringToHSL(category.name)}>
               <CategoryName>{category.name.split("/").join("/ ")}</CategoryName>
               <CategoryCover src={category.icons[0].url} alt="" />

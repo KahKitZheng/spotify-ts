@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { useAppSelector } from "../../app/hooks";
-import Track from "../../components/track";
+import Track from "../../components/Track";
 import * as P from "./playlist.style";
-import * as T from "../../components/track/Track.style";
+import * as T from "../../components/Track/Track.style";
 import * as recommendationSlice from "../../slices/recommendationSlice";
 
 interface Props {

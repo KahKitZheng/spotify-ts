@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import Card from "../../components/card";
+import Card from "../../components/Card";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { CollectionGrid } from "../../components/collection";
+import { CollectionGrid } from "../../components/Collection";
 import {
   getCategoryInfo,
   getCategoryPlaylist,
