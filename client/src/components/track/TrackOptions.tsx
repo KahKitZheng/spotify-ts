@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Tippy from "@tippyjs/react/headless";
 import { Link } from "react-router-dom";
@@ -11,6 +11,7 @@ import { useScrollBlock } from "../../hooks/useScrollBlock";
 import { selectUserPlaylists } from "../../slices/userSavedPlaylistsSlice";
 import { overflowNoScrollbar, textOverflow } from "../../styles/utils";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
+import { useViewportWidth } from "../../hooks/useViewportWidth";
 
 type Props = {
   artistId?: SimplifiedArtist[];
@@ -23,6 +24,8 @@ const TrackOptions = (props: Props) => {
   const [visible, setVisible] = useState(false);
   const [blockScroll, allowScroll] = useScrollBlock();
 
+  const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
+
   const show = () => {
     setVisible(true);
     blockScroll();
@@ -32,6 +35,11 @@ const TrackOptions = (props: Props) => {
     setVisible(false);
     allowScroll();
   }, [allowScroll]);
+
+  // Hide the tippy popover if the window is smaller than desktop viewport
+  useEffect(() => {
+    !isDesktop && hide();
+  }, [hide, isDesktop]);
 
   return (
     <Tippy
