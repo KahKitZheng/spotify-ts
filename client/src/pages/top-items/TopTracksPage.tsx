@@ -27,24 +27,26 @@ const TopTracksPage = () => {
   return (
     <Tab.PageWrapper>
       <Tab.TabHeader>
-        <Tab.Tab
-          $isActive={filter === "short_term"}
-          onClick={() => setFilter("short_term")}
-        >
-          Last Month
-        </Tab.Tab>
-        <Tab.Tab
-          $isActive={filter === "medium_term"}
-          onClick={() => setFilter("medium_term")}
-        >
-          Last 6 Months
-        </Tab.Tab>
-        <Tab.Tab
-          $isActive={filter === "long_term"}
-          onClick={() => setFilter("long_term")}
-        >
-          All Time
-        </Tab.Tab>
+        <div>
+          <Tab.Tab
+            $isActive={filter === "short_term"}
+            onClick={() => setFilter("short_term")}
+          >
+            Last Month
+          </Tab.Tab>
+          <Tab.Tab
+            $isActive={filter === "medium_term"}
+            onClick={() => setFilter("medium_term")}
+          >
+            Last 6 Months
+          </Tab.Tab>
+          <Tab.Tab
+            $isActive={filter === "long_term"}
+            onClick={() => setFilter("long_term")}
+          >
+            All Time
+          </Tab.Tab>
+        </div>
       </Tab.TabHeader>
       <Tab.TabView>
         <T.TrackList>

@@ -20,8 +20,10 @@ export const TabHeader = styled.ul`
 `;
 
 export const Tab = styled.button<{ $isActive?: boolean }>`
-  background-color: ${({ $isActive }) => ($isActive ? "#21242f" : "transparent")};
-  color: ${({ $isActive, theme }) => ($isActive ? theme.font.title : "currentColor")};
+  background-color: ${({ $isActive }) =>
+    $isActive ? "#21242f" : "transparent"};
+  color: ${({ $isActive, theme }) =>
+    $isActive ? theme.font.title : "currentColor"};
   font-size: 14px;
   border: 0;
   border-radius: 4px;
@@ -38,8 +40,9 @@ export const TabView = styled(Section)`
   flex: 2 1 auto;
   height: 100%;
   margin-bottom: -16px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  padding: 16px;
   ${overflowNoScrollbar}
   overflow-x: hidden;
 `;

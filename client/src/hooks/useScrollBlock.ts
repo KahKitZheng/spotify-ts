@@ -10,16 +10,19 @@ export const useScrollBlock = (): [() => void, () => void] => {
   const blockScroll = (): void => {
     if (main === null) return;
 
-    const scrollTop = main.scrollTop;
+    // Dont add scrollbars if there is no overflow
+    if (window.innerHeight < main.clientHeight) {
+      const scrollTop = main.scrollTop;
 
-    setScrollPos(Math.trunc(scrollTop));
+      setScrollPos(Math.trunc(scrollTop));
 
-    // When the modal is shown, we want a fixed element
-    main.style.position = "fixed";
-    main.style.overflowY = "scroll";
-    main.style.top = `-${scrollTop}px`;
-    main.style.width = "calc(100% - 260px)";
-    main.style.transform = "translateX(calc(260px))";
+      // When the modal is shown, we want a fixed element
+      main.style.position = "fixed";
+      main.style.overflowY = "scroll";
+      main.style.top = `-${scrollTop}px`;
+      main.style.width = "calc(100% - 260px)";
+      main.style.transform = "translateX(calc(260px))";
+    }
   };
 
   const allowScroll = (): void => {

@@ -40,7 +40,7 @@ export const getPlaylistInfo = createAsyncThunk(
   }
 );
 
-//** Fetch the offset playlist tracks */
+/** Fetch the offset playlist tracks */
 export const getPlaylistTracksWithOffset = createAsyncThunk(
   "playlist/getPlaylistTracksWithOffset",
   async (data: { startIndex: number; url: string }) => {

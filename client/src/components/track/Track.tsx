@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import TrackSaveButton from "./TrackSaveButton";
-import TrackOptions from "./TrackOptions";
+import TrackMenu from "../TrackMenu/TrackMenu";
 import * as T from "./Track.style";
 import { Link } from "react-router-dom";
 import { BiPlus } from "react-icons/bi";
@@ -123,7 +123,12 @@ const AlbumTrack = ({ item }: AlbumTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackOptions artistId={item.artists} isSaved={item.is_saved} />
+        <TrackMenu
+          variant="album"
+          track={item}
+          artistId={item.artists}
+          isSaved={item.is_saved}
+        />
       </T.TrackOptions>
     </T.OrderedTrack>
   );
@@ -148,7 +153,12 @@ const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackOptions albumId={item.album.id} isSaved={item.is_saved} />
+        <TrackMenu
+          variant="artist-top"
+          track={item}
+          albumId={item.album.id}
+          isSaved={item.is_saved}
+        />
       </T.TrackOptions>
     </T.OrderedTrack>
   );
@@ -186,7 +196,9 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
         <T.TrackDuration>
           {formatDuration(track.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackOptions
+        <TrackMenu
+          variant="playlist"
+          track={track}
           artistId={track.artists}
           albumId={track.album.id}
           isSaved={track.is_saved}
@@ -263,7 +275,10 @@ const UserTopTrack = ({ index, item, timeRange }: UserTopTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackOptions
+        <TrackMenu
+          variant="user-top"
+          track={item}
+          timeRange={timeRange}
           artistId={item.artists}
           albumId={item.album.id}
           isSaved={item.is_saved}
@@ -294,7 +309,9 @@ const GenreTrack = ({ item }: GenreTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackOptions
+        <TrackMenu
+          variant="genre"
+          track={item}
           artistId={item.artists}
           albumId={item.album.id}
           isSaved={item.is_saved}

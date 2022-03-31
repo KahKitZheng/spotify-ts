@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { MEDIA } from "../../styles/media";
 import { TrackSave } from "./TrackSaveButton";
-import { TrackOptionsWrapper } from "./TrackOptions";
+import { TrackOptionsWrapper } from "../TrackMenu/TrackMenu.style";
 import { textOverflow } from "../../styles/utils";
 
 /////////////////////////////////////////
@@ -61,6 +61,8 @@ export const AddPlaylistTrackAlbum = styled.span`
 
 export const TrackDuration = styled.span`
   padding-left: 16px;
+  min-width: 50px;
+  text-align: right;
 `;
 
 export const AddTrackToPlaylist = styled.button`

@@ -127,7 +127,7 @@ const HomePage = () => {
       {recommendArtists.tracks?.length > 0 && (
         <S.Section>
           <SeedArtist>
-            <Link to={`/artist/${seedArtist.id}`}>
+            <Link to={`/artist/${seedArtist?.id}`}>
               <SeedArtistCover
                 src={
                   seedArtist.images.length > 0 ? seedArtist.images[0].url : ""
