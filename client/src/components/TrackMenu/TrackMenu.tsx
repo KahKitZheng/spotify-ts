@@ -10,13 +10,9 @@ import { BsThreeDots } from "react-icons/bs";
 import { useScrollBlock } from "../../hooks/useScrollBlock";
 import { useViewportWidth } from "../../hooks/useViewportWidth";
 import { TimeRange } from "../../slices/topItemsSlice";
-import {
-  useSaveAlbumTrack,
-  useSaveGenreTrack,
-  useSavePlaylistTrack,
-  useSavePopularArtistTrack,
-  useSaveUserTopTrack,
-} from "../Track/Track.hooks";
+import * as TrackHooks from "../Track/Track.hooks";
+import { useAppDispatch } from "../../app/hooks";
+import { removeTrackFromPlaylist } from "../../slices/playlistSlice";
 
 type GenreMenuProps = {
   variant: "genre";
@@ -56,6 +52,7 @@ type PlaylistMenuProps = {
   isSaved: boolean;
   isPlaylistOwner: boolean;
   track: SpotifyObjects.Track;
+  playlistId: string;
 };
 
 type Props =
@@ -119,7 +116,7 @@ const TrackMenu = (props: Props) => {
 
 const ArtistTopMenu = (props: ArtistTopMenuProps) => {
   const { track, isSaved, albumId } = props;
-  const saveTrack = useSavePopularArtistTrack({ track, isSaved });
+  const saveTrack = TrackHooks.useSavePopularArtistTrack({ track, isSaved });
 
   return (
     <M.OptionsList>
@@ -146,7 +143,7 @@ const ArtistTopMenu = (props: ArtistTopMenuProps) => {
 
 const AlbumMenu = (props: AlbumMenuProps) => {
   const { track, isSaved, artistId } = props;
-  const saveTrack = useSaveAlbumTrack({ track, isSaved });
+  const saveTrack = TrackHooks.useSaveAlbumTrack({ track, isSaved });
 
   return (
     <M.OptionsList>
@@ -173,7 +170,12 @@ const AlbumMenu = (props: AlbumMenuProps) => {
 
 const PlaylistMenu = (props: PlaylistMenuProps) => {
   const { track, isSaved, artistId, albumId, isPlaylistOwner } = props;
-  const saveTrack = useSavePlaylistTrack({ track, isSaved });
+  const saveTrack = TrackHooks.useSavePlaylistTrack({ track, isSaved });
+  const dispatch = useAppDispatch();
+
+  function handleRemoveTrack(playlist_id: string, track_uri: string) {
+    dispatch(removeTrackFromPlaylist({ playlist_id, uris: [track_uri] }));
+  }
 
   return (
     <M.OptionsList>
@@ -197,7 +199,11 @@ const PlaylistMenu = (props: PlaylistMenuProps) => {
 
       {isPlaylistOwner && (
         <M.OptionItemWrapper>
-          <M.OptionItemButton>Remove from this playlist</M.OptionItemButton>
+          <M.OptionItemButton
+            onClick={() => handleRemoveTrack(props.playlistId, track.uri)}
+          >
+            Remove from this playlist
+          </M.OptionItemButton>
         </M.OptionItemWrapper>
       )}
 
@@ -208,7 +214,7 @@ const PlaylistMenu = (props: PlaylistMenuProps) => {
 
 const GenreMenu = (props: GenreMenuProps) => {
   const { track, isSaved, artistId, albumId } = props;
-  const saveTrack = useSaveGenreTrack({ track, isSaved });
+  const saveTrack = TrackHooks.useSaveGenreTrack({ track, isSaved });
 
   return (
     <M.OptionsList>
@@ -237,7 +243,8 @@ const GenreMenu = (props: GenreMenuProps) => {
 
 const UserTopMenu = (props: UserTopMenuProps) => {
   const { track, isSaved, timeRange, artistId, albumId } = props;
-  const saveTrack = useSaveUserTopTrack({ track, isSaved, timeRange });
+  const payload = { track, isSaved, timeRange };
+  const saveTrack = TrackHooks.useSaveUserTopTrack(payload);
 
   return (
     <M.OptionsList>

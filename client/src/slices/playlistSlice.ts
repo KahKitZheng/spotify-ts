@@ -14,6 +14,7 @@ interface PlaylistState {
   playlistDuration: number;
   status: "idle" | "loading" | "succeeded" | "failed";
   offsetStatus: "idle" | "loading" | "succeeded" | "failed";
+  scrollPos: number;
 }
 
 const initialState: PlaylistState = {
@@ -21,6 +22,7 @@ const initialState: PlaylistState = {
   playlistDuration: 0,
   status: "idle",
   offsetStatus: "idle",
+  scrollPos: 0,
 };
 
 interface fetchParams {
@@ -105,7 +107,7 @@ export const removeSavedPlaylistTrack = createAsyncThunk(
 
 /** Edit current playlist details  */
 export const editCurrentPlaylistDetails = createAsyncThunk(
-  "playlist/EditCurrentPlaylistDetails",
+  "playlist/editCurrentPlaylistDetails",
   async (data: { id: string; name: string; description: string }) => {
     const { id, name, description } = data;
     await axios.put(`/playlists/${id}`, { name, description });
@@ -114,13 +116,22 @@ export const editCurrentPlaylistDetails = createAsyncThunk(
 
 /** Add track to playlist */
 export const addTrackToPlaylist = createAsyncThunk(
-  "playlist/AddTrackToPlaylist",
+  "playlist/addTrackToPlaylist",
   async (data: { playlist_id: string; uris: string[] }) => {
     const { playlist_id, uris } = data;
     const response = await axios.post(`/playlists/${playlist_id}/tracks`, {
       uris,
     });
     return response.data;
+  }
+);
+
+/** Remove track from playlist */
+export const removeTrackFromPlaylist = createAsyncThunk(
+  "playlist/removeTrackFromPlaylist",
+  async (data: { playlist_id: string; uris: string[] }) => {
+    const { playlist_id, uris } = data;
+    await axios.delete(`/playlists/${playlist_id}/tracks`, { data: { uris } });
   }
 );
 
@@ -170,6 +181,9 @@ export const playlistSlice = createSlice({
         (total, item) => total + item.track.duration_ms,
         0
       );
+    },
+    setScrollPos: (state, action) => {
+      state.scrollPos = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -249,6 +263,14 @@ export const playlistSlice = createSlice({
       ];
     });
 
+    builder.addCase(removeTrackFromPlaylist.fulfilled, (state, action) => {
+      const trackUri = action.meta.arg.uris[0];
+
+      state.playlist.tracks.items = state.playlist.tracks.items.filter(
+        (item) => item.track.uri !== trackUri
+      );
+    });
+
     builder.addCase(editCurrentPlaylistDetails.fulfilled, (state, action) => {
       state.playlist.name = action.meta.arg.name;
       state.playlist.description = action.meta.arg.description;
@@ -268,7 +290,11 @@ export const selectPlaylistDuration = (state: RootState) => {
   return state.playlist.playlistDuration;
 };
 
-export const { setPlaylistStatus, countPlaylistDuration } =
+export const selectPlaylistScrollPos = (state: RootState) => {
+  return state.playlist.scrollPos;
+};
+
+export const { setPlaylistStatus, countPlaylistDuration, setScrollPos } =
   playlistSlice.actions;
 
 export default playlistSlice.reducer;

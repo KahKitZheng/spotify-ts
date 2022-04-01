@@ -25,6 +25,7 @@ type PopularArtistTracksVariant = {
 type PlaylistVariant = {
   variant: "playlist";
   item: SpotifyObjects.PlaylistItem;
+  playlistId: string;
   index: number;
   addedAt: string;
   isOwner: boolean;
@@ -76,6 +77,7 @@ const TrackComponent = (props: TrackProps) => {
       return (
         <PlaylistTrack
           item={props.item}
+          playlistId={props.playlistId}
           addedAt={props.addedAt}
           index={props.index}
           isOwner={props.isOwner}
@@ -165,7 +167,7 @@ const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
 };
 
 const PlaylistTrack = (props: PlaylistTrackProps) => {
-  const { index, item, addedAt, isOwner } = props;
+  const { index, item, playlistId, addedAt, isOwner } = props;
   const track = item.track as SpotifyObjects.Track;
 
   const payload = { track: track, isSaved: item.track.is_saved };
@@ -199,6 +201,7 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
         <TrackMenu
           variant="playlist"
           track={track}
+          playlistId={playlistId}
           artistId={track.artists}
           albumId={track.album.id}
           isSaved={track.is_saved}
