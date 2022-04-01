@@ -125,12 +125,7 @@ const AlbumTrack = ({ item }: AlbumTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackMenu
-          variant="album"
-          track={item}
-          artistId={item.artists}
-          isSaved={item.is_saved}
-        />
+        <TrackMenu variant="album" track={item} />
       </T.TrackOptions>
     </T.OrderedTrack>
   );
@@ -155,12 +150,7 @@ const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackMenu
-          variant="artist-top"
-          track={item}
-          albumId={item.album.id}
-          isSaved={item.is_saved}
-        />
+        <TrackMenu variant="artist-top" track={item} />
       </T.TrackOptions>
     </T.OrderedTrack>
   );
@@ -202,9 +192,6 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
           variant="playlist"
           track={track}
           playlistId={playlistId}
-          artistId={track.artists}
-          albumId={track.album.id}
-          isSaved={track.is_saved}
           isPlaylistOwner={isOwner}
         />
       </T.TrackOptions>
@@ -278,14 +265,7 @@ const UserTopTrack = ({ index, item, timeRange }: UserTopTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackMenu
-          variant="user-top"
-          track={item}
-          timeRange={timeRange}
-          artistId={item.artists}
-          albumId={item.album.id}
-          isSaved={item.is_saved}
-        />
+        <TrackMenu variant="user-top" track={item} timeRange={timeRange} />
       </T.TrackOptions>
     </T.TopTrack>
   );
@@ -312,13 +292,7 @@ const GenreTrack = ({ item }: GenreTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackMenu
-          variant="genre"
-          track={item}
-          artistId={item.artists}
-          albumId={item.album.id}
-          isSaved={item.is_saved}
-        />
+        <TrackMenu variant="genre" track={item} />
       </T.TrackOptions>
     </T.Track>
   );

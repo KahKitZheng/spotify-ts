@@ -24,6 +24,9 @@ type SaveUserTopTrack = {
   timeRange: topItemsSlice.TimeRange;
 };
 
+//////////////////////////////
+// Add or remove liked song //
+//////////////////////////////
 export const useSaveAlbumTrack = (data: SaveAlbumTrackProps) => {
   const dispatch = useAppDispatch();
   const { track, isSaved } = data;
@@ -63,23 +66,6 @@ export const useSavePlaylistTrack = (data: SaveTrackProps) => {
   return handleSavePlaylistTrack;
 };
 
-export const useSaveAddPlaylistTrack = (data: SaveTrackProps) => {
-  const dispatch = useAppDispatch();
-  const { id } = useParams();
-
-  const handleSaveAddPlaylistTrack = () => {
-    if (id !== undefined) {
-      const spotifyPayload = { playlist_id: id, uris: [data.track.uri] };
-
-      dispatch(playlistSlice.addTrackToPlaylist(spotifyPayload));
-      dispatch(playlistSlice.addTrackToPlaylistData(data.track?.id));
-      dispatch(replaceRecommendationTrack({ id: data.track?.id }));
-    }
-  };
-
-  return handleSaveAddPlaylistTrack;
-};
-
 export const useSaveUserTopTrack = (data: SaveUserTopTrack) => {
   const dispatch = useAppDispatch();
   const { track, timeRange, isSaved } = data;
@@ -108,4 +94,38 @@ export const useSaveGenreTrack = (data: SaveTrackProps) => {
   };
 
   return handleSaveGenreTrack;
+};
+
+/////////////////////////////////////
+// Add or remove song from playlist//
+/////////////////////////////////////
+export const useSaveAddPlaylistTrack = (data: SaveTrackProps) => {
+  const dispatch = useAppDispatch();
+  const { id } = useParams();
+
+  const handleSaveAddPlaylistTrack = () => {
+    if (id !== undefined) {
+      const spotifyPayload = { playlist_id: id, uris: [data.track.uri] };
+
+      dispatch(playlistSlice.addTrackToPlaylist(spotifyPayload));
+      dispatch(playlistSlice.addTrackToPlaylistData(data.track?.id));
+      dispatch(replaceRecommendationTrack({ id: data.track?.id }));
+    }
+  };
+
+  return handleSaveAddPlaylistTrack;
+};
+
+export const useRemovePlaylistTrack = (track: SpotifyObjects.Track) => {
+  const dispatch = useAppDispatch();
+  const { id } = useParams();
+
+  const handleRemovePlaylistTrack = () => {
+    if (id !== undefined) {
+      const payload = { playlist_id: id, uris: [track.uri] };
+      dispatch(playlistSlice.removeTrackFromPlaylist(payload));
+    }
+  };
+
+  return handleRemovePlaylistTrack;
 };
