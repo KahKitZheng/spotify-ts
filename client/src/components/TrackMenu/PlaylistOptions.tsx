@@ -1,25 +1,29 @@
 import React from "react";
-import Tippy from "@tippyjs/react/headless";
 import * as M from "./TrackMenu.style";
+import PlaylistOptionItem from "./PlaylistOptionItem";
 import { MdArrowRight } from "react-icons/md";
+import { NestedPopover } from "./NestedPopover";
 import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import { selectUserPlaylists } from "../../slices/userSavedPlaylistsSlice";
+import { SimplifiedTrack, Track } from "../../types/SpotifyObjects";
 
-const PlaylistOptions = () => {
+interface Props {
+  track: Track | SimplifiedTrack;
+  close: () => void;
+}
+
+const PlaylistOptions = (props: Props) => {
   const userId = useAppSelector(selectCurrentUserId);
   const allPlaylists = useAppSelector(selectUserPlaylists);
   const userPlaylists = allPlaylists.items?.filter(
     (playlist) => playlist.owner.id === userId
   );
 
-  return allPlaylists.items?.length > 0 ? (
-    <Tippy
-      interactive={true}
-      placement="left-start"
-      offset={[0, 3]}
-      render={(attrs) => (
-        <M.PlaylistOptionList {...attrs}>
+  return (
+    <NestedPopover
+      render={() => (
+        <M.PlaylistOptionList>
           <M.OptionItemWrapper>
             <M.OptionItemButton $borderSide="bottom">
               Add to new playlist
@@ -27,9 +31,12 @@ const PlaylistOptions = () => {
           </M.OptionItemWrapper>
 
           {userPlaylists.map((playlist) => (
-            <M.OptionItemWrapper key={playlist.id}>
-              <M.OptionItemButton>{playlist.name}</M.OptionItemButton>
-            </M.OptionItemWrapper>
+            <PlaylistOptionItem
+              key={playlist.id}
+              close={props.close}
+              track={props.track}
+              playlist={playlist}
+            />
           ))}
         </M.PlaylistOptionList>
       )}
@@ -40,8 +47,8 @@ const PlaylistOptions = () => {
           <MdArrowRight />
         </M.MoreOptionIcon>
       </M.OptionItemWrapper>
-    </Tippy>
-  ) : null;
+    </NestedPopover>
+  );
 };
 
 export default PlaylistOptions;

@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { MEDIA } from "../../styles/media";
 import { overflowNoScrollbar, textOverflow } from "../../styles/utils";
@@ -33,13 +33,6 @@ export const PlaylistOptionList = styled(OptionsList)`
   overflow: auto;
   ${overflowNoScrollbar};
 `;
-
-// export const OptionBorder = css`
-//   ::before {
-//     content: "";
-//     border-top: 1px solid #394046;
-//   }
-// `;
 
 export const OptionItemWrapper = styled.li`
   display: flex;

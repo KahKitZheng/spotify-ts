@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
-import * as SpotifyObjects from "../../types/SpotifyObjects";
+import { Track, SimplifiedTrack } from "../../types/SpotifyObjects";
 import * as albumSlice from "../../slices/albumSlice";
 import * as artistSlice from "../../slices/artistSlice";
 import * as playlistSlice from "../../slices/playlistSlice";
@@ -9,17 +9,17 @@ import * as genreSlice from "../../slices/genreSlice";
 import { replaceRecommendationTrack } from "../../slices/recommendationSlice";
 
 type SaveTrackProps = {
-  track: SpotifyObjects.Track;
+  track: Track;
   isSaved: boolean;
 };
 
 type SaveAlbumTrackProps = {
-  track: SpotifyObjects.SimplifiedTrack;
+  track: SimplifiedTrack;
   isSaved: boolean;
 };
 
 type SaveUserTopTrack = {
-  track: SpotifyObjects.Track;
+  track: Track;
   isSaved: boolean;
   timeRange: topItemsSlice.TimeRange;
 };
@@ -99,7 +99,22 @@ export const useSaveGenreTrack = (data: SaveTrackProps) => {
 /////////////////////////////////////
 // Add or remove song from playlist//
 /////////////////////////////////////
-export const useSaveAddPlaylistTrack = (data: SaveTrackProps) => {
+export const useAddPlaylistTrack = (
+  track: Track | SimplifiedTrack,
+  playlistId: string
+) => {
+  const dispatch = useAppDispatch();
+
+  const handleSaveAddPlaylistTrack = () => {
+    const spotifyPayload = { playlist_id: playlistId, uris: [track.uri] };
+
+    dispatch(playlistSlice.addTrackToPlaylist(spotifyPayload));
+  };
+
+  return handleSaveAddPlaylistTrack;
+};
+
+export const useAddRecommendationPlaylistTrack = (data: SaveTrackProps) => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
 
@@ -116,7 +131,7 @@ export const useSaveAddPlaylistTrack = (data: SaveTrackProps) => {
   return handleSaveAddPlaylistTrack;
 };
 
-export const useRemovePlaylistTrack = (track: SpotifyObjects.Track) => {
+export const useRemovePlaylistTrack = (track: Track) => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
 

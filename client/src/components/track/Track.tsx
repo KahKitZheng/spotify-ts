@@ -201,7 +201,7 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
 
 const PlaylistAddTrack = ({ item }: PlaylistAddTrackProps) => {
   const payload = { track: item, isSaved: item.is_saved };
-  const saveTrack = TrackHooks.useSaveAddPlaylistTrack(payload);
+  const saveTrack = TrackHooks.useAddRecommendationPlaylistTrack(payload);
 
   const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
 

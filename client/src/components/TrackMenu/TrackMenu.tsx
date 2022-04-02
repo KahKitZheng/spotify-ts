@@ -1,39 +1,36 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Tippy from "@tippyjs/react/headless";
+import React from "react";
 import ArtistLinks from "./ArtistLinks";
 import AlbumLink from "./AlbumLink";
 import PlaylistOptions from "./PlaylistOptions";
 import * as M from "./TrackMenu.style";
-import * as SpotifyObjects from "../../types/SpotifyObjects";
-import { MEDIA } from "../../styles/media";
-import { BsThreeDots } from "react-icons/bs";
-import { useScrollBlock } from "../../hooks/useScrollBlock";
-import { useViewportWidth } from "../../hooks/useViewportWidth";
-import { TimeRange } from "../../slices/topItemsSlice";
 import * as TrackHooks from "../Track/Track.hooks";
+import * as SpotifyObjects from "../../types/SpotifyObjects";
+import { BsThreeDots } from "react-icons/bs";
+import { NestedPopover } from "./NestedPopover";
+import { TimeRange } from "../../slices/topItemsSlice";
 
-type GenreMenuProps = {
+type GenreMenuVariant = {
   variant: "genre";
   track: SpotifyObjects.Track;
 };
 
-type UserTopMenuProps = {
+type UserTopMenuVariant = {
   variant: "user-top";
   track: SpotifyObjects.Track;
   timeRange: TimeRange;
 };
 
-type PopularArtistTrackMenuProps = {
+type PopularArtistTrackMenuVariant = {
   variant: "artist-top";
   track: SpotifyObjects.Track;
 };
 
-type AlbumMenuProps = {
+type AlbumMenuVariant = {
   variant: "album";
   track: SpotifyObjects.SimplifiedTrack;
 };
 
-type PlaylistMenuProps = {
+type PlaylistMenuVariant = {
   variant: "playlist";
   isPlaylistOwner: boolean;
   track: SpotifyObjects.Track;
@@ -41,70 +38,57 @@ type PlaylistMenuProps = {
 };
 
 type Props =
-  | PopularArtistTrackMenuProps
-  | AlbumMenuProps
-  | PlaylistMenuProps
-  | GenreMenuProps
-  | UserTopMenuProps;
+  | PopularArtistTrackMenuVariant
+  | AlbumMenuVariant
+  | PlaylistMenuVariant
+  | GenreMenuVariant
+  | UserTopMenuVariant;
+
+type PopoverProps = { close: () => void; labelId: string };
+type PopularArtistTrackMenuProps = PopularArtistTrackMenuVariant & PopoverProps;
+type AlbumMenuProps = AlbumMenuVariant & PopoverProps;
+type PlaylistMenuProps = PlaylistMenuVariant & PopoverProps;
+type GenreMenuProps = GenreMenuVariant & PopoverProps;
+type UserTopMenuProps = UserTopMenuVariant & PopoverProps;
 
 const TrackMenu = (props: Props) => {
-  const [visible, setVisible] = useState(false);
-  const [blockScroll, allowScroll] = useScrollBlock();
-
-  const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
-
-  const show = () => {
-    setVisible(true);
-    blockScroll();
-  };
-
-  const hide = useCallback(() => {
-    setVisible(false);
-    allowScroll();
-  }, [allowScroll]);
-
-  // Hide the tippy popover if the window is smaller than desktop viewport
-  useEffect(() => {
-    !isDesktop && hide();
-  }, [hide, isDesktop]);
-
-  function getTrackMenuVariant() {
-    switch (props.variant) {
-      case "artist-top":
-        return <PopularArtistTrackMenu {...props} />;
-      case "album":
-        return <AlbumMenu {...props} />;
-      case "playlist":
-        return <PlaylistMenu {...props} />;
-      case "genre":
-        return <GenreMenu {...props} />;
-      case "user-top":
-        return <UserTopMenu {...props} />;
-    }
-  }
-
   return (
-    <Tippy
-      interactive={true}
-      visible={visible}
-      onClickOutside={hide}
-      onDestroy={hide}
-      placement="left"
-      render={getTrackMenuVariant}
+    <NestedPopover
+      render={({ close, labelId }) => {
+        switch (props.variant) {
+          case "artist-top":
+            return (
+              <PopularArtistTrackMenu
+                {...props}
+                close={close}
+                labelId={labelId}
+              />
+            );
+          case "album":
+            return <AlbumMenu {...props} close={close} labelId={labelId} />;
+          case "playlist":
+            return <PlaylistMenu {...props} close={close} labelId={labelId} />;
+          case "genre":
+            return <GenreMenu {...props} close={close} labelId={labelId} />;
+          case "user-top":
+            return <UserTopMenu {...props} close={close} labelId={labelId} />;
+        }
+      }}
     >
-      <M.TrackOptionsWrapper onClick={visible ? hide : show}>
+      <M.TrackOptionsWrapper>
         <BsThreeDots />
       </M.TrackOptionsWrapper>
-    </Tippy>
+    </NestedPopover>
   );
 };
 
-const PopularArtistTrackMenu = ({ track }: PopularArtistTrackMenuProps) => {
+const PopularArtistTrackMenu = (props: PopularArtistTrackMenuProps) => {
+  const { track, labelId, close } = props;
   const payload = { track, isSaved: track.is_saved };
   const saveTrack = TrackHooks.useSavePopularArtistTrack(payload);
 
   return (
-    <M.OptionsList>
+    <M.OptionsList id={labelId}>
       <M.OptionItemWrapper>
         <M.OptionItemButton $borderSide="bottom">
           Add to queue
@@ -121,17 +105,17 @@ const PopularArtistTrackMenu = ({ track }: PopularArtistTrackMenuProps) => {
         </M.OptionItemButton>
       </M.OptionItemWrapper>
 
-      <PlaylistOptions />
+      <PlaylistOptions track={track} close={close} />
     </M.OptionsList>
   );
 };
 
-const AlbumMenu = ({ track }: AlbumMenuProps) => {
+const AlbumMenu = ({ track, labelId, close }: AlbumMenuProps) => {
   const payload = { track, isSaved: track.is_saved };
   const saveTrack = TrackHooks.useSaveAlbumTrack(payload);
 
   return (
-    <M.OptionsList>
+    <M.OptionsList id={labelId}>
       <M.OptionItemWrapper>
         <M.OptionItemButton $borderSide="bottom">
           Add to queue
@@ -148,18 +132,19 @@ const AlbumMenu = ({ track }: AlbumMenuProps) => {
         </M.OptionItemButton>
       </M.OptionItemWrapper>
 
-      <PlaylistOptions />
+      <PlaylistOptions track={track} close={close} />
     </M.OptionsList>
   );
 };
 
-const PlaylistMenu = ({ track, isPlaylistOwner }: PlaylistMenuProps) => {
+const PlaylistMenu = (props: PlaylistMenuProps) => {
+  const { track, isPlaylistOwner, close, labelId } = props;
   const savePayload = { track, isSaved: track.is_saved };
   const saveTrack = TrackHooks.useSavePlaylistTrack(savePayload);
   const removeTrack = TrackHooks.useRemovePlaylistTrack(track);
 
   return (
-    <M.OptionsList>
+    <M.OptionsList id={labelId}>
       <M.OptionItemWrapper>
         <M.OptionItemButton $borderSide="bottom">
           Add to queue
@@ -186,17 +171,17 @@ const PlaylistMenu = ({ track, isPlaylistOwner }: PlaylistMenuProps) => {
         </M.OptionItemWrapper>
       )}
 
-      <PlaylistOptions />
+      <PlaylistOptions track={track} close={close} />
     </M.OptionsList>
   );
 };
 
-const GenreMenu = ({ track }: GenreMenuProps) => {
+const GenreMenu = ({ track, labelId, close }: GenreMenuProps) => {
   const payload = { track, isSaved: track.is_saved };
   const saveTrack = TrackHooks.useSaveGenreTrack(payload);
 
   return (
-    <M.OptionsList>
+    <M.OptionsList id={labelId}>
       <M.OptionItemWrapper>
         <M.OptionItemButton $borderSide="bottom">
           Add to queue
@@ -215,17 +200,18 @@ const GenreMenu = ({ track }: GenreMenuProps) => {
         </M.OptionItemButton>
       </M.OptionItemWrapper>
 
-      <PlaylistOptions />
+      <PlaylistOptions track={track} close={close} />
     </M.OptionsList>
   );
 };
 
-const UserTopMenu = ({ track, timeRange }: UserTopMenuProps) => {
+const UserTopMenu = (props: UserTopMenuProps) => {
+  const { track, timeRange, labelId, close } = props;
   const payload = { track, isSaved: track.is_saved, timeRange };
   const saveTrack = TrackHooks.useSaveUserTopTrack(payload);
 
   return (
-    <M.OptionsList>
+    <M.OptionsList id={labelId}>
       <M.OptionItemWrapper>
         <M.OptionItemButton $borderSide="bottom">
           Add to queue
@@ -244,7 +230,7 @@ const UserTopMenu = ({ track, timeRange }: UserTopMenuProps) => {
         </M.OptionItemButton>
       </M.OptionItemWrapper>
 
-      <PlaylistOptions />
+      <PlaylistOptions track={track} close={close} />
     </M.OptionsList>
   );
 };
