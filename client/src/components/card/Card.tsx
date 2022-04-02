@@ -1,73 +1,98 @@
 import React from "react";
-import * as C from "./card.style";
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import {
-  Album,
-  Artist,
-  PlayHistory,
-  SavedAlbum,
-  SimplifiedAlbum,
-  SimplifiedPlaylist,
-  Track,
-} from "../../types/SpotifyObjects";
+import { useNavigate } from "react-router-dom";
+import * as C from "./Card.style";
+import * as I from "./Card.interface";
+import * as SpotifyObjects from "../../types/SpotifyObjects";
 
-interface Props {
-  variant:
-    | "recently-played"
-    | "artist"
-    | "track"
-    | "playlist"
-    | "album"
-    | "album-saved"
-    | "album-discography"
-    | "category";
-  item: PlayHistory | Artist | Track | SimplifiedPlaylist | Album | SavedAlbum | SimplifiedAlbum;
-  overflow?: boolean;
-}
-
-const NewCard = (props: Props) => {
+const NewCard = (props: I.CardProps) => {
   const { variant, item, overflow } = props;
   const navigate = useNavigate();
 
   switch (variant) {
-    case "recently-played":
-      return <RecentTracksCard item={item as PlayHistory} to={navigate} overflow={overflow} />;
+    case "recent-tracks":
+      return (
+        <RecentTracksCard
+          item={item as SpotifyObjects.PlayHistory}
+          to={navigate}
+          overflow={overflow}
+        />
+      );
     case "artist":
-      return <ArtistCard item={item as Artist} to={navigate} overflow={overflow} />;
+      return (
+        <ArtistCard
+          item={item as SpotifyObjects.Artist}
+          to={navigate}
+          overflow={overflow}
+        />
+      );
     case "track":
-      return <TrackCard item={item as Track} to={navigate} overflow={overflow} />;
+      return (
+        <TrackCard
+          item={item as SpotifyObjects.Track}
+          to={navigate}
+          overflow={overflow}
+        />
+      );
     case "playlist":
-      return <PlaylistCard item={item as SimplifiedPlaylist} to={navigate} overflow={overflow} />;
+      return (
+        <PlaylistCard
+          item={item as SpotifyObjects.SimplifiedPlaylist}
+          to={navigate}
+          overflow={overflow}
+        />
+      );
     case "album":
-      return <AlbumCard item={item as Album} to={navigate} overflow={overflow} />;
+      return (
+        <AlbumCard
+          item={item as SpotifyObjects.Album}
+          to={navigate}
+          overflow={overflow}
+        />
+      );
     case "album-saved":
-      return <AlbumSavedCard item={item as SavedAlbum} to={navigate} overflow={overflow} />;
+      return (
+        <AlbumSavedCard
+          item={item as SpotifyObjects.SavedAlbum}
+          to={navigate}
+          overflow={overflow}
+        />
+      );
     case "album-discography":
       return (
-        <AlbumDiscographyCard item={item as SimplifiedAlbum} to={navigate} overflow={overflow} />
+        <AlbumDiscographyCard
+          item={item as SpotifyObjects.SimplifiedAlbum}
+          to={navigate}
+          overflow={overflow}
+        />
       );
     case "category":
-      return <CategoryCard item={item as SimplifiedPlaylist} to={navigate} overflow={overflow} />;
+      return (
+        <CategoryCard
+          item={item as SpotifyObjects.SimplifiedPlaylist}
+          to={navigate}
+          overflow={overflow}
+        />
+      );
     default:
       return null;
   }
 };
 
-const RecentTracksCard = (props: {
-  item: PlayHistory;
-  to: NavigateFunction;
-  overflow?: boolean;
-}) => {
-  const { to, item, overflow = false } = props;
-
+const RecentTracksCard = ({ item, to, overflow }: I.RecentTracksCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.track.album?.id}`)}>
       <C.CardCover
-        src={item.track.album?.images.length > 0 ? item.track.album?.images[0].url : ""}
+        src={
+          item.track.album?.images.length > 0
+            ? item.track.album?.images[0].url
+            : ""
+        }
         alt=""
         $overflow={overflow}
       />
-      <C.CardTitle to={`/album/${item.track.album?.id}`}>{item.track.name}</C.CardTitle>
+      <C.CardTitle to={`/album/${item.track.album?.id}`}>
+        {item.track.name}
+      </C.CardTitle>
       <C.CardArtistLink
         onClick={(e) => e.stopPropagation()}
         to={`/artist/${item.track.album.artists[0].id}`}
@@ -78,9 +103,7 @@ const RecentTracksCard = (props: {
   );
 };
 
-const ArtistCard = (props: { item: Artist; to: NavigateFunction; overflow?: boolean }) => {
-  const { to, item, overflow = false } = props;
-
+const ArtistCard = ({ item, to, overflow }: I.ArtistCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/artist/${item.id}`)}>
       <C.CardCover
@@ -95,9 +118,7 @@ const ArtistCard = (props: { item: Artist; to: NavigateFunction; overflow?: bool
   );
 };
 
-const TrackCard = (props: { item: Track; to: NavigateFunction; overflow?: boolean }) => {
-  const { to, item, overflow = false } = props;
-
+const TrackCard = ({ item, to, overflow }: I.TrackCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.album.id}`)}>
       <C.CardCover
@@ -116,13 +137,7 @@ const TrackCard = (props: { item: Track; to: NavigateFunction; overflow?: boolea
   );
 };
 
-const PlaylistCard = (props: {
-  item: SimplifiedPlaylist;
-  to: NavigateFunction;
-  overflow?: boolean;
-}) => {
-  const { to, item, overflow = false } = props;
-
+const PlaylistCard = ({ item, to, overflow }: I.PlaylistCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/playlist/${item.id}`)}>
       {item.images[0] === undefined ? (
@@ -138,7 +153,9 @@ const PlaylistCard = (props: {
       )}
       <C.CardTitle to={`/playlist/${item.id}`}>{item.name}</C.CardTitle>
       {item.description ? (
-        <C.CardDescription dangerouslySetInnerHTML={{ __html: item.description }} />
+        <C.CardDescription
+          dangerouslySetInnerHTML={{ __html: item.description }}
+        />
       ) : (
         <C.CardDescription>By {item.owner.display_name}</C.CardDescription>
       )}
@@ -146,9 +163,7 @@ const PlaylistCard = (props: {
   );
 };
 
-const AlbumCard = (props: { item: Album; to: NavigateFunction; overflow?: boolean }) => {
-  const { to, item, overflow = false } = props;
-
+const AlbumCard = ({ item, to, overflow }: I.AlbumCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.id}`)}>
       <C.CardCover src={item.images[0].url} alt="" $overflow={overflow} />
@@ -158,25 +173,20 @@ const AlbumCard = (props: { item: Album; to: NavigateFunction; overflow?: boolea
   );
 };
 
-const AlbumSavedCard = (props: { item: SavedAlbum; to: NavigateFunction; overflow?: boolean }) => {
-  const { to, item, overflow = false } = props;
-
+const AlbumSavedCard = ({ item, to, overflow }: I.AlbumSavedCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.album.id}`)}>
       <C.CardCover src={item.album.images[0].url} alt="" $overflow={overflow} />
-      <C.CardTitle to={`/album/${item.album.id}`}>{item.album.name}</C.CardTitle>
+      <C.CardTitle to={`/album/${item.album.id}`}>
+        {item.album.name}
+      </C.CardTitle>
       <C.CardDescription>{item.album.artists[0].name}</C.CardDescription>
     </C.CardWrapper>
   );
 };
 
-const AlbumDiscographyCard = (props: {
-  item: SimplifiedAlbum;
-  to: NavigateFunction;
-  overflow?: boolean;
-}) => {
-  const { to, item, overflow = false } = props;
-
+const AlbumDiscographyCard = (props: I.AlbumDiscographyCardProps) => {
+  const { item, to, overflow } = props;
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.id}`)}>
       <C.CardCover src={item.images[0].url} alt="" $overflow={overflow} />
@@ -199,19 +209,15 @@ const AlbumDiscographyCard = (props: {
   );
 };
 
-const CategoryCard = (props: {
-  item: SimplifiedPlaylist;
-  to: NavigateFunction;
-  overflow?: boolean;
-}) => {
-  const { to, item, overflow = false } = props;
-
+const CategoryCard = ({ item, to, overflow }: I.CategoryCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/playlist/${item.id}`)}>
       <C.CardCover src={item.images[0].url} alt="" $overflow={overflow} />
       <C.CardTitle to={`/playlist/${item.id}`}>{item.name}</C.CardTitle>
       {item.description ? (
-        <C.CardDescription dangerouslySetInnerHTML={{ __html: item.description }} />
+        <C.CardDescription
+          dangerouslySetInnerHTML={{ __html: item.description }}
+        />
       ) : (
         <C.CardDescription>By {item.owner.display_name}</C.CardDescription>
       )}
