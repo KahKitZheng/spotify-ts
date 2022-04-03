@@ -21,7 +21,7 @@ const RecentTracksPage = () => {
       <PageTitle>Recently played</PageTitle>
       <CollectionGrid>
         {recentlyPlayed.items?.map((track, index) => (
-          <Card key={index} variant="recently-played" item={track} />
+          <Card key={index} variant="recent-tracks" item={track} />
         ))}
       </CollectionGrid>
     </div>

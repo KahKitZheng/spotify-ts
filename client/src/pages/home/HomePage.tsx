@@ -85,7 +85,7 @@ const HomePage = () => {
         </S.SectionLink>
         <CollectionOverflow>
           {recentTracks.items?.slice(0, 10).map((item, index) => (
-            <Card key={index} variant="recently-played" item={item} overflow />
+            <Card key={index} variant="recent-tracks" item={item} overflow />
           ))}
         </CollectionOverflow>
       </S.Section>
