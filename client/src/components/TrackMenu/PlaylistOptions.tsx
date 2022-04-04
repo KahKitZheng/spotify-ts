@@ -3,29 +3,47 @@ import * as M from "./TrackMenu.style";
 import PlaylistOptionItem from "./PlaylistOptionItem";
 import { MdArrowRight } from "react-icons/md";
 import { NestedPopover } from "./NestedPopover";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
-import { selectUserPlaylists } from "../../slices/userSavedPlaylistsSlice";
 import { SimplifiedTrack, Track } from "../../types/SpotifyObjects";
+import { addTrackToPlaylist } from "../../slices/playlistSlice";
+import {
+  selectUserPlaylists,
+  createPlaylist,
+} from "../../slices/userSavedPlaylistsSlice";
 
 interface Props {
   track: Track | SimplifiedTrack;
   close: () => void;
 }
 
-const PlaylistOptions = (props: Props) => {
+const PlaylistOptions = ({ track, close }: Props) => {
+  const dispatch = useAppDispatch();
   const userId = useAppSelector(selectCurrentUserId);
   const allPlaylists = useAppSelector(selectUserPlaylists);
   const userPlaylists = allPlaylists.items?.filter(
     (playlist) => playlist.owner.id === userId
   );
 
+  function CreateNewPlaylistWithTrack() {
+    const newPlaylistPayload = { user_id: userId, name: track.name };
+    dispatch(createPlaylist(newPlaylistPayload)).then((res) => {
+      const payload = { playlist_id: res.payload.id, uris: [track.uri] };
+      dispatch(addTrackToPlaylist(payload));
+    });
+
+    close();
+  }
+
   return (
     <NestedPopover
       render={() => (
         <M.PlaylistOptionList>
           <M.OptionItemWrapper>
-            <M.OptionItemButton $borderSide="bottom">
+            <M.OptionItemButton
+              onClick={CreateNewPlaylistWithTrack}
+              $borderSide="bottom"
+            >
               Add to new playlist
             </M.OptionItemButton>
           </M.OptionItemWrapper>
@@ -33,8 +51,8 @@ const PlaylistOptions = (props: Props) => {
           {userPlaylists.map((playlist) => (
             <PlaylistOptionItem
               key={playlist.id}
-              close={props.close}
-              track={props.track}
+              close={close}
+              track={track}
               playlist={playlist}
             />
           ))}
