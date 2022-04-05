@@ -4,7 +4,7 @@ import { MEDIA } from "../../styles/media";
 import { overflowNoScrollbar, textOverflow } from "../../styles/utils";
 
 export const TrackOptionsWrapper = styled.button`
-  visibility: hidden;
+  visibility: visible;
   background-color: transparent;
   color: ${({ theme }) => theme.font.text};
   border: 0;
@@ -12,8 +12,8 @@ export const TrackOptionsWrapper = styled.button`
   font-weight: 600;
   cursor: pointer;
 
-  @media (max-width: ${MEDIA.tablet}) {
-    display: none;
+  @media (min-width: ${MEDIA.tablet}) {
+    visibility: hidden;
   }
 `;
 

@@ -60,9 +60,12 @@ export const AddPlaylistTrackAlbum = styled.span`
 `;
 
 export const TrackDuration = styled.span`
-  padding-left: 16px;
-  min-width: 50px;
+  min-width: 44px;
   text-align: right;
+
+  @media (max-width: ${MEDIA.tablet}) {
+    display: none;
+  }
 `;
 
 export const AddTrackToPlaylist = styled.button`
@@ -186,10 +189,6 @@ export const Track = styled.div`
   }
   :hover ${TrackOptionsWrapper}, :hover ${TrackSave} {
     visibility: visible;
-  }
-
-  :focus-within {
-    background-color: #2d2f39;
   }
 
   @media (min-width: ${MEDIA.tablet}) {
