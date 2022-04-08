@@ -2,7 +2,7 @@ import React from "react";
 import * as M from "./TrackMenu.style";
 import PlaylistOptionItem from "./PlaylistOptionItem";
 import { MdArrowRight } from "react-icons/md";
-import { NestedPopover } from "./NestedPopover";
+import { NestedPopover } from "../Popover";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import { SimplifiedTrack, Track } from "../../types/SpotifyObjects";

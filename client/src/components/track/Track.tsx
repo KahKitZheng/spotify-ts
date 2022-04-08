@@ -97,7 +97,7 @@ const TrackComponent = (props: TrackProps) => {
 // Return comma separated artist links
 const renderArtists = (list: SpotifyObjects.SimplifiedArtist[]) => {
   return list.map((artist, index, arr) => (
-    <Fragment key={artist.id}>
+    <Fragment key={index}>
       <Link to={`/artist/${artist.id}`}>{artist.name}</Link>
       {index !== arr.length - 1 && <span>, </span>}
     </Fragment>

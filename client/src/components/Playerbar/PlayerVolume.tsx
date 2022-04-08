@@ -1,0 +1,69 @@
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { ButtonIcon } from "./Playerbar";
+import {
+  BsFillVolumeMuteFill,
+  BsFillVolumeDownFill,
+  BsFillVolumeUpFill,
+} from "react-icons/bs";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import * as playerSlice from "../../slices/playerSlice";
+
+const PlayerVolume = () => {
+  const dispatch = useAppDispatch();
+  const currentVolume = useAppSelector(playerSlice.selectCurrentVolume);
+
+  const [volume, setVolume] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const [oldVolume, setOldVolume] = useState(0);
+
+  useEffect(() => {
+    setVolume(currentVolume);
+  }, [currentVolume]);
+
+  function renderVolumeIcon() {
+    if (volume === 0) {
+      return <BsFillVolumeMuteFill />;
+    } else if (0 <= volume && volume < 50) {
+      return <BsFillVolumeDownFill />;
+    } else if (50 <= volume && volume <= 100) {
+      return <BsFillVolumeUpFill />;
+    }
+  }
+
+  function handleMuteVolume() {
+    if (isMuted) {
+      setIsMuted(!isMuted);
+      dispatch(playerSlice.setPlaybackVolume({ volume_percent: oldVolume }));
+    } else {
+      setIsMuted(!isMuted);
+      setOldVolume(volume);
+      dispatch(playerSlice.setPlaybackVolume({ volume_percent: 0 }));
+    }
+  }
+
+  function handlePlaybackVolume(e: React.ChangeEvent<HTMLInputElement>) {
+    const payload = { volume_percent: +e.target.value };
+    dispatch(playerSlice.setPlaybackVolume(payload));
+  }
+
+  return (
+    <>
+      <ButtonIcon onClick={handleMuteVolume}>{renderVolumeIcon()}</ButtonIcon>
+      <VolumeBar
+        type="range"
+        min={0}
+        value={volume | 0}
+        max={100}
+        onChange={(e) => handlePlaybackVolume(e)}
+      />
+    </>
+  );
+};
+
+const VolumeBar = styled.input.attrs({ type: "range" })`
+  max-width: 100px;
+  width: 100%;
+`;
+
+export default PlayerVolume;

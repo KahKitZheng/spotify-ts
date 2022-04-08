@@ -12,6 +12,7 @@ import playlistSlice from "../slices/playlistSlice";
 import albumSlice from "../slices/albumSlice";
 import artistSlice from "../slices/artistSlice";
 import genreSlice from "../slices/genreSlice";
+import playbackSlice from "../slices/playerSlice";
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ export const store = configureStore({
     album: albumSlice,
     artist: artistSlice,
     genre: genreSlice,
+    player: playbackSlice,
   },
 });
 

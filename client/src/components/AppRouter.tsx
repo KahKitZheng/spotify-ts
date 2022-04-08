@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import MainViewWrapper from "./MainViewWrapper";
+import Playerbar from "./Playerbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BottomTabs, Sidebar } from "./Navigation";
 import { MEDIA } from "../styles/media";
@@ -38,6 +39,7 @@ const AppRouter = () => (
         </Routes>
       </MainViewWrapper>
       <BottomTabs />
+      <Playerbar />
     </Layout>
   </BrowserRouter>
 );
@@ -53,7 +55,9 @@ const Layout = styled.div`
 
   @media (min-width: ${MEDIA.tablet}) {
     grid-template-columns: 260px 1fr;
-    grid-template-areas: "sidebar main";
+    grid-template-areas:
+      "sidebar main"
+      "playbar playbar";
   }
 `;
 

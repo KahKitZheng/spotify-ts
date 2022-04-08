@@ -69,6 +69,50 @@ const GlobalStyle = createGlobalStyle`
     margin-left: 4px;
     margin-right: 4px;
   }
+
+  input[type=range] {
+      /* reset input range */
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    margin: 0 8px;
+
+    /***** Track Styles *****/
+    /***** Chrome, Safari, Opera, and Edge Chromium *****/
+    &::-webkit-slider-runnable-track {
+      background: #404246;
+      height: 0.25rem;
+    }
+
+    /******** Firefox ********/
+    &::-moz-range-track {
+      background: #404246;
+      height: 0.25rem;
+    }
+
+    /***** Thumb Styles *****/
+    /***** Chrome, Safari, Opera, and Edge Chromium *****/
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none; /* Override default look */
+      appearance: none;
+      margin-top: -4px; /* Centers thumb on the track */
+      background-color: #fff;
+      height: 12px;
+      width: 12px;
+      border-radius: 50%;
+    }
+
+    /***** Firefox *****/
+    &::-moz-range-thumb {
+      border: none; /*Removes extra border that FF applies*/
+      border-radius: 50%;
+      background-color: #fff;
+      height: 12px;
+      width: 12px;
+    }
+  }
 `;
 
 export default withTheme(GlobalStyle);

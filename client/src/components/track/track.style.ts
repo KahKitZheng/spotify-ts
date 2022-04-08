@@ -150,7 +150,7 @@ export const AddPlaylistTrackAlbumSection = styled.div`
 export const TrackDateAdded = styled.span`
   grid-area: playlist-date-added;
   font-size: 14px;
-  padding-left: 48px;
+  text-align: right;
 
   @media (max-width: ${MEDIA.laptop}) {
     display: none;

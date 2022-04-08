@@ -6,7 +6,7 @@ import * as M from "./TrackMenu.style";
 import * as TrackHooks from "../Track/Track.hooks";
 import * as SpotifyObjects from "../../types/SpotifyObjects";
 import { BsThreeDots } from "react-icons/bs";
-import { NestedPopover } from "./NestedPopover";
+import { NestedPopover } from "../Popover";
 import { TimeRange } from "../../slices/topItemsSlice";
 
 type GenreMenuVariant = {
