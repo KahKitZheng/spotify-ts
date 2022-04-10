@@ -89,12 +89,6 @@ const PopularArtistTrackMenu = (props: PopularArtistTrackMenuProps) => {
 
   return (
     <M.OptionsList id={labelId}>
-      <M.OptionItemWrapper>
-        <M.OptionItemButton $borderSide="bottom">
-          Add to queue
-        </M.OptionItemButton>
-      </M.OptionItemWrapper>
-
       {track.album.id !== undefined && <AlbumLink albumId={track.album.id} />}
 
       <M.OptionItemWrapper>
@@ -116,12 +110,6 @@ const AlbumMenu = ({ track, labelId, close }: AlbumMenuProps) => {
 
   return (
     <M.OptionsList id={labelId}>
-      <M.OptionItemWrapper>
-        <M.OptionItemButton $borderSide="bottom">
-          Add to queue
-        </M.OptionItemButton>
-      </M.OptionItemWrapper>
-
       {track.artists !== undefined && <ArtistLinks artistIds={track.artists} />}
 
       <M.OptionItemWrapper>
@@ -145,12 +133,6 @@ const PlaylistMenu = (props: PlaylistMenuProps) => {
 
   return (
     <M.OptionsList id={labelId}>
-      <M.OptionItemWrapper>
-        <M.OptionItemButton $borderSide="bottom">
-          Add to queue
-        </M.OptionItemButton>
-      </M.OptionItemWrapper>
-
       {track.artists !== undefined && <ArtistLinks artistIds={track.artists} />}
 
       {track.album?.id !== undefined && <AlbumLink albumId={track.album?.id} />}
@@ -182,12 +164,6 @@ const GenreMenu = ({ track, labelId, close }: GenreMenuProps) => {
 
   return (
     <M.OptionsList id={labelId}>
-      <M.OptionItemWrapper>
-        <M.OptionItemButton $borderSide="bottom">
-          Add to queue
-        </M.OptionItemButton>
-      </M.OptionItemWrapper>
-
       {track.artists !== undefined && <ArtistLinks artistIds={track.artists} />}
 
       {track.album.id !== undefined && <AlbumLink albumId={track.album.id} />}
@@ -212,12 +188,6 @@ const UserTopMenu = (props: UserTopMenuProps) => {
 
   return (
     <M.OptionsList id={labelId}>
-      <M.OptionItemWrapper>
-        <M.OptionItemButton $borderSide="bottom">
-          Add to queue
-        </M.OptionItemButton>
-      </M.OptionItemWrapper>
-
       {track.artists !== undefined && <ArtistLinks artistIds={track.artists} />}
 
       {track.album.id !== undefined && <AlbumLink albumId={track.album.id} />}
