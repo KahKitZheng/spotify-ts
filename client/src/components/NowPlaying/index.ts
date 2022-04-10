@@ -1,1 +1,1 @@
-export { default as NowPlayingMini } from "./NowPlayingMini";
+export { default } from "./NowPlayingMini";

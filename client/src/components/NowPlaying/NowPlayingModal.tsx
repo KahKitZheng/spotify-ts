@@ -4,28 +4,14 @@ import styled, { keyframes } from "styled-components";
 import { MEDIA } from "../../styles/media";
 import { useViewportWidth } from "../../hooks/useViewportWidth";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import {
-  pausePlayback,
-  playNextTrack,
-  playPreviousTrack,
-  seekPosition,
-  selectPlayback,
-  setRepeat,
-  setShuffle,
-  startPlayback,
-} from "../../slices/playerSlice";
 import { SimplifiedArtist } from "../../types/SpotifyObjects";
-import {
-  BiPause,
-  BiPlay,
-  BiShuffle,
-  BiSkipNext,
-  BiSkipPrevious,
-} from "react-icons/bi";
-import { MdRepeatOne, MdRepeat } from "react-icons/md";
+import * as playerSlice from "../../slices/playerSlice";
+import * as bi from "react-icons/bi";
+import * as md from "react-icons/md";
 import { BsChevronDown } from "react-icons/bs";
 import { formatDuration } from "../../utils";
 import { overflowNoScrollbar } from "../../styles/utils";
+import NowPlayingDevicesModal from "./NowPlayingDevicesModal";
 
 interface Props {
   modal: boolean;
@@ -33,10 +19,12 @@ interface Props {
 }
 
 const NowPlayingModal = ({ modal, setModal }: Props) => {
+  const [devicesModal, setDevicesModal] = useState(false);
+
   const dispatch = useAppDispatch();
   const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
 
-  const playback = useAppSelector(selectPlayback);
+  const playback = useAppSelector(playerSlice.selectPlayback);
   const track = playback.item;
   const isPlaying = playback.is_playing;
 
@@ -73,44 +61,46 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
   }, [isPlaying, seeker]);
 
   const setPlayState = () => {
-    isPlaying ? dispatch(pausePlayback()) : dispatch(startPlayback());
+    isPlaying
+      ? dispatch(playerSlice.pausePlayback())
+      : dispatch(playerSlice.startPlayback());
   };
 
   const handlePreviousTrack = () => {
     if (seeker > 3000) {
-      dispatch(seekPosition({ position_ms: 0 }));
+      dispatch(playerSlice.seekPosition({ position_ms: 0 }));
     } else {
-      dispatch(playPreviousTrack());
+      dispatch(playerSlice.playPreviousTrack());
     }
   };
 
   const handleNextTrack = () => {
-    dispatch(playNextTrack());
+    dispatch(playerSlice.playNextTrack());
   };
 
   const handleShuffleMode = () => {
-    dispatch(setShuffle({ shuffleState: !shuffleMode }));
+    dispatch(playerSlice.setShuffle({ shuffleState: !shuffleMode }));
   };
 
   const handleRepeatMode = () => {
     switch (repeatMode) {
       case "context":
-        dispatch(setRepeat({ repeatState: "track" }));
+        dispatch(playerSlice.setRepeat({ repeatState: "track" }));
         break;
       case "track":
-        dispatch(setRepeat({ repeatState: "off" }));
+        dispatch(playerSlice.setRepeat({ repeatState: "off" }));
         break;
       case "off":
-        dispatch(setRepeat({ repeatState: "context" }));
+        dispatch(playerSlice.setRepeat({ repeatState: "context" }));
         break;
       default:
-        dispatch(setRepeat({ repeatState: "off" }));
+        dispatch(playerSlice.setRepeat({ repeatState: "off" }));
         break;
     }
   };
 
   const setSeekerPosition = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(seekPosition({ position_ms: +e.target.value }));
+    dispatch(playerSlice.seekPosition({ position_ms: +e.target.value }));
   };
 
   const renderArtists = (list: SimplifiedArtist[]) => {
@@ -122,65 +112,74 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
   };
 
   return (
-    <Modal
-      isOpen={modal}
-      style={NowPlayingModalStyle}
-      onRequestClose={closeModal}
-    >
-      <NowPlayingWrapper $isOpen={modal}>
-        <CloseModal onClick={() => closeModal()}>
-          <BsChevronDown />
-        </CloseModal>
-        {track !== null && (
-          <div>
-            <TrackCover src={track?.album.images[0].url} alt="" />
-            <TrackInfoWrapper>
-              <TrackName>{track?.name}</TrackName>
-            </TrackInfoWrapper>
-            <span>{renderArtists(track?.artists)}</span>
-          </div>
-        )}
-        <TrackProgessWrapper>
-          <TrackProgress
-            type="range"
-            min={0}
-            onChange={(e) => setSeekerPosition(e)}
-            value={seeker | 0}
-            max={duration | 0}
-          />
-          <TrackDurations>
-            <small>{formatDuration(seeker | 0, "track")}</small>
-            <small>{formatDuration(duration | 0, "track")}</small>
-          </TrackDurations>
-        </TrackProgessWrapper>
-        <ControlsWrapper>
-          <ButtonIcon $active={shuffleMode} onClick={handleShuffleMode}>
-            <BiShuffle />
-          </ButtonIcon>
-          <ButtonIcon $large onClick={handlePreviousTrack}>
-            <BiSkipPrevious />
-          </ButtonIcon>
-          <PlayPauseWrapper $large onClick={setPlayState}>
-            {isPlaying ? (
-              <BiPause />
-            ) : (
-              <span>
-                <BiPlay />
-              </span>
-            )}
-          </PlayPauseWrapper>
-          <ButtonIcon $large onClick={handleNextTrack}>
-            <BiSkipNext />
-          </ButtonIcon>
-          <ButtonIcon
-            $active={repeatMode === "context" || repeatMode === "track"}
-            onClick={handleRepeatMode}
-          >
-            {repeatMode === "track" ? <MdRepeatOne /> : <MdRepeat />}
-          </ButtonIcon>
-        </ControlsWrapper>
-      </NowPlayingWrapper>
-    </Modal>
+    <>
+      <Modal
+        isOpen={modal}
+        style={NowPlayingModalStyle}
+        onRequestClose={closeModal}
+        closeTimeoutMS={500}
+      >
+        <NowPlayingWrapper $isOpen={modal}>
+          <ModalHeader>
+            <CloseIcon onClick={() => closeModal()}>
+              <BsChevronDown />
+            </CloseIcon>
+            <DeviceIcon onClick={() => setDevicesModal(true)}>
+              <bi.BiDevices />
+            </DeviceIcon>
+          </ModalHeader>
+          {track !== null && (
+            <div>
+              <TrackCover src={track?.album.images[0].url} alt="" />
+              <TrackInfoWrapper>
+                <TrackName>{track?.name}</TrackName>
+              </TrackInfoWrapper>
+              <span>{renderArtists(track?.artists)}</span>
+            </div>
+          )}
+          <TrackProgessWrapper>
+            <TrackProgress
+              type="range"
+              min={0}
+              onChange={(e) => setSeekerPosition(e)}
+              value={seeker | 0}
+              max={duration | 0}
+            />
+            <TrackDurations>
+              <small>{formatDuration(seeker | 0, "track")}</small>
+              <small>{formatDuration(duration | 0, "track")}</small>
+            </TrackDurations>
+          </TrackProgessWrapper>
+          <ControlsWrapper>
+            <ButtonIcon $active={shuffleMode} onClick={handleShuffleMode}>
+              <bi.BiShuffle />
+            </ButtonIcon>
+            <ButtonIcon $large onClick={handlePreviousTrack}>
+              <bi.BiSkipPrevious />
+            </ButtonIcon>
+            <PlayPauseWrapper $large onClick={setPlayState}>
+              {isPlaying ? (
+                <bi.BiPause />
+              ) : (
+                <span>
+                  <bi.BiPlay />
+                </span>
+              )}
+            </PlayPauseWrapper>
+            <ButtonIcon $large onClick={handleNextTrack}>
+              <bi.BiSkipNext />
+            </ButtonIcon>
+            <ButtonIcon
+              $active={repeatMode === "context" || repeatMode === "track"}
+              onClick={handleRepeatMode}
+            >
+              {repeatMode === "track" ? <md.MdRepeatOne /> : <md.MdRepeat />}
+            </ButtonIcon>
+          </ControlsWrapper>
+        </NowPlayingWrapper>
+      </Modal>
+      <NowPlayingDevicesModal modal={devicesModal} setModal={setDevicesModal} />
+    </>
   );
 };
 
@@ -227,16 +226,30 @@ const NowPlayingModalStyle = {
   },
 };
 
-const CloseModal = styled.button`
+const ModalHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const IconWrapper = styled.button`
   position: absolute;
   top: 32px;
-  left: 32px;
   background-color: transparent;
   color: ${({ theme }) => theme.font.text};
   border: 0;
   padding: 0;
   cursor: pointer;
-  ${overflowNoScrollbar};
+`;
+
+const CloseIcon = styled(IconWrapper)`
+  left: 32px;
+  font-size: 18px;
+`;
+
+const DeviceIcon = styled(IconWrapper)`
+  right: 32px;
+  font-size: 20px;
 `;
 
 const NowPlayingWrapper = styled.div<{ $isOpen: boolean }>`

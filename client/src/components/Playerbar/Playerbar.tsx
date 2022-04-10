@@ -42,7 +42,7 @@ export const ButtonIcon = styled.button`
   color: currentColor;
   font-size: 20px;
   border: 0;
-  margin-left: 16px;
+  margin: 0 16px;
   padding: 0;
   cursor: pointer;
 `;

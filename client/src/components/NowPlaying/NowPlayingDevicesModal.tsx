@@ -11,6 +11,7 @@ import {
 } from "../../slices/playerSlice";
 import { MdOutlinePhoneIphone, MdComputer, MdClose } from "react-icons/md";
 import { overflowNoScrollbar } from "../../styles/utils";
+import PlayerVolume from "../Playerbar/PlayerVolume";
 
 interface Props {
   modal: boolean;
@@ -58,24 +59,27 @@ const NowPlayingDevicesModal = ({ modal, setModal }: Props) => {
       closeTimeoutMS={500}
     >
       <ModalContentWrapper $isOpen={modal}>
-        <ModalHeader>
-          <div>
-            <h2>Current device</h2>
-            <CurrentDevice>{currentDevice[0]?.name}</CurrentDevice>
-          </div>
-          <CloseModal onClick={() => closeModal()}>
-            <MdClose />
-          </CloseModal>
-        </ModalHeader>
-        <DeviceList>
-          <DeviceListName>Select a device</DeviceListName>
-          {devices.map((device, index) => (
-            <Device key={device.id} onClick={() => handleSetDevice(index)}>
-              <DeviceIcon>{renderDeviceType(device.type)}</DeviceIcon>
-              <DeviceName>{device.name}</DeviceName>
-            </Device>
-          ))}
-        </DeviceList>
+        <div>
+          <ModalHeader>
+            <div>
+              <h2>Current device</h2>
+              <CurrentDevice>{currentDevice[0]?.name}</CurrentDevice>
+            </div>
+            <CloseModal onClick={() => closeModal()}>
+              <MdClose />
+            </CloseModal>
+          </ModalHeader>
+          <DeviceList>
+            <DeviceListName>Select a device</DeviceListName>
+            {devices.map((device, index) => (
+              <Device key={device.id} onClick={() => handleSetDevice(index)}>
+                <DeviceIcon>{renderDeviceType(device.type)}</DeviceIcon>
+                <DeviceName>{device.name}</DeviceName>
+              </Device>
+            ))}
+          </DeviceList>
+        </div>
+        <PlayerVolume />
       </ModalContentWrapper>
     </Modal>
   );
@@ -125,6 +129,9 @@ const NowPlayingModalStyle = {
 };
 
 const ModalContentWrapper = styled.div<{ $isOpen: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
   padding: 32px;
   height: 100%;
   animation: ${({ $isOpen }) => ($isOpen ? fadeIn : fadeOut)} 0.5s

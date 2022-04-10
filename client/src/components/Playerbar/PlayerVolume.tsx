@@ -48,8 +48,8 @@ const PlayerVolume = () => {
   }
 
   return (
-    <>
-      <ButtonIcon onClick={handleMuteVolume}>{renderVolumeIcon()}</ButtonIcon>
+    <VolumeBarWrapper>
+      <VolumeIcon onClick={handleMuteVolume}>{renderVolumeIcon()}</VolumeIcon>
       <VolumeBar
         type="range"
         min={0}
@@ -57,12 +57,27 @@ const PlayerVolume = () => {
         max={100}
         onChange={(e) => handlePlaybackVolume(e)}
       />
-    </>
+    </VolumeBarWrapper>
   );
 };
 
+const VolumeBarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const VolumeIcon = styled.button`
+  background-color: transparent;
+  color: currentColor;
+  border: 0;
+  font-size: 20px;
+  padding: 0;
+  cursor: pointer;
+  margin-right: 16px;
+`;
+
 const VolumeBar = styled.input.attrs({ type: "range" })`
-  max-width: 100px;
   width: 100%;
 `;
 
