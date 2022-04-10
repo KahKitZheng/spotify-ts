@@ -104,6 +104,9 @@ const LibraryPage = () => {
 };
 
 const CreatePlaylist = styled(Tab.Tab)`
+  padding: 0;
+  font-size: 20px;
+
   @media (min-width: ${MEDIA.tablet}) {
     display: none;
   }
