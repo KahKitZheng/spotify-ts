@@ -120,7 +120,7 @@ const PlayerTrackControls = () => {
       </ControlsWrapper>
       <SeekerWrapper>
         <small>{formatDuration(seeker | 0, "track")}</small>
-        <input
+        <TrackProgress
           type="range"
           min={0}
           onChange={(e) => setSeekerPosition(e)}
@@ -186,6 +186,10 @@ const SeekerWrapper = styled.div`
   width: 100%;
   max-width: 530px;
   margin-top: 8px;
+`;
+
+const TrackProgress = styled.input.attrs({ type: "range" })`
+  margin: 0 8px;
 `;
 
 export default PlayerTrackControls;

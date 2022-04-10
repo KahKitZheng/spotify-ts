@@ -52,7 +52,6 @@ const BottomTabs = () => {
 };
 
 const BottomTabsWrapper = styled.footer`
-  grid-area: bottom;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
@@ -74,6 +73,7 @@ const TabLink = styled(NavLink)`
   text-decoration: none;
   margin: auto;
   width: fit-content;
+  cursor: pointer;
 
   :hover {
     color: #27dc89;

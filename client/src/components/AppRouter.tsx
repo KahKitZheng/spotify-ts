@@ -17,6 +17,7 @@ import RecentTracksPage from "../pages/recent-tracks";
 import CategoryPage from "../pages/category";
 import GenrePage from "../pages/genre";
 import { TopArtistsPage, TopTracksPage } from "../pages/top-items/";
+import { NowPlayingMini } from "./NowPlaying";
 
 const AppRouter = () => (
   <BrowserRouter>
@@ -38,7 +39,10 @@ const AppRouter = () => (
           <Route path="/genre/recently-played" element={<RecentTracksPage />} />
         </Routes>
       </MainViewWrapper>
-      <BottomTabs />
+      <Bottom>
+        <NowPlayingMini />
+        <BottomTabs />
+      </Bottom>
       <Playerbar />
     </Layout>
   </BrowserRouter>
@@ -59,6 +63,10 @@ const Layout = styled.div`
       "sidebar main"
       "playbar playbar";
   }
+`;
+
+const Bottom = styled.div`
+  grid-area: bottom;
 `;
 
 export default AppRouter;

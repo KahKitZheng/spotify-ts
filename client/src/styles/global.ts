@@ -77,7 +77,6 @@ const GlobalStyle = createGlobalStyle`
     background: transparent;
     cursor: pointer;
     width: 100%;
-    margin: 0 8px;
 
     /***** Track Styles *****/
     /***** Chrome, Safari, Opera, and Edge Chromium *****/
