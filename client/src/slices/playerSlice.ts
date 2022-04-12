@@ -118,6 +118,7 @@ export const playbackSlice = createSlice({
       state.playback.item = action.payload.track_window.current_track;
       state.playback.is_playing = !action.payload.paused;
       state.playback.progress_ms = +action.payload.position;
+      state.playback.context = action.payload.context;
     },
   },
   extraReducers: (builder) => {

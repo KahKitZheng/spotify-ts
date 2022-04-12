@@ -20,7 +20,7 @@ const Playbar = () => (
 const PlaybarWrapper = styled.footer`
   grid-area: playbar;
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1.5fr 2fr 1.5fr;
   grid-gap: 16px;
   height: 90px;
   padding: 16px;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { IoIosPlay, IoIosPause } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -6,44 +6,43 @@ import { selectPlayback, startPlayback } from "../../slices/playerSlice";
 
 interface Props {
   variant: "track" | "artist" | "album" | "playlist";
-  id: string;
+  uri: string;
 }
 
 type MouseEventType = React.MouseEvent<HTMLButtonElement, MouseEvent>;
 
-const PlayCard = ({ variant, id }: Props) => {
+const PlayCard = ({ variant, uri }: Props) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const dispatch = useAppDispatch();
   const playback = useAppSelector(selectPlayback);
   const isPlayerPlaying = playback.is_playing;
-  const currentTrackId = playback.item?.id;
-  const cardItemId = id.slice(-22);
+
+  const checkVariantUri = useCallback(() => {
+    if (variant === "track") {
+      return isPlayerPlaying && uri === playback.item?.uri;
+    } else {
+      return isPlayerPlaying && uri === playback.context?.uri;
+    }
+  }, [
+    isPlayerPlaying,
+    playback.context?.uri,
+    playback.item?.uri,
+    uri,
+    variant,
+  ]);
 
   useEffect(() => {
-    if (isPlayerPlaying && cardItemId === currentTrackId) {
-      setIsPlaying(true);
-    } else {
-      setIsPlaying(false);
-    }
-  }, [cardItemId, currentTrackId, isPlayerPlaying]);
+    checkVariantUri() ? setIsPlaying(true) : setIsPlaying(false);
+  }, [checkVariantUri]);
 
   const handlePlayTrack = (event: MouseEventType) => {
     event.stopPropagation();
 
-    switch (variant) {
-      case "track":
-        dispatch(startPlayback({ uris: [id] }));
-        break;
-      case "artist":
-        dispatch(startPlayback({ context_uri: `spotify:artist:${id}` }));
-        break;
-      case "album":
-        dispatch(startPlayback({ context_uri: `spotify:album:${id}` }));
-        break;
-      case "playlist":
-        dispatch(startPlayback({ context_uri: `spotify:playlist:${id}` }));
-        break;
+    if (variant === "track") {
+      dispatch(startPlayback({ uris: [uri] }));
+    } else {
+      dispatch(startPlayback({ context_uri: uri }));
     }
   };
 
