@@ -2,7 +2,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { IoIosPlay, IoIosPause } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectPlayback, startPlayback } from "../../slices/playerSlice";
+import {
+  pausePlayback,
+  selectPlayback,
+  startPlayback,
+} from "../../slices/playerSlice";
 
 interface Props {
   variant: "track" | "artist" | "album" | "playlist";
@@ -39,10 +43,18 @@ const PlayCard = ({ variant, uri }: Props) => {
   const handlePlayTrack = (event: MouseEventType) => {
     event.stopPropagation();
 
-    if (variant === "track") {
-      dispatch(startPlayback({ uris: [uri] }));
+    if (uri === playback.item?.uri) {
+      if (isPlaying) {
+        dispatch(pausePlayback());
+      } else {
+        dispatch(startPlayback());
+      }
     } else {
-      dispatch(startPlayback({ context_uri: uri }));
+      if (variant === "track") {
+        dispatch(startPlayback({ uris: [uri] }));
+      } else {
+        dispatch(startPlayback({ context_uri: uri }));
+      }
     }
   };
 
