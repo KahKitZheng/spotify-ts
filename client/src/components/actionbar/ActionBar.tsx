@@ -70,6 +70,7 @@ const PlayButton = styled(Button)`
   justify-content: center;
   background-color: #1ed760;
   color: black;
+  border: 0;
   border-radius: 50%;
   padding: 10px;
 

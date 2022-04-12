@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { textOverflow } from "../../styles/utils";
+import { PlayCardIcon } from "../Play/PlayCard";
 
 export const CardLink = styled(Link)`
   :hover,
@@ -22,6 +23,15 @@ export const CardWrapper = styled.div`
     cursor: pointer;
     background-color: #272c33;
   }
+
+  :hover ${PlayCardIcon} {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+export const CardHeader = styled.div`
+  position: relative;
 `;
 
 export const CardCover = styled.img<{

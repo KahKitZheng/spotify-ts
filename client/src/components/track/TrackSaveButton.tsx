@@ -4,7 +4,7 @@ import { MEDIA } from "../../styles/media";
 import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri";
 
 interface Props {
-  handleClick: () => void;
+  handleClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   isSaved: boolean;
 }
 
@@ -12,7 +12,7 @@ const TrackSaveButton = (props: Props) => {
   const { isSaved, handleClick } = props;
 
   return (
-    <TrackSave $isSaved={isSaved} onClick={() => handleClick()}>
+    <TrackSave $isSaved={isSaved} onClick={(e) => handleClick(e)}>
       {isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}
     </TrackSave>
   );
@@ -20,7 +20,8 @@ const TrackSaveButton = (props: Props) => {
 
 export const TrackSave = styled.button<{ $isSaved: boolean }>`
   visibility: visible;
-  color: ${({ $isSaved, theme }) => ($isSaved ? theme.colors.spotify : "currentColor")};
+  color: ${({ $isSaved, theme }) =>
+    $isSaved ? theme.colors.spotify : "currentColor"};
   background-color: transparent;
   border: 0;
   padding: 0;

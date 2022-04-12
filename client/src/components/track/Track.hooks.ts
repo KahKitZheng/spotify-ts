@@ -7,6 +7,9 @@ import * as playlistSlice from "../../slices/playlistSlice";
 import * as topItemsSlice from "../../slices/topItemsSlice";
 import * as genreSlice from "../../slices/genreSlice";
 import { replaceRecommendationTrack } from "../../slices/recommendationSlice";
+import { useViewportWidth } from "../../hooks/useViewportWidth";
+import { MEDIA } from "../../styles/media";
+import { startPlayback } from "../../slices/playerSlice";
 
 type SaveTrackProps = {
   track: Track;
@@ -143,4 +146,26 @@ export const useRemovePlaylistTrack = (track: Track) => {
   };
 
   return handleRemovePlaylistTrack;
+};
+
+////////////////
+// Play track //
+////////////////
+export const usePlayTrack = (
+  payload: { uris: string[] } | { context_uri: string }
+) => {
+  const dispatch = useAppDispatch();
+  const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
+
+  const handleMobile = () => {
+    if (isDesktop) return;
+
+    dispatch(startPlayback(payload));
+  };
+
+  const handleDesktop = () => {
+    dispatch(startPlayback(payload));
+  };
+
+  return [handleMobile, handleDesktop];
 };

@@ -41,7 +41,7 @@ const HomePage = () => {
     window.history.replaceState(null, "", "/");
 
     if (location) {
-      dispatch(getRecentTracks({ limit: 10 }));
+      dispatch(getRecentTracks({ limit: 20 }));
     }
 
     if (userSavedArtistsStatus === "idle") {

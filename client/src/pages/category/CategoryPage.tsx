@@ -10,6 +10,7 @@ import {
   selectCategoryInfo,
 } from "../../slices/categoriesSlice";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
+import styled from "styled-components";
 
 const CategoryPage = () => {
   const { id } = useParams();
@@ -20,21 +21,25 @@ const CategoryPage = () => {
 
   useEffect(() => {
     if (id && userCountry) {
-      dispatch(getCategoryInfo({ category_id: id, country: userCountry }));
-      dispatch(getCategoryPlaylist({ category_id: id, country: userCountry }));
+      dispatch(getCategoryInfo(id));
+      dispatch(getCategoryPlaylist(id));
     }
   }, [dispatch, id, userCountry]);
 
-  return (
+  return id === categoryInfo.id ? (
     <div>
-      <h1>{categoryInfo.name}</h1>
+      <CategoryName>{categoryInfo.name}</CategoryName>
       <CollectionGrid>
         {category.playlists?.items.map((category) => (
-          <Card key={category.id} variant="category" item={category} />
+          <Card key={category.id} variant="playlist" item={category} />
         ))}
       </CollectionGrid>
     </div>
-  );
+  ) : null;
 };
+
+const CategoryName = styled.h1`
+  font-size: 48px;
+`;
 
 export default CategoryPage;

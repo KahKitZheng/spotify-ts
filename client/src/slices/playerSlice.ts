@@ -53,8 +53,11 @@ export const setPlaybackDevice = createAsyncThunk(
 
 export const startPlayback = createAsyncThunk(
   "playback/startPlayback",
-  async (uris?: string[]) => {
-    await axios.put(`/me/player/play`, { uris: uris });
+  async (data?: { uris?: string[]; context_uri?: string }) => {
+    await axios.put(`/me/player/play`, {
+      uris: data?.uris,
+      context_uri: data?.context_uri,
+    });
   }
 );
 

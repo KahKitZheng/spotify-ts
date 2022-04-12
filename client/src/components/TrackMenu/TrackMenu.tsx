@@ -53,32 +53,36 @@ type UserTopMenuProps = UserTopMenuVariant & PopoverProps;
 
 const TrackMenu = (props: Props) => {
   return (
-    <NestedPopover
-      render={({ close, labelId }) => {
-        switch (props.variant) {
-          case "artist-top":
-            return (
-              <PopularArtistTrackMenu
-                {...props}
-                close={close}
-                labelId={labelId}
-              />
-            );
-          case "album":
-            return <AlbumMenu {...props} close={close} labelId={labelId} />;
-          case "playlist":
-            return <PlaylistMenu {...props} close={close} labelId={labelId} />;
-          case "genre":
-            return <GenreMenu {...props} close={close} labelId={labelId} />;
-          case "user-top":
-            return <UserTopMenu {...props} close={close} labelId={labelId} />;
-        }
-      }}
-    >
-      <M.TrackOptionsWrapper>
-        <BsThreeDots />
-      </M.TrackOptionsWrapper>
-    </NestedPopover>
+    <div onClick={(e) => e.stopPropagation()}>
+      <NestedPopover
+        render={({ close, labelId }) => {
+          switch (props.variant) {
+            case "artist-top":
+              return (
+                <PopularArtistTrackMenu
+                  {...props}
+                  close={close}
+                  labelId={labelId}
+                />
+              );
+            case "album":
+              return <AlbumMenu {...props} close={close} labelId={labelId} />;
+            case "playlist":
+              return (
+                <PlaylistMenu {...props} close={close} labelId={labelId} />
+              );
+            case "genre":
+              return <GenreMenu {...props} close={close} labelId={labelId} />;
+            case "user-top":
+              return <UserTopMenu {...props} close={close} labelId={labelId} />;
+          }
+        }}
+      >
+        <M.TrackOptionsWrapper>
+          <BsThreeDots />
+        </M.TrackOptionsWrapper>
+      </NestedPopover>
+    </div>
   );
 };
 

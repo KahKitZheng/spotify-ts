@@ -36,11 +36,6 @@ interface AlbumDiscographyBase {
   overflow?: boolean;
 }
 
-interface CategoryBase {
-  item: SpotifyObjects.SimplifiedPlaylist;
-  overflow?: boolean;
-}
-
 interface RecentTracksVariant extends RecentlyPLayedBase {
   variant: "recent-tracks";
 }
@@ -69,10 +64,6 @@ interface AlbumDiscographyVariant extends AlbumDiscographyBase {
   variant: "album-discography";
 }
 
-interface CategoryVariant extends CategoryBase {
-  variant: "category";
-}
-
 export type CardProps =
   | RecentTracksVariant
   | ArtistVariant
@@ -80,8 +71,7 @@ export type CardProps =
   | PlaylistVariant
   | AlbumVariant
   | AlbumSavedVariant
-  | AlbumDiscographyVariant
-  | CategoryVariant;
+  | AlbumDiscographyVariant;
 
 export interface RecentTracksCardProps extends RecentlyPLayedBase {
   to: NavigateFunction;
@@ -108,9 +98,5 @@ export interface AlbumSavedCardProps extends AlbumSavedBase {
 }
 
 export interface AlbumDiscographyCardProps extends AlbumDiscographyBase {
-  to: NavigateFunction;
-}
-
-export interface CategoryCardProps extends CategoryBase {
   to: NavigateFunction;
 }

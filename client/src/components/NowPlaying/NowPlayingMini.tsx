@@ -36,7 +36,8 @@ const NowPlayingMini = () => {
     ));
   };
 
-  const setPlayState = () => {
+  const setPlayState = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
     isPlaying ? dispatch(pausePlayback()) : dispatch(startPlayback());
   };
 
@@ -93,7 +94,7 @@ const NowPlayingMini = () => {
               <BiPause />
             </ButtonIcon>
           ) : (
-            <ButtonIcon $large onClick={setPlayState}>
+            <ButtonIcon $large onClick={(e) => setPlayState(e)}>
               <BiPlay />
             </ButtonIcon>
           )}

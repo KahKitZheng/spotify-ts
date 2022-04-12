@@ -3,6 +3,7 @@ import { MEDIA } from "../../styles/media";
 import { TrackSave } from "./TrackSaveButton";
 import { TrackOptionsWrapper } from "../TrackMenu/TrackMenu.style";
 import { textOverflow } from "../../styles/utils";
+import { PlayTrackIcon } from "../Play/PlayTrack";
 
 /////////////////////////////////////////
 // Containers for collection of tracks //
@@ -25,21 +26,36 @@ export const TrackList = styled.div`
 /////////////////
 // Track parts //
 /////////////////
+export const TrackIndexNumber = styled.span<{
+  $isTrackPlaying: boolean;
+  $isPlayerTrack: boolean;
+}>`
+  display: ${({ $isTrackPlaying }) => ($isTrackPlaying ? "none" : "revert")};
+  color: ${({ $isPlayerTrack, theme }) =>
+    $isPlayerTrack ? theme.colors.spotify : "currentColor"};
+  font-weight: 600;
+`;
+
+export const TrackAlbumWrapper = styled.div`
+  position: relative;
+`;
+
 export const TrackAlbumCover = styled.img<{ $small?: boolean }>`
   aspect-ratio: 1 / 1;
   height: ${({ $small }) => ($small ? "32px" : "48px")};
   width: ${({ $small }) => ($small ? "32px" : "48px")};
   object-fit: cover;
-  margin-right: 16px;
 `;
 
 export const TrackDetails = styled.div`
   display: flex;
   flex-direction: column;
+  margin-left: 16px;
 `;
 
-export const TrackName = styled.p`
-  color: ${({ theme }) => theme.font.title};
+export const TrackName = styled.p<{ $isPlayerTrack: boolean }>`
+  color: ${({ $isPlayerTrack, theme }) =>
+    $isPlayerTrack ? theme.colors.spotify : theme.font.title};
   ${textOverflow(1)};
 `;
 
@@ -109,11 +125,17 @@ export const ExplicitTrack = styled.span`
 ////////////////////
 // Track Sections //
 ////////////////////
-export const TrackIndex = styled.span`
+export const TrackIndex = styled.div`
   display: none;
 
+  span {
+    padding-right: 4px;
+  }
+
   @media (min-width: ${MEDIA.mobile}) {
-    display: revert;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     grid-area: track-index;
     text-align: right;
   }
@@ -169,11 +191,11 @@ export const TrackOptions = styled.div`
 // Track layout variants //
 ///////////////////////////
 export const Track = styled.div`
-  --track-section-index: 24px;
+  --track-section-index: 40px;
   --track-section-info: 1fr;
   --track-section-album: 120px;
   --track-section-playlist-add-track: 120px;
-  --track-section-playlist-date-added: 3fr;
+  --track-section-playlist-date-added: 2fr;
   --track-section-options: 100px;
 
   display: grid;
@@ -183,6 +205,7 @@ export const Track = styled.div`
   grid-gap: 16px;
   margin: -8px;
   padding: 8px;
+  transition: all 0.2s ease;
 
   :hover {
     background-color: #1a1c25;
@@ -191,14 +214,32 @@ export const Track = styled.div`
     visibility: visible;
   }
 
+  :hover ${PlayTrackIcon} {
+    display: block;
+  }
+
   @media (min-width: ${MEDIA.tablet}) {
     --track-section-info: 6fr;
-    --track-section-album: 4fr;
+    --track-section-album: 5fr;
     --track-section-options: 160px;
   }
 `;
 
+export const UnOrderedTrack = styled(Track)<{ $isTrackPlaying?: boolean }>`
+  ${TrackAlbumCover} {
+    opacity: ${({ $isTrackPlaying }) => ($isTrackPlaying ? 0.2 : 1)};
+  }
+
+  :hover ${TrackAlbumCover} {
+    opacity: 0.2;
+  }
+`;
+
 export const OrderedTrack = styled(Track)`
+  :hover ${TrackIndex} span {
+    display: none;
+  }
+
   @media (min-width: ${MEDIA.mobile}) {
     grid-template-columns:
       var(--track-section-index)
@@ -226,7 +267,7 @@ export const TrackDiscInfo = styled(Track)`
 export const PlaylistTrack = styled(OrderedTrack)`
   @media (min-width: ${MEDIA.tablet}) {
     --track-section-info: 6fr;
-    --track-section-album: 4fr;
+    --track-section-album: 5fr;
 
     grid-template-areas: "track-index track-info track-album track-options";
     grid-template-columns:
@@ -247,7 +288,7 @@ export const PlaylistTrack = styled(OrderedTrack)`
   }
 `;
 
-export const PlaylistAddTrack = styled(Track)`
+export const PlaylistAddTrack = styled(UnOrderedTrack)`
   grid-template-areas: "track-info track-options";
   grid-template-columns: var(--track-section-info) var(--track-section-options);
 

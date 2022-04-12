@@ -1,7 +1,7 @@
 import axios from "axios";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CursorBasedPaging, PlayHistory } from "../types/SpotifyObjects";
+import { CursorBasedPaging, PlayHistory, Track } from "../types/SpotifyObjects";
 
 interface recentTracksState {
   recentTracks: CursorBasedPaging<PlayHistory>;
@@ -45,8 +45,18 @@ export const recentTracksSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getRecentTracks.fulfilled, (state, action) => {
+        const response = action.payload;
+        const list = [
+          ...new Map(
+            response.items.map((item: PlayHistory) => [item.track.id, item])
+          ).values(),
+        ];
+
         state.status = "succeeded";
-        state.recentTracks = action.payload;
+        state.recentTracks = {
+          ...action.payload,
+          items: list,
+        };
       })
       .addCase(getRecentTracks.rejected, (state) => {
         state.status = "failed";

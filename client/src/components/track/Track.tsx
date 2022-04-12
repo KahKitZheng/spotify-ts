@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import PlayTrack from "../Play/PlayTrack";
 import TrackSaveButton from "./TrackSaveButton";
 import TrackMenu from "../TrackMenu/TrackMenu";
 import * as T from "./Track.style";
@@ -7,9 +8,18 @@ import { BiPlus } from "react-icons/bi";
 import { MEDIA } from "../../styles/media";
 import { formatDuration } from "../../utils";
 import { useViewportWidth } from "../../hooks/useViewportWidth";
-import * as TrackHooks from "./Track.hooks";
 import * as topItemsSlice from "../../slices/topItemsSlice";
 import * as SpotifyObjects from "../../types/SpotifyObjects";
+import { usePlayingTrack } from "../../hooks/usePlayingTrack";
+import {
+  useSaveAlbumTrack,
+  usePlayTrack,
+  useSavePopularArtistTrack,
+  useSavePlaylistTrack,
+  useAddRecommendationPlaylistTrack,
+  useSaveUserTopTrack,
+  useSaveGenreTrack,
+} from "./Track.hooks";
 
 type AlbumVariant = {
   variant: "album";
@@ -63,6 +73,8 @@ type PlaylistAddTrackProps = Omit<PlaylistAddTrackVariant, "variant">;
 type UserTopTrackProps = Omit<UserTopVariant, "variant">;
 type GenreTrackProps = Omit<GenreVariant, "variant">;
 
+type MouseEventType = React.MouseEvent<HTMLButtonElement, MouseEvent>;
+
 const TrackComponent = (props: TrackProps) => {
   switch (props.variant) {
     case "album":
@@ -105,15 +117,33 @@ const renderArtists = (list: SpotifyObjects.SimplifiedArtist[]) => {
 };
 
 const AlbumTrack = ({ item }: AlbumTrackProps) => {
-  const payload = { track: item, isSaved: item.is_saved };
-  const saveTrack = TrackHooks.useSaveAlbumTrack(payload);
+  const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
+
+  const savePayload = { track: item, isSaved: item.is_saved };
+  const saveTrack = useSaveAlbumTrack(savePayload);
+
+  const playPayload = { uris: [item.uri] };
+  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+
+  const handleSaveTrack = (e: MouseEventType) => {
+    e.stopPropagation();
+    saveTrack();
+  };
 
   return (
-    <T.OrderedTrack>
-      <T.TrackIndex>{item.track_number}</T.TrackIndex>
+    <T.OrderedTrack onClick={handleMobile} onDoubleClick={handleDesktop}>
+      <T.TrackIndex>
+        <T.TrackIndexNumber
+          $isPlayerTrack={isCurrentTrack}
+          $isTrackPlaying={isCurrentTrackPlaying}
+        >
+          {item.track_number}
+        </T.TrackIndexNumber>
+        <PlayTrack uri={item.uri} handlePlay={handleDesktop} />
+      </T.TrackIndex>
       <T.TrackInfo>
         <T.TrackDetails>
-          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackName $isPlayerTrack={isCurrentTrack}>{item.name}</T.TrackName>
           <T.TrackArtists>
             {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
             {renderArtists(item?.artists)}
@@ -121,7 +151,10 @@ const AlbumTrack = ({ item }: AlbumTrackProps) => {
         </T.TrackDetails>
       </T.TrackInfo>
       <T.TrackOptions>
-        <TrackSaveButton isSaved={item.is_saved} handleClick={saveTrack} />
+        <TrackSaveButton
+          isSaved={item.is_saved}
+          handleClick={handleSaveTrack}
+        />
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
@@ -132,21 +165,42 @@ const AlbumTrack = ({ item }: AlbumTrackProps) => {
 };
 
 const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
-  const payload = { track: item, isSaved: item.is_saved };
-  const saveTrack = TrackHooks.useSavePopularArtistTrack(payload);
+  const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
+
+  const savePayload = { track: item, isSaved: item.is_saved };
+  const saveTrack = useSavePopularArtistTrack(savePayload);
+
+  const playPayload = { uris: [item.uri] };
+  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+
+  const handleSaveTrack = (e: MouseEventType) => {
+    e.stopPropagation();
+    saveTrack();
+  };
 
   return (
-    <T.OrderedTrack>
-      {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
+    <T.OrderedTrack onClick={handleMobile} onDoubleClick={handleDesktop}>
+      <T.TrackIndex>
+        <T.TrackIndexNumber
+          $isPlayerTrack={isCurrentTrack}
+          $isTrackPlaying={isCurrentTrackPlaying}
+        >
+          {index !== undefined && index + 1}
+        </T.TrackIndexNumber>
+        <PlayTrack uri={item.uri} handlePlay={handleDesktop} />
+      </T.TrackIndex>
       <T.TrackInfo>
         <T.TrackAlbumCover src={item.album?.images[0].url} alt="" $small />
         <T.TrackDetails>
-          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackName $isPlayerTrack={isCurrentTrack}>{item.name}</T.TrackName>
           {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
         </T.TrackDetails>
       </T.TrackInfo>
       <T.TrackOptions>
-        <TrackSaveButton isSaved={item.is_saved} handleClick={saveTrack} />
+        <TrackSaveButton
+          isSaved={item.is_saved}
+          handleClick={handleSaveTrack}
+        />
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
@@ -159,20 +213,40 @@ const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
 const PlaylistTrack = (props: PlaylistTrackProps) => {
   const { index, item, playlistId, addedAt, isOwner } = props;
   const track = item.track as SpotifyObjects.Track;
+  const trackUri = item.track.uri;
+  const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(trackUri);
 
-  const payload = { track: track, isSaved: item.track.is_saved };
-  const saveTrack = TrackHooks.useSavePlaylistTrack(payload);
+  const savePayload = { track: track, isSaved: item.track.is_saved };
+  const saveTrack = useSavePlaylistTrack(savePayload);
+
+  const playPayload = { uris: [trackUri] };
+  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+
+  const handleSaveTrack = (e: MouseEventType) => {
+    e.stopPropagation();
+    saveTrack();
+  };
 
   return (
-    <T.PlaylistTrack>
-      {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
+    <T.PlaylistTrack onClick={handleMobile} onDoubleClick={handleDesktop}>
+      <T.TrackIndex>
+        <T.TrackIndexNumber
+          $isPlayerTrack={isCurrentTrack}
+          $isTrackPlaying={isCurrentTrackPlaying}
+        >
+          {index !== undefined && index + 1}
+        </T.TrackIndexNumber>
+        <PlayTrack uri={trackUri} handlePlay={handleDesktop} />
+      </T.TrackIndex>
       <T.TrackInfo>
         <T.TrackAlbumCover
           src={track.album?.images[0] && track.album?.images[0].url}
           alt=""
         />
         <T.TrackDetails>
-          <T.TrackName>{track.name}</T.TrackName>
+          <T.TrackName $isPlayerTrack={isCurrentTrack}>
+            {track.name}
+          </T.TrackName>
           <T.TrackArtists>
             {track.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
             {renderArtists(track.artists)}
@@ -184,7 +258,10 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
       </T.TrackAlbum>
       {addedAt !== null && <T.TrackDateAdded>{addedAt}</T.TrackDateAdded>}
       <T.TrackOptions>
-        <TrackSaveButton isSaved={track.is_saved} handleClick={saveTrack} />
+        <TrackSaveButton
+          isSaved={track.is_saved}
+          handleClick={handleSaveTrack}
+        />
         <T.TrackDuration>
           {formatDuration(track.duration_ms, "track")}
         </T.TrackDuration>
@@ -200,17 +277,33 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
 };
 
 const PlaylistAddTrack = ({ item }: PlaylistAddTrackProps) => {
-  const payload = { track: item, isSaved: item.is_saved };
-  const saveTrack = TrackHooks.useAddRecommendationPlaylistTrack(payload);
-
   const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
+  const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
+
+  const savePayload = { track: item, isSaved: item.is_saved };
+  const saveTrack = useAddRecommendationPlaylistTrack(savePayload);
+
+  const playPayload = { uris: [item.uri] };
+  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+
+  const handleSaveTrack = (e: MouseEventType) => {
+    e.stopPropagation();
+    saveTrack();
+  };
 
   return (
-    <T.PlaylistAddTrack>
+    <T.PlaylistAddTrack
+      onClick={handleMobile}
+      onDoubleClick={handleDesktop}
+      $isTrackPlaying={isCurrentTrackPlaying}
+    >
       <T.TrackInfo>
-        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+        <T.TrackAlbumWrapper>
+          <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+          <PlayTrack uri={item.uri} handlePlay={handleDesktop} $insideAlbum />
+        </T.TrackAlbumWrapper>
         <T.TrackDetails>
-          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackName $isPlayerTrack={isCurrentTrack}>{item.name}</T.TrackName>
           <T.TrackArtists>
             {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
             {renderArtists(item.artists)}
@@ -230,7 +323,7 @@ const PlaylistAddTrack = ({ item }: PlaylistAddTrackProps) => {
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
-        <T.AddTrackToPlaylist onClick={saveTrack}>
+        <T.AddTrackToPlaylist onClick={handleSaveTrack}>
           {isDesktop ? "Add" : <BiPlus />}
         </T.AddTrackToPlaylist>
       </T.TrackOptions>
@@ -239,16 +332,34 @@ const PlaylistAddTrack = ({ item }: PlaylistAddTrackProps) => {
 };
 
 const UserTopTrack = ({ index, item, timeRange }: UserTopTrackProps) => {
-  const payload = { track: item, isSaved: item.is_saved, timeRange };
-  const saveTrack = TrackHooks.useSaveUserTopTrack(payload);
+  const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
+
+  const savePayload = { track: item, isSaved: item.is_saved, timeRange };
+  const saveTrack = useSaveUserTopTrack(savePayload);
+
+  const playPayload = { uris: [item.uri] };
+  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+
+  const handleSaveTrack = (e: MouseEventType) => {
+    e.stopPropagation();
+    saveTrack();
+  };
 
   return (
-    <T.TopTrack>
-      {index !== undefined && <T.TrackIndex>{index + 1}</T.TrackIndex>}
+    <T.TopTrack onClick={handleMobile} onDoubleClick={handleDesktop}>
+      <T.TrackIndex>
+        <T.TrackIndexNumber
+          $isPlayerTrack={isCurrentTrack}
+          $isTrackPlaying={isCurrentTrackPlaying}
+        >
+          {index !== undefined && index + 1}
+        </T.TrackIndexNumber>
+        <PlayTrack uri={item.uri} handlePlay={handleDesktop} />
+      </T.TrackIndex>
       <T.TrackInfo>
         <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
         <T.TrackDetails>
-          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackName $isPlayerTrack={isCurrentTrack}>{item.name}</T.TrackName>
           <T.TrackArtists>
             {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
             {renderArtists(item.artists)}
@@ -260,7 +371,10 @@ const UserTopTrack = ({ index, item, timeRange }: UserTopTrackProps) => {
       </T.TrackAlbum>
       <T.TrackOptions>
         {timeRange !== undefined && (
-          <TrackSaveButton isSaved={item.is_saved} handleClick={saveTrack} />
+          <TrackSaveButton
+            isSaved={item.is_saved}
+            handleClick={handleSaveTrack}
+          />
         )}
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
@@ -272,15 +386,32 @@ const UserTopTrack = ({ index, item, timeRange }: UserTopTrackProps) => {
 };
 
 const GenreTrack = ({ item }: GenreTrackProps) => {
-  const payload = { track: item, isSaved: item.is_saved };
-  const saveTrack = TrackHooks.useSaveGenreTrack(payload);
+  const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
+
+  const savePayload = { track: item, isSaved: item.is_saved };
+  const saveTrack = useSaveGenreTrack(savePayload);
+
+  const playPayload = { uris: [item.uri] };
+  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+
+  const handleSaveTrack = (e: MouseEventType) => {
+    e.stopPropagation();
+    saveTrack();
+  };
 
   return (
-    <T.Track>
+    <T.UnOrderedTrack
+      onClick={handleMobile}
+      onDoubleClick={handleDesktop}
+      $isTrackPlaying={isCurrentTrackPlaying}
+    >
       <T.TrackInfo>
-        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+        <T.TrackAlbumWrapper>
+          <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+          <PlayTrack uri={item.uri} handlePlay={handleDesktop} $insideAlbum />
+        </T.TrackAlbumWrapper>
         <T.TrackDetails>
-          <T.TrackName>{item.name}</T.TrackName>
+          <T.TrackName $isPlayerTrack={isCurrentTrack}>{item.name}</T.TrackName>
           <T.TrackArtists>
             {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
             {renderArtists(item.artists)}
@@ -288,13 +419,16 @@ const GenreTrack = ({ item }: GenreTrackProps) => {
         </T.TrackDetails>
       </T.TrackInfo>
       <T.TrackOptions>
-        <TrackSaveButton isSaved={item.is_saved} handleClick={saveTrack} />
+        <TrackSaveButton
+          isSaved={item.is_saved}
+          handleClick={handleSaveTrack}
+        />
         <T.TrackDuration>
           {formatDuration(item.duration_ms, "track")}
         </T.TrackDuration>
         <TrackMenu variant="genre" track={item} />
       </T.TrackOptions>
-    </T.Track>
+    </T.UnOrderedTrack>
   );
 };
 

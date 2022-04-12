@@ -1,8 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import Play from "../Play";
 import * as C from "./Card.style";
 import * as I from "./Card.interface";
 import * as SpotifyObjects from "../../types/SpotifyObjects";
+import { useNavigate } from "react-router-dom";
 
 const NewCard = (props: I.CardProps) => {
   const { variant, item, overflow } = props;
@@ -65,14 +66,6 @@ const NewCard = (props: I.CardProps) => {
           overflow={overflow}
         />
       );
-    case "category":
-      return (
-        <CategoryCard
-          item={item as SpotifyObjects.SimplifiedPlaylist}
-          to={navigate}
-          overflow={overflow}
-        />
-      );
     default:
       return null;
   }
@@ -81,15 +74,18 @@ const NewCard = (props: I.CardProps) => {
 const RecentTracksCard = ({ item, to, overflow }: I.RecentTracksCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.track.album?.id}`)}>
-      <C.CardCover
-        src={
-          item.track.album?.images.length > 0
-            ? item.track.album?.images[0].url
-            : ""
-        }
-        alt=""
-        $overflow={overflow}
-      />
+      <C.CardHeader>
+        <C.CardCover
+          src={
+            item.track.album?.images.length > 0
+              ? item.track.album?.images[0].url
+              : ""
+          }
+          alt=""
+          $overflow={overflow}
+        />
+        <Play variant="track" id={item.track.uri} />
+      </C.CardHeader>
       <C.CardTitle to={`/album/${item.track.album?.id}`}>
         {item.track.name}
       </C.CardTitle>
@@ -106,12 +102,15 @@ const RecentTracksCard = ({ item, to, overflow }: I.RecentTracksCardProps) => {
 const ArtistCard = ({ item, to, overflow }: I.ArtistCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/artist/${item.id}`)}>
-      <C.CardCover
-        src={item.images.length > 0 ? item?.images[0].url : ""}
-        alt=""
-        $isArtist
-        $overflow={overflow}
-      />
+      <C.CardHeader>
+        <C.CardCover
+          src={item.images.length > 0 ? item?.images[0].url : ""}
+          alt=""
+          $isArtist
+          $overflow={overflow}
+        />
+        <Play variant="artist" id={item.id} />
+      </C.CardHeader>
       <C.CardTitle to={`/artist/${item.id}`}>{item.name}</C.CardTitle>
       <C.CardDescription>Artist</C.CardDescription>
     </C.CardWrapper>
@@ -121,11 +120,14 @@ const ArtistCard = ({ item, to, overflow }: I.ArtistCardProps) => {
 const TrackCard = ({ item, to, overflow }: I.TrackCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.album.id}`)}>
-      <C.CardCover
-        src={item.album?.images.length > 0 ? item.album?.images[0].url : ""}
-        alt=""
-        $overflow={overflow}
-      />
+      <C.CardHeader>
+        <C.CardCover
+          src={item.album?.images.length > 0 ? item.album?.images[0].url : ""}
+          alt=""
+          $overflow={overflow}
+        />
+        <Play variant="track" id={item.uri} />
+      </C.CardHeader>
       <C.CardTitle to={`/album/${item.album.id}`}>{item.name}</C.CardTitle>
       <C.CardArtistLink
         onClick={(e) => e.stopPropagation()}
@@ -140,17 +142,20 @@ const TrackCard = ({ item, to, overflow }: I.TrackCardProps) => {
 const PlaylistCard = ({ item, to, overflow }: I.PlaylistCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/playlist/${item.id}`)}>
-      {item.images[0] === undefined ? (
-        <C.CardCoverPlaceholder $overflow={overflow}>
-          {item.name.slice(0, 1)}
-        </C.CardCoverPlaceholder>
-      ) : (
-        <C.CardCover
-          src={item.images?.length !== 0 ? item.images[0].url : ""}
-          alt=""
-          $overflow={overflow}
-        />
-      )}
+      <C.CardHeader>
+        {item.images[0] === undefined ? (
+          <C.CardCoverPlaceholder $overflow={overflow}>
+            {item.name.slice(0, 1)}
+          </C.CardCoverPlaceholder>
+        ) : (
+          <C.CardCover
+            src={item.images?.length !== 0 ? item.images[0].url : ""}
+            alt=""
+            $overflow={overflow}
+          />
+        )}
+        <Play variant="playlist" id={item.id} />
+      </C.CardHeader>
       <C.CardTitle to={`/playlist/${item.id}`}>{item.name}</C.CardTitle>
       {item.description ? (
         <C.CardDescription
@@ -166,7 +171,10 @@ const PlaylistCard = ({ item, to, overflow }: I.PlaylistCardProps) => {
 const AlbumCard = ({ item, to, overflow }: I.AlbumCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.id}`)}>
-      <C.CardCover src={item.images[0].url} alt="" $overflow={overflow} />
+      <C.CardHeader>
+        <C.CardCover src={item.images[0].url} alt="" $overflow={overflow} />
+        <Play variant="album" id={item.id} />
+      </C.CardHeader>
       <C.CardTitle to={`/album/${item.id}`}>{item.name}</C.CardTitle>
       <C.CardDescription>{item.release_date?.slice(0, 4)}</C.CardDescription>
     </C.CardWrapper>
@@ -176,7 +184,14 @@ const AlbumCard = ({ item, to, overflow }: I.AlbumCardProps) => {
 const AlbumSavedCard = ({ item, to, overflow }: I.AlbumSavedCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.album.id}`)}>
-      <C.CardCover src={item.album.images[0].url} alt="" $overflow={overflow} />
+      <C.CardHeader>
+        <C.CardCover
+          src={item.album.images[0].url}
+          alt=""
+          $overflow={overflow}
+        />
+        <Play variant="album" id={item.album.id} />
+      </C.CardHeader>
       <C.CardTitle to={`/album/${item.album.id}`}>
         {item.album.name}
       </C.CardTitle>
@@ -187,9 +202,13 @@ const AlbumSavedCard = ({ item, to, overflow }: I.AlbumSavedCardProps) => {
 
 const AlbumDiscographyCard = (props: I.AlbumDiscographyCardProps) => {
   const { item, to, overflow } = props;
+
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.id}`)}>
-      <C.CardCover src={item.images[0].url} alt="" $overflow={overflow} />
+      <C.CardHeader>
+        <C.CardCover src={item.images[0].url} alt="" $overflow={overflow} />
+        <Play variant="album" id={item.id} />
+      </C.CardHeader>
       <C.CardTitle to={`/album/${item.id}`}>{item.name}</C.CardTitle>
       {item.album_group === "album" || item.album_group === "appears_on" ? (
         <C.CardDescription>
@@ -204,22 +223,6 @@ const AlbumDiscographyCard = (props: I.AlbumDiscographyCardProps) => {
           <span className="bull">&bull;</span>
           {item.total_tracks <= 2 ? "Single" : "EP"}
         </C.CardDescription>
-      )}
-    </C.CardWrapper>
-  );
-};
-
-const CategoryCard = ({ item, to, overflow }: I.CategoryCardProps) => {
-  return (
-    <C.CardWrapper onClick={() => to(`/playlist/${item.id}`)}>
-      <C.CardCover src={item.images[0].url} alt="" $overflow={overflow} />
-      <C.CardTitle to={`/playlist/${item.id}`}>{item.name}</C.CardTitle>
-      {item.description ? (
-        <C.CardDescription
-          dangerouslySetInnerHTML={{ __html: item.description }}
-        />
-      ) : (
-        <C.CardDescription>By {item.owner.display_name}</C.CardDescription>
       )}
     </C.CardWrapper>
   );

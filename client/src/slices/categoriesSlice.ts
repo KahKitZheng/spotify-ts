@@ -30,7 +30,9 @@ export const getCategories = createAsyncThunk(
   async (data?: fetchParams) => {
     if (data) {
       const { limit = 20, country } = data;
-      const response = await axios.get(`/browse/categories?limit=${limit}&country=${country}`);
+      const response = await axios.get(
+        `/browse/categories?limit=${limit}&country=${country}`
+      );
       return response.data.categories;
     } else {
       const response = await axios.get(`/browse/categories`);
@@ -41,19 +43,17 @@ export const getCategories = createAsyncThunk(
 
 export const getCategoryInfo = createAsyncThunk(
   "categories/getCategoryInfo",
-  async (data: { category_id: string; country?: string }) => {
-    const { category_id, country } = data;
-    const response = await axios.get(`browse/categories/${category_id}?country=${country}`);
+  async (category_id: string) => {
+    const response = await axios.get(`browse/categories/${category_id}`);
     return response.data;
   }
 );
 
 export const getCategoryPlaylist = createAsyncThunk(
   "categories/browseCategory",
-  async (data: { category_id: string; country?: string; limit?: number }) => {
-    const { category_id, country, limit = 50 } = data;
+  async (category_id: string) => {
     const response = await axios.get(
-      `browse/categories/${category_id}/playlists?country=${country}&limit=${limit}`
+      `browse/categories/${category_id}/playlists?limit=${50}`
     );
     return response.data;
   }
@@ -64,39 +64,20 @@ export const categoriesSlice = createSlice({
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getCategories.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getCategories.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.categories = action.payload;
-      })
-      .addCase(getCategories.rejected, (state) => {
-        state.status = "failed";
-      });
-    builder
-      .addCase(getCategoryPlaylist.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getCategoryPlaylist.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.activeCategory = action.payload;
-      })
-      .addCase(getCategoryPlaylist.rejected, (state) => {
-        state.status = "failed";
-      });
-    builder
-      .addCase(getCategoryInfo.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getCategoryInfo.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.activeCategoryInfo = action.payload;
-      })
-      .addCase(getCategoryInfo.rejected, (state) => {
-        state.status = "failed";
-      });
+    builder.addCase(getCategories.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.categories = action.payload;
+    });
+
+    builder.addCase(getCategoryPlaylist.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.activeCategory = action.payload;
+    });
+
+    builder.addCase(getCategoryInfo.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.activeCategoryInfo = action.payload;
+    });
   },
 });
 
