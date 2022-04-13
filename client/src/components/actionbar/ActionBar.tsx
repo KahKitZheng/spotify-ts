@@ -35,18 +35,6 @@ const ActionBar = (props: Props) => {
 
   return (
     <ActionBarWrapper>
-      <ButtonGroup>
-        {location.pathname.slice(1, 7) === "artist" ? (
-          <FollowButton>following</FollowButton>
-        ) : (
-          <SaveButton
-            $isSaved={props.isSaved}
-            onClick={() => props.handleClick()}
-          >
-            <span>{props.isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}</span>
-          </SaveButton>
-        )}
-      </ButtonGroup>
       <PlayButton onClick={handlePlayTrack}>
         {isPlayerPlaying ? (
           <IoIosPause />
@@ -56,6 +44,21 @@ const ActionBar = (props: Props) => {
           </span>
         )}
       </PlayButton>
+      {location.pathname.slice(1, 7) === "artist" ? (
+        <SaveButton
+          $isSaved={props.isSaved}
+          onClick={() => props.handleClick()}
+        >
+          <FollowButton>{props.isSaved ? "following" : "follow"}</FollowButton>
+        </SaveButton>
+      ) : (
+        <SaveButton
+          $isSaved={props.isSaved}
+          onClick={() => props.handleClick()}
+        >
+          <span>{props.isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}</span>
+        </SaveButton>
+      )}
     </ActionBarWrapper>
   );
 };
@@ -63,12 +66,10 @@ const ActionBar = (props: Props) => {
 const ActionBarWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-top: 16px;
 
   @media (min-width: ${MEDIA.tablet}) {
-    flex-direction: row-reverse;
-    justify-content: start;
+    /* justify-content: start; */
     margin-top: 24px;
   }
 `;
@@ -89,6 +90,7 @@ const PlayButton = styled(Button)`
   color: black;
   border: 0;
   border-radius: 50%;
+  margin-right: 16px;
   padding: 10px;
 
   :hover {
@@ -101,23 +103,14 @@ const PlayButton = styled(Button)`
   }
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  align-items: center;
-
-  @media (min-width: ${MEDIA.tablet}) {
-    margin-left: 20px;
-  }
-`;
-
 const FollowButton = styled.button`
   background-color: transparent;
   color: ${({ theme }) => theme.font.text};
   border: 1px solid currentColor;
   border-radius: 4px;
   font-weight: 600;
+  font-size: 16px;
   padding: 4px 12px;
-  margin-right: 16px;
 
   :hover {
     color: ${({ theme }) => theme.colors.white};
@@ -128,7 +121,6 @@ const SaveButton = styled(Button)<{ $isSaved: boolean }>`
   background-color: transparent;
   color: ${({ $isSaved, theme }) =>
     $isSaved ? theme.colors.spotify : "currentColor"};
-  margin-right: 16px;
   padding: 0;
 
   span {
