@@ -148,6 +148,7 @@ const AlbumPage = () => {
       <ActionBar
         isSaved={album.is_saved}
         handleClick={() => handleSaveAlbumTrack(album.is_saved)}
+        uri={album.uri}
       />
 
       <div>

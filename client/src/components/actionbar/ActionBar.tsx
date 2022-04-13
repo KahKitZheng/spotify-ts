@@ -1,43 +1,61 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { MEDIA } from "../../styles/media";
-import { IoIosPlay, IoIosPause, IoIosMore } from "react-icons/io";
+import { IoIosPlay, IoIosPause } from "react-icons/io";
 import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri";
+import { useLocation } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import * as playerSlice from "../../slices/playerSlice";
 
 interface Props {
+  uri: string;
   isSaved: boolean;
+  isPlaylistOwner?: boolean;
   handleClick: () => void;
 }
 
 const ActionBar = (props: Props) => {
-  const [playing, setPlaying] = useState(false);
+  const location = useLocation();
+
+  const dispatch = useAppDispatch();
+  const playback = useAppSelector(playerSlice.selectPlayback);
+  const isPlayerPlaying = playback.is_playing;
+
+  const handlePlayTrack = () => {
+    if (props.uri === playback.context?.uri) {
+      if (isPlayerPlaying) {
+        dispatch(playerSlice.pausePlayback());
+      } else {
+        dispatch(playerSlice.startPlayback());
+      }
+    } else {
+      dispatch(playerSlice.startPlayback({ context_uri: props.uri }));
+    }
+  };
 
   return (
     <ActionBarWrapper>
       <ButtonGroup>
-        <SaveButton
-          $isSaved={props.isSaved}
-          onClick={() => props.handleClick()}
-        >
-          <span>{props.isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}</span>
-        </SaveButton>
-        <MoreButton onClick={() => console.log("test")}>
-          <span>
-            <IoIosMore />
-          </span>
-        </MoreButton>
+        {location.pathname.slice(1, 7) === "artist" ? (
+          <FollowButton>following</FollowButton>
+        ) : (
+          <SaveButton
+            $isSaved={props.isSaved}
+            onClick={() => props.handleClick()}
+          >
+            <span>{props.isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}</span>
+          </SaveButton>
+        )}
       </ButtonGroup>
-      {playing ? (
-        <PlayButton>
+      <PlayButton onClick={handlePlayTrack}>
+        {isPlayerPlaying ? (
           <IoIosPause />
-        </PlayButton>
-      ) : (
-        <PlayButton>
+        ) : (
           <span>
             <IoIosPlay />
           </span>
-        </PlayButton>
-      )}
+        )}
+      </PlayButton>
     </ActionBarWrapper>
   );
 };
@@ -60,7 +78,6 @@ const Button = styled.button`
   align-items: center;
   justify-content: center;
   font-size: 28px;
-  cursor: pointer;
   border: 0;
 `;
 
@@ -74,6 +91,10 @@ const PlayButton = styled(Button)`
   border-radius: 50%;
   padding: 10px;
 
+  :hover {
+    background-color: #23e266;
+  }
+
   span {
     display: block;
     transform: translateX(2px);
@@ -82,10 +103,24 @@ const PlayButton = styled(Button)`
 
 const ButtonGroup = styled.div`
   display: flex;
-  align-items: baseline;
+  align-items: center;
 
   @media (min-width: ${MEDIA.tablet}) {
     margin-left: 20px;
+  }
+`;
+
+const FollowButton = styled.button`
+  background-color: transparent;
+  color: ${({ theme }) => theme.font.text};
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-weight: 600;
+  padding: 4px 12px;
+  margin-right: 16px;
+
+  :hover {
+    color: ${({ theme }) => theme.colors.white};
   }
 `;
 
@@ -94,17 +129,6 @@ const SaveButton = styled(Button)<{ $isSaved: boolean }>`
   color: ${({ $isSaved, theme }) =>
     $isSaved ? theme.colors.spotify : "currentColor"};
   margin-right: 16px;
-  padding: 0;
-
-  span {
-    display: block;
-    transform: translateY(2px);
-  }
-`;
-
-const MoreButton = styled(Button)`
-  background-color: transparent;
-  color: currentColor;
   padding: 0;
 
   span {

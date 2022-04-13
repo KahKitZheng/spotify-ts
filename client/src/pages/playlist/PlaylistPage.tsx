@@ -172,7 +172,9 @@ const PlaylistPage = () => {
       />
       <ActionBar
         isSaved={playlist.is_saved}
+        isPlaylistOwner={playlist.owner.id === userId}
         handleClick={() => handleSavePlaylist(playlist.is_saved)}
+        uri={playlist.uri}
       />
 
       <AddTracksWrapper>
@@ -231,6 +233,10 @@ const AddTracksWrapper = styled.div`
   justify-content: center;
   margin-top: 24px;
   margin-bottom: 32px;
+
+  @media (min-width: ${MEDIA.laptop}) {
+    display: none;
+  }
 `;
 
 const AddTracksMobile = styled.button`

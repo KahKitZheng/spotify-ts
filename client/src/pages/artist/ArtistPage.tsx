@@ -98,6 +98,7 @@ const ArtistPage = () => {
       <ActionBar
         isSaved={artist.is_saved}
         handleClick={() => handleOnclick(artist.is_saved)}
+        uri={artist.uri}
       />
 
       {topTracks.tracks?.length > 0 && (
