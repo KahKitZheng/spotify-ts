@@ -140,7 +140,7 @@ const ModalContentWrapper = styled.div<{ $isOpen: boolean }>`
 
 const ModalHeader = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 `;
 

@@ -10,8 +10,8 @@ import * as bi from "react-icons/bi";
 import * as md from "react-icons/md";
 import { BsChevronDown } from "react-icons/bs";
 import { formatDuration } from "../../utils";
-import { overflowNoScrollbar } from "../../styles/utils";
 import NowPlayingDevicesModal from "./NowPlayingDevicesModal";
+import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
 
 interface Props {
   modal: boolean;
@@ -23,6 +23,9 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
 
   const dispatch = useAppDispatch();
   const isDesktop = useViewportWidth(+MEDIA.tablet.slice(0, -2));
+  const isCurrentTrackSaved = useAppSelector(
+    playerSlice.selectCheckCurrentSavedTrack
+  );
 
   const playback = useAppSelector(playerSlice.selectPlayback);
   const track = playback.item;
@@ -111,6 +114,14 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
     ));
   };
 
+  const handleSaveTrack = () => {
+    if (track === null) return;
+
+    isCurrentTrackSaved.isSaved
+      ? dispatch(playerSlice.removeSavedCurrentTrack(track.id))
+      : dispatch(playerSlice.saveCurrentTrack(track.id));
+  };
+
   return (
     <>
       <Modal
@@ -127,55 +138,67 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
             <DeviceIcon onClick={() => setDevicesModal(true)}>
               <bi.BiDevices />
             </DeviceIcon>
+            <TrackCover src={track?.album.images[0].url} alt="" />
           </ModalHeader>
-          {track !== null && (
-            <div>
-              <TrackCover src={track?.album.images[0].url} alt="" />
+          <div>
+            {track !== null && (
               <TrackInfoWrapper>
-                <TrackName>{track?.name}</TrackName>
+                <div>
+                  <TrackName>{track?.name}</TrackName>
+                  <span>{renderArtists(track?.artists)}</span>
+                </div>
+                <SaveTrack
+                  onClick={handleSaveTrack}
+                  $isSaved={isCurrentTrackSaved.isSaved}
+                >
+                  {isCurrentTrackSaved.isSaved ? (
+                    <RiHeart3Fill />
+                  ) : (
+                    <RiHeart3Line />
+                  )}
+                </SaveTrack>
               </TrackInfoWrapper>
-              <span>{renderArtists(track?.artists)}</span>
-            </div>
-          )}
-          <TrackProgessWrapper>
-            <TrackProgress
-              type="range"
-              min={0}
-              onChange={(e) => setSeekerPosition(e)}
-              value={seeker | 0}
-              max={duration | 0}
-            />
-            <TrackDurations>
-              <small>{formatDuration(seeker | 0, "track")}</small>
-              <small>{formatDuration(duration | 0, "track")}</small>
-            </TrackDurations>
-          </TrackProgessWrapper>
-          <ControlsWrapper>
-            <ButtonIcon $active={shuffleMode} onClick={handleShuffleMode}>
-              <bi.BiShuffle />
-            </ButtonIcon>
-            <ButtonIcon $large onClick={handlePreviousTrack}>
-              <bi.BiSkipPrevious />
-            </ButtonIcon>
-            <PlayPauseWrapper $large onClick={setPlayState}>
-              {isPlaying ? (
-                <bi.BiPause />
-              ) : (
-                <span>
-                  <bi.BiPlay />
-                </span>
-              )}
-            </PlayPauseWrapper>
-            <ButtonIcon $large onClick={handleNextTrack}>
-              <bi.BiSkipNext />
-            </ButtonIcon>
-            <ButtonIcon
-              $active={repeatMode === "context" || repeatMode === "track"}
-              onClick={handleRepeatMode}
-            >
-              {repeatMode === "track" ? <md.MdRepeatOne /> : <md.MdRepeat />}
-            </ButtonIcon>
-          </ControlsWrapper>
+            )}
+            <TrackProgessWrapper>
+              <TrackProgress
+                type="range"
+                min={0}
+                onChange={(e) => setSeekerPosition(e)}
+                value={seeker | 0}
+                max={duration | 0}
+              />
+              <TrackDurations>
+                <small>{formatDuration(seeker | 0, "track")}</small>
+                <small>{formatDuration(duration | 0, "track")}</small>
+              </TrackDurations>
+            </TrackProgessWrapper>
+            <ControlsWrapper>
+              <ButtonIcon $active={shuffleMode} onClick={handleShuffleMode}>
+                <bi.BiShuffle />
+              </ButtonIcon>
+              <ButtonIcon $large onClick={handlePreviousTrack}>
+                <bi.BiSkipPrevious />
+              </ButtonIcon>
+              <PlayPauseWrapper $large onClick={setPlayState}>
+                {isPlaying ? (
+                  <bi.BiPause />
+                ) : (
+                  <span>
+                    <bi.BiPlay />
+                  </span>
+                )}
+              </PlayPauseWrapper>
+              <ButtonIcon $large onClick={handleNextTrack}>
+                <bi.BiSkipNext />
+              </ButtonIcon>
+              <ButtonIcon
+                $active={repeatMode === "context" || repeatMode === "track"}
+                onClick={handleRepeatMode}
+              >
+                {repeatMode === "track" ? <md.MdRepeatOne /> : <md.MdRepeat />}
+              </ButtonIcon>
+            </ControlsWrapper>
+          </div>
         </NowPlayingWrapper>
       </Modal>
       <NowPlayingDevicesModal modal={devicesModal} setModal={setDevicesModal} />
@@ -230,6 +253,7 @@ const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex: 2 1 auto;
 `;
 
 const IconWrapper = styled.button`
@@ -253,6 +277,9 @@ const DeviceIcon = styled(IconWrapper)`
 `;
 
 const NowPlayingWrapper = styled.div<{ $isOpen: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
   padding: 32px;
   height: 100%;
   animation: ${({ $isOpen }) => ($isOpen ? fadeIn : fadeOut)} 0.5s
@@ -260,14 +287,23 @@ const NowPlayingWrapper = styled.div<{ $isOpen: boolean }>`
 `;
 
 const TrackInfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 16px;
 `;
 
 const TrackCover = styled.img`
   aspect-ratio: 1;
   object-fit: cover;
-  width: 70vw;
-  margin: 15vw auto;
+  margin: 48px auto;
+  min-width: 100%;
+  width: 100%;
+
+  @media (min-width: ${MEDIA.mobile}) {
+    min-width: 440px;
+    max-width: 60%;
+  }
 `;
 
 const TrackName = styled.p`
@@ -296,7 +332,7 @@ const TrackDurations = styled.div`
 const ControlsWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 16px;
 `;
 
@@ -305,6 +341,7 @@ const ButtonIcon = styled.button<{ $large?: boolean; $active?: boolean }>`
   align-items: center;
   justify-content: center;
   border: 0;
+  margin: 0 24px;
   padding: 0;
   font-size: ${({ $large }) => ($large ? "40px" : "24px")};
   color: ${({ $active, theme }) => ($active ? "#17aa4b" : theme.font.text)};
@@ -333,6 +370,17 @@ const PlayPauseWrapper = styled(ButtonIcon)`
     color: ${({ theme }) => theme.colors.black};
     transform: scale(1.1);
   }
+`;
+
+const SaveTrack = styled.button<{ $isSaved: boolean }>`
+  color: ${({ $isSaved, theme }) =>
+    $isSaved ? theme.colors.spotify : "currentColor"};
+  background-color: transparent;
+  border: 0;
+  margin-left: 20px;
+  padding: 0;
+  cursor: pointer;
+  font-size: 28px;
 `;
 
 export default NowPlayingModal;

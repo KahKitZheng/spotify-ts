@@ -6,7 +6,10 @@ import { BiDevices } from "react-icons/bi";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   pausePlayback,
+  removeSavedCurrentTrack,
+  saveCurrentTrack,
   selectAvailableDevices,
+  selectCheckCurrentSavedTrack,
   selectDeviceId,
   selectPlayback,
   startPlayback,
@@ -14,6 +17,7 @@ import {
 import { SimplifiedArtist } from "../../types/SpotifyObjects";
 import NowPlayingModal from "./NowPlayingModal";
 import NowPlayingDevicesModal from "./NowPlayingDevicesModal";
+import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
 
 const NowPlayingMini = () => {
   const [devicesModal, setDevicesModal] = useState(false);
@@ -23,6 +27,7 @@ const NowPlayingMini = () => {
   const playback = useAppSelector(selectPlayback);
   const track = playback.item;
   const isPlaying = playback.is_playing;
+  const isCurrentTrackSaved = useAppSelector(selectCheckCurrentSavedTrack);
 
   const deviceId = useAppSelector(selectDeviceId);
   const devices = useAppSelector(selectAvailableDevices);
@@ -46,6 +51,14 @@ const NowPlayingMini = () => {
   ) => {
     e.stopPropagation();
     setDevicesModal(true);
+  };
+
+  const handleSaveTrack = () => {
+    if (track === null) return;
+
+    isCurrentTrackSaved.isSaved
+      ? dispatch(removeSavedCurrentTrack(track.id))
+      : dispatch(saveCurrentTrack(track.id));
   };
 
   return devices.length > 0 && track ? (
@@ -89,6 +102,12 @@ const NowPlayingMini = () => {
           <ButtonIcon onClick={(e) => handleDeviceModal(e)}>
             <BiDevices />
           </ButtonIcon>
+          <SaveTrack
+            onClick={handleSaveTrack}
+            $isSaved={isCurrentTrackSaved.isSaved}
+          >
+            {isCurrentTrackSaved.isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}
+          </SaveTrack>
           {isPlaying ? (
             <ButtonIcon $large onClick={setPlayState}>
               <BiPause />
@@ -100,6 +119,7 @@ const NowPlayingMini = () => {
           )}
         </NowPlayingActions>
       </NowPlayingWrapper>
+
       <NowPlayingModal modal={nowPlayingModal} setModal={setNowPlayingModal} />
       <NowPlayingDevicesModal modal={devicesModal} setModal={setDevicesModal} />
     </>
@@ -135,17 +155,12 @@ const Marquee = styled.div`
 
 const NowPlayingWrapper = styled.div`
   display: grid;
-  grid-gap: 16px;
-  grid-template-columns: calc(80vw - 40px) calc(20vw);
-  padding: 4px 16px;
-  height: 64px;
+  grid-gap: 12px;
+  grid-template-columns: calc(100% - 160px - 12px) 160px;
+  height: 56px;
   background-color: ${({ theme }) => theme.bg.bottom_tabs};
   border-top: 1px solid #25292f;
   border-bottom: 1px solid #25292f;
-
-  :hover {
-    cursor: pointer;
-  }
 
   @media (min-width: ${MEDIA.tablet}) {
     display: none;
@@ -155,12 +170,11 @@ const NowPlayingWrapper = styled.div`
 const CurrentTrack = styled.div`
   display: flex;
   align-items: center;
-  flex: 2 1 auto;
 `;
 
 const TrackCover = styled.img`
-  height: 44px;
-  width: 44px;
+  height: 56px;
+  width: 56px;
   object-fit: cover;
   aspect-ratio: 1;
 `;
@@ -168,8 +182,8 @@ const TrackCover = styled.img`
 const PlaybackInfo = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 16px;
-  width: calc(100% - 44px - 16px);
+  margin-left: 12px;
+  width: calc(100% - 44px - 12px);
 `;
 
 const TrackInfo = styled.small`
@@ -185,21 +199,28 @@ const PlaybackDevice = styled.small`
 
 const NowPlayingActions = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   align-items: center;
 `;
 
 const ButtonIcon = styled.button<{ $large?: boolean; $active?: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 32px;
   background-color: transparent;
   color: currentColor;
-  font-size: ${({ $large }) => ($large ? "40px" : "24px")};
+  font-size: ${({ $large }) => ($large ? "32px" : "24px")};
   border: 0;
+  margin: auto;
   padding: 0;
-  cursor: pointer;
+`;
+
+const SaveTrack = styled.button<{ $isSaved: boolean }>`
+  color: ${({ $isSaved, theme }) =>
+    $isSaved ? theme.colors.spotify : "currentColor"};
+  background-color: transparent;
+  border: 0;
+  margin: 0 auto;
+  padding: 0;
+  font-size: 24px;
 `;
 
 export default NowPlayingMini;

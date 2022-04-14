@@ -1,12 +1,23 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { textOverflow } from "../../styles/utils";
 import { SimplifiedArtist } from "../../types/SpotifyObjects";
-import { useAppSelector } from "../../app/hooks";
-import { selectPlayback } from "../../slices/playerSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  checkCurrentSavedTrack,
+  removeSavedCurrentTrack,
+  saveCurrentTrack,
+  selectCheckCurrentSavedTrack,
+  selectCheckCurrentTrack,
+  selectPlayback,
+} from "../../slices/playerSlice";
+import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
 
 const PlayerTrack = () => {
+  const dispatch = useAppDispatch();
+  const currentTrack = useAppSelector(selectCheckCurrentTrack);
+  const isCurrentTrackSaved = useAppSelector(selectCheckCurrentSavedTrack);
   const playback = useAppSelector(selectPlayback);
   const track = playback.item;
   const ID_LENGTH = 22;
@@ -22,6 +33,24 @@ const PlayerTrack = () => {
     ));
   };
 
+  const handleSaveTrack = () => {
+    if (track === null) return;
+
+    isCurrentTrackSaved.isSaved
+      ? dispatch(removeSavedCurrentTrack(track.id))
+      : dispatch(saveCurrentTrack(track.id));
+  };
+
+  useEffect(() => {
+    const playbackTrack = playback.item?.id;
+
+    if (playbackTrack && currentTrack.id !== playbackTrack) {
+      dispatch(checkCurrentSavedTrack({ ids: playbackTrack }));
+    }
+  }, [currentTrack.id, dispatch, playback.item?.id]);
+
+  console.log(isCurrentTrackSaved.isChecked);
+
   return track ? (
     <PlayerTrackWrapper>
       <PlayerTrackCover src={track.album.images[0].url.slice()} alt="" />
@@ -35,6 +64,12 @@ const PlayerTrack = () => {
         </PlayerTrackName>
         <PlayerTrackArtists>{renderArtists(track.artists)}</PlayerTrackArtists>
       </TrackInfo>
+      <SaveTrack
+        onClick={handleSaveTrack}
+        $isSaved={isCurrentTrackSaved.isSaved}
+      >
+        {isCurrentTrackSaved.isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}
+      </SaveTrack>
     </PlayerTrackWrapper>
   ) : (
     // Render empty div to prevent player grid-areas from shifting
@@ -74,6 +109,19 @@ const PlayerTrackArtists = styled.div`
   a {
     color: ${({ theme }) => theme.font.text};
   }
+`;
+
+const SaveTrack = styled.button<{ $isSaved: boolean }>`
+  color: ${({ $isSaved, theme }) =>
+    $isSaved ? theme.colors.spotify : "currentColor"};
+  background-color: transparent;
+  border: 0;
+  margin-left: 32px;
+  margin-right: 16px;
+  font-size: 20px;
+  padding: 0;
+  cursor: pointer;
+  min-width: 23px;
 `;
 
 export default PlayerTrack;

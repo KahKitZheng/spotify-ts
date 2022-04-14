@@ -14,6 +14,7 @@ interface ArtistState {
   deviceId: string;
   devices: Device[];
   currentVolume: number;
+  saved: { isSaved: boolean; isChecked: boolean };
 }
 
 export const initialState: ArtistState = {
@@ -23,6 +24,7 @@ export const initialState: ArtistState = {
   deviceId: "",
   devices: [] as Device[],
   currentVolume: 10,
+  saved: { isSaved: false, isChecked: false },
 };
 
 export const getPlaybackState = createAsyncThunk(
@@ -110,6 +112,30 @@ export const setPlaybackVolume = createAsyncThunk(
   }
 );
 
+export const checkCurrentSavedTrack = createAsyncThunk(
+  "playback/checkCurrentSavedTrack",
+  async (data: { ids: string }) => {
+    const response = await axios.get(`me/tracks/contains?ids=${data.ids}`);
+    return response.data;
+  }
+);
+
+export const saveCurrentTrack = createAsyncThunk(
+  "playback/saveCurrentTrack",
+  async (id: string) => {
+    await axios.put(`/me/tracks?ids=${id}`, {});
+    return id;
+  }
+);
+
+export const removeSavedCurrentTrack = createAsyncThunk(
+  "playback/removeSavedCurrentTrack",
+  async (id: string) => {
+    await axios.delete(`me/tracks?ids=${id}`, {});
+    return id;
+  }
+);
+
 export const playbackSlice = createSlice({
   name: "playback",
   initialState: initialState,
@@ -157,6 +183,18 @@ export const playbackSlice = createSlice({
     builder.addCase(setPlaybackVolume.fulfilled, (state, action) => {
       state.currentVolume = action.meta.arg.volume_percent;
     });
+
+    builder.addCase(checkCurrentSavedTrack.fulfilled, (state, action) => {
+      state.saved = { isSaved: action.payload[0], isChecked: true };
+    });
+
+    builder.addCase(saveCurrentTrack.fulfilled, (state) => {
+      state.saved = { isSaved: true, isChecked: true };
+    });
+
+    builder.addCase(removeSavedCurrentTrack.fulfilled, (state) => {
+      state.saved = { isSaved: false, isChecked: true };
+    });
   },
 });
 
@@ -178,6 +216,14 @@ export const selectAvailableDevices = (state: RootState) => {
 
 export const selectCurrentVolume = (state: RootState) => {
   return state.player.currentVolume;
+};
+
+export const selectCheckCurrentTrack = (state: RootState) => {
+  return state.player.currentTrack;
+};
+
+export const selectCheckCurrentSavedTrack = (state: RootState) => {
+  return state.player.saved;
 };
 
 export const { updatePlayback } = playbackSlice.actions;
