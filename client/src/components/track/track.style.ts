@@ -134,6 +134,10 @@ export const TrackIndex = styled.div`
   justify-content: flex-end;
   grid-area: track-index;
   position: relative;
+
+  @media (max-width: ${MEDIA.mobile}) {
+    display: none;
+  }
 `;
 
 export const TrackInfo = styled.div`
@@ -236,6 +240,7 @@ export const UnOrderedTrack = styled(Track)<{ $isTrackPlaying?: boolean }>`
 
 export const OrderedTrack = styled(Track)`
   :hover ${TrackIndex} span {
+    display: none;
   }
 
   @media (min-width: ${MEDIA.mobile}) {
