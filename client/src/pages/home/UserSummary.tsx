@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { logout } from "../../spotify/auth";
 
 type Props = {
   image: string;
@@ -27,6 +28,7 @@ const UserSummary = (props: Props) => {
           <StatValue>{playlistCount ? playlistCount : 0}</StatValue> playlists
         </StatItem>
       </UserStats>
+      <LogoutButton onClick={logout}>Logout</LogoutButton>
     </UserSummaryWrapper>
   );
 };
@@ -63,6 +65,21 @@ const StatItem = styled.small`
 const StatValue = styled.span`
   color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
+`;
+
+const LogoutButton = styled.button`
+  background-color: transparent;
+  border: 1px solid currentColor;
+  border-radius: 20px;
+  font-weight: 600;
+  margin-top: 16px;
+  padding: 2px 12px;
+  color: ${({ theme }) => theme.font.text};
+  transition: color 0.2s ease;
+
+  :hover {
+    color: ${({ theme }) => theme.colors.white};
+  }
 `;
 
 export default UserSummary;
