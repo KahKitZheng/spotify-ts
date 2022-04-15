@@ -44,7 +44,7 @@ export const PlayTrackIcon = styled.button<{
   $isPlaying: boolean;
   $insideAlbum?: boolean;
 }>`
-  display: ${({ $isPlaying }) => ($isPlaying ? "block" : "none")};
+  opacity: ${({ $isPlaying }) => ($isPlaying ? 1 : 0)};
   background-color: transparent;
   color: currentColor;
   border: 0;
@@ -64,6 +64,9 @@ const TrackPlaying = styled.img`
   object-position: center;
   object-fit: cover;
   transform: scale(0.6);
+  position: relative;
+  top: 0;
+  right: 0;
 `;
 
 export default PlayTrack;

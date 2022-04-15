@@ -49,8 +49,6 @@ const PlayerTrack = () => {
     }
   }, [currentTrack.id, dispatch, playback.item?.id]);
 
-  console.log(isCurrentTrackSaved.isChecked);
-
   return track ? (
     <PlayerTrackWrapper>
       <PlayerTrackCover src={track.album.images[0].url.slice()} alt="" />

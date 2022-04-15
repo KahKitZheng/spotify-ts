@@ -35,10 +35,8 @@ type PopularArtistTracksVariant = {
 type PlaylistVariant = {
   variant: "playlist";
   item: SpotifyObjects.PlaylistItem;
-  playlistId: string;
   index: number;
   addedAt: string;
-  isOwner: boolean;
 };
 
 type PlaylistAddTrackVariant = {
@@ -58,13 +56,21 @@ type GenreVariant = {
   item: SpotifyObjects.Track;
 };
 
+type LikedSongsVariant = {
+  variant: "liked-songs";
+  item: SpotifyObjects.SavedTrack;
+  index: number;
+  addedAt: string;
+};
+
 type TrackProps =
   | AlbumVariant
   | PopularArtistTracksVariant
   | PlaylistVariant
   | PlaylistAddTrackVariant
   | UserTopVariant
-  | GenreVariant;
+  | GenreVariant
+  | LikedSongsVariant;
 
 type AlbumTrackProps = Omit<AlbumVariant, "variant">;
 type PopularArtistTrackProps = Omit<PopularArtistTracksVariant, "variant">;
@@ -72,6 +78,7 @@ type PlaylistTrackProps = Omit<PlaylistVariant, "variant">;
 type PlaylistAddTrackProps = Omit<PlaylistAddTrackVariant, "variant">;
 type UserTopTrackProps = Omit<UserTopVariant, "variant">;
 type GenreTrackProps = Omit<GenreVariant, "variant">;
+type LikedTrackProps = Omit<LikedSongsVariant, "variant">;
 
 type MouseEventType = React.MouseEvent<HTMLButtonElement, MouseEvent>;
 
@@ -89,10 +96,8 @@ const TrackComponent = (props: TrackProps) => {
       return (
         <PlaylistTrack
           item={props.item}
-          playlistId={props.playlistId}
           addedAt={props.addedAt}
           index={props.index}
-          isOwner={props.isOwner}
         />
       );
     case "user-top":
@@ -101,6 +106,14 @@ const TrackComponent = (props: TrackProps) => {
           item={props.item}
           index={props.index}
           timeRange={props.timeRange}
+        />
+      );
+    case "liked-songs":
+      return (
+        <LikedTrack
+          item={props.item}
+          index={props.index}
+          addedAt={props.addedAt}
         />
       );
   }
@@ -211,7 +224,7 @@ const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
 };
 
 const PlaylistTrack = (props: PlaylistTrackProps) => {
-  const { index, item, playlistId, addedAt, isOwner } = props;
+  const { index, item, addedAt } = props;
   const track = item.track as SpotifyObjects.Track;
   const trackUri = item.track.uri;
   const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(trackUri);
@@ -265,12 +278,7 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
         <T.TrackDuration>
           {formatDuration(track.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackMenu
-          variant="playlist"
-          track={track}
-          playlistId={playlistId}
-          isPlaylistOwner={isOwner}
-        />
+        <TrackMenu variant="playlist" track={track} />
       </T.TrackOptions>
     </T.PlaylistTrack>
   );
@@ -429,6 +437,63 @@ const GenreTrack = ({ item }: GenreTrackProps) => {
         <TrackMenu variant="genre" track={item} />
       </T.TrackOptions>
     </T.UnOrderedTrack>
+  );
+};
+
+const LikedTrack = ({ index, item, addedAt }: LikedTrackProps) => {
+  const track = item.track as SpotifyObjects.Track;
+  const trackUri = item.track.uri;
+  const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(trackUri);
+
+  // const savePayload = { track: track, isSaved: item.track.is_saved };
+  // const saveTrack = useSavePlaylistTrack(savePayload);
+
+  const playPayload = { uris: [trackUri] };
+  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+
+  const handleSaveTrack = (e: MouseEventType) => {
+    e.stopPropagation();
+    // saveTrack();
+  };
+
+  return (
+    <T.PlaylistTrack onClick={handleMobile} onDoubleClick={handleDesktop}>
+      <T.TrackIndex>
+        <T.TrackIndexNumber
+          $isPlayerTrack={isCurrentTrack}
+          $isTrackPlaying={isCurrentTrackPlaying}
+        >
+          {index !== undefined && index + 1}
+        </T.TrackIndexNumber>
+        <PlayTrack uri={trackUri} handlePlay={handleDesktop} />
+      </T.TrackIndex>
+      <T.TrackInfo>
+        <T.TrackAlbumCover
+          src={track.album?.images[0] && track.album?.images[0].url}
+          alt=""
+        />
+        <T.TrackDetails>
+          <T.TrackName $isPlayerTrack={isCurrentTrack}>
+            {track.name}
+          </T.TrackName>
+          <T.TrackArtists>
+            {track.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
+            {renderArtists(track.artists)}
+          </T.TrackArtists>
+        </T.TrackDetails>
+      </T.TrackInfo>
+      <T.TrackAlbum>
+        <Link to={`/album/${track.album?.id}`}>{track.album?.name}</Link>
+      </T.TrackAlbum>
+      {addedAt !== null && <T.TrackDateAdded>{addedAt}</T.TrackDateAdded>}
+      <T.TrackOptions>
+        <TrackSaveButton isSaved={true} handleClick={handleSaveTrack} />
+        <T.TrackDuration>
+          {formatDuration(track.duration_ms, "track")}
+        </T.TrackDuration>
+        <TrackMenu variant="playlist" track={track} />
+      </T.TrackOptions>
+    </T.PlaylistTrack>
   );
 };
 

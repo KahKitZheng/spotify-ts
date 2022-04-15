@@ -30,7 +30,10 @@ export const TrackIndexNumber = styled.span<{
   $isTrackPlaying: boolean;
   $isPlayerTrack: boolean;
 }>`
-  display: ${({ $isTrackPlaying }) => ($isTrackPlaying ? "none" : "revert")};
+  position: relative;
+  right: -12px;
+  top: 0;
+  opacity: ${({ $isTrackPlaying }) => ($isTrackPlaying ? 0 : 1)};
   color: ${({ $isPlayerTrack, theme }) =>
     $isPlayerTrack ? theme.colors.spotify : "currentColor"};
   font-weight: 600;
@@ -126,19 +129,11 @@ export const ExplicitTrack = styled.span`
 // Track Sections //
 ////////////////////
 export const TrackIndex = styled.div`
-  display: none;
-
-  span {
-    padding-right: 4px;
-  }
-
-  @media (min-width: ${MEDIA.mobile}) {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    grid-area: track-index;
-    text-align: right;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  grid-area: track-index;
+  position: relative;
 `;
 
 export const TrackInfo = styled.div`
@@ -191,7 +186,7 @@ export const TrackOptions = styled.div`
 // Track layout variants //
 ///////////////////////////
 export const Track = styled.div`
-  --track-section-index: 40px;
+  --track-section-index: 50px;
   --track-section-info: 1fr;
   --track-section-album: 120px;
   --track-section-playlist-add-track: 120px;
@@ -204,7 +199,7 @@ export const Track = styled.div`
   grid-template-areas: "track-info track-options";
   grid-gap: 16px;
   margin: -8px;
-  padding: 8px;
+  padding: 8px 16px;
   transition: all 0.2s ease;
 
   :hover {
@@ -215,7 +210,11 @@ export const Track = styled.div`
   }
 
   :hover ${PlayTrackIcon} {
-    display: block;
+    opacity: 1;
+  }
+
+  :hover ${TrackIndexNumber} {
+    opacity: 0;
   }
 
   @media (min-width: ${MEDIA.tablet}) {
@@ -237,7 +236,6 @@ export const UnOrderedTrack = styled(Track)<{ $isTrackPlaying?: boolean }>`
 
 export const OrderedTrack = styled(Track)`
   :hover ${TrackIndex} span {
-    display: none;
   }
 
   @media (min-width: ${MEDIA.mobile}) {

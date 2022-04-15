@@ -4,6 +4,9 @@ import { MEDIA } from "../../styles/media";
 import { overflowNoScrollbar, textOverflow } from "../../styles/utils";
 
 export const TrackOptionsWrapper = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   visibility: visible;
   background-color: transparent;
   color: ${({ theme }) => theme.font.text};

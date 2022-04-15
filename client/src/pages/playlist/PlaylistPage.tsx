@@ -191,11 +191,9 @@ const PlaylistPage = () => {
               variant="playlist"
               index={index}
               item={item}
-              playlistId={playlist.id}
               addedAt={
                 item.added_at !== null ? utils.formatAddedAt(item.added_at) : ""
               }
-              isOwner={playlist.owner.id === userId}
             />
           ))}
         </T.TrackList>

@@ -8,6 +8,9 @@ import * as SpotifyObjects from "../../types/SpotifyObjects";
 import { BsThreeDots } from "react-icons/bs";
 import { NestedPopover } from "../Popover";
 import { TimeRange } from "../../slices/topItemsSlice";
+import { useAppSelector } from "../../app/hooks";
+import { selectCurrentUserId } from "../../slices/currentUserSlice";
+import { selectPlaylist } from "../../slices/playlistSlice";
 
 type GenreMenuVariant = {
   variant: "genre";
@@ -32,9 +35,7 @@ type AlbumMenuVariant = {
 
 type PlaylistMenuVariant = {
   variant: "playlist";
-  isPlaylistOwner: boolean;
   track: SpotifyObjects.Track;
-  playlistId: string;
 };
 
 type Props =
@@ -130,10 +131,12 @@ const AlbumMenu = ({ track, labelId, close }: AlbumMenuProps) => {
 };
 
 const PlaylistMenu = (props: PlaylistMenuProps) => {
-  const { track, isPlaylistOwner, close, labelId } = props;
+  const { track, close, labelId } = props;
   const savePayload = { track, isSaved: track.is_saved };
   const saveTrack = TrackHooks.useSavePlaylistTrack(savePayload);
   const removeTrack = TrackHooks.useRemovePlaylistTrack(track);
+  const playlist = useAppSelector(selectPlaylist);
+  const userId = useAppSelector(selectCurrentUserId);
 
   return (
     <M.OptionsList id={labelId}>
@@ -149,7 +152,7 @@ const PlaylistMenu = (props: PlaylistMenuProps) => {
         </M.OptionItemButton>
       </M.OptionItemWrapper>
 
-      {isPlaylistOwner && (
+      {playlist.owner.id === userId && (
         <M.OptionItemWrapper>
           <M.OptionItemButton onClick={removeTrack}>
             Remove from this playlist
