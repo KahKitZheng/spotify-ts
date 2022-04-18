@@ -21,12 +21,14 @@ function App() {
   const currentUserStatus = useSelector(selectCurrentUserStatus);
 
   useEffect(() => {
-    if (currentUserStatus === "idle") {
+    if (currentUserStatus === "idle" && token) {
       dispatch(getCurrentUser());
     }
   }, [currentUserStatus, dispatch]);
 
   useEffect(() => {
+    if (!token) return;
+
     const script = document.createElement("script");
 
     script.id = "spotify-player";
