@@ -49,6 +49,10 @@ export const PlayTrackIcon = styled.button<{
   color: currentColor;
   border: 0;
   padding: 0;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  right: 4px;
   ${({ $insideAlbum }) => ($insideAlbum ? InsideAlbumRules : "")};
 
   @media (max-width: ${MEDIA.tablet}) {
@@ -63,10 +67,9 @@ const PlayIconWrapper = styled.div`
 const TrackPlaying = styled.img`
   object-position: center;
   object-fit: cover;
-  transform: scale(0.6);
-  position: relative;
-  top: 0;
-  right: 0;
+  transform: scale(0.8);
+  height: 16px;
+  width: 16px;
 `;
 
 export default PlayTrack;

@@ -5,8 +5,8 @@ export const HeaderWrapper = styled.div<{ $bgGradient: string }>`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  margin: -16px;
-  padding: 32px 16px 16px;
+  margin: calc(var(--layout-padding) * -1);
+  padding: calc(var(--layout-padding) * 1);
   background: ${({ theme }) => theme.bg.main};
   background: ${({ theme, $bgGradient }) =>
     `linear-gradient(180deg, ${$bgGradient}, ${theme.bg.main} 90%)`};

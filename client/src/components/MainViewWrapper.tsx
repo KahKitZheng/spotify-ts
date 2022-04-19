@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { MEDIA } from "../styles/media";
 
 type Props = { children: React.ReactNode };
 
@@ -8,9 +9,14 @@ const MainViewWrapper = ({ children }: Props) => {
 };
 
 const ViewWrapper = styled.main`
+  --layout-padding: 16px;
   grid-area: main;
-  padding: 16px;
+  padding: var(--layout-padding);
   overflow: auto;
+
+  @media (min-width: ${MEDIA.laptop}) {
+    --layout-padding: 32px;
+  }
 `;
 
 export default MainViewWrapper;

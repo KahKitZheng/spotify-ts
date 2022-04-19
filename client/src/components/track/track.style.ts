@@ -17,10 +17,7 @@ export const TrackDisc = styled.div`
 `;
 
 export const TrackList = styled.div`
-  display: grid;
-  grid-template-columns: auto;
-  gap: 16px;
-  margin-top: 20px;
+  margin-top: 8px;
 `;
 
 /////////////////
@@ -30,8 +27,8 @@ export const TrackIndexNumber = styled.span<{
   $isTrackPlaying: boolean;
   $isPlayerTrack: boolean;
 }>`
-  position: relative;
-  right: -12px;
+  position: absolute;
+  right: 16px;
   top: 0;
   opacity: ${({ $isTrackPlaying }) => ($isTrackPlaying ? 0 : 1)};
   color: ${({ $isPlayerTrack, theme }) =>
@@ -48,12 +45,12 @@ export const TrackAlbumCover = styled.img<{ $small?: boolean }>`
   height: ${({ $small }) => ($small ? "32px" : "48px")};
   width: ${({ $small }) => ($small ? "32px" : "48px")};
   object-fit: cover;
+  margin-right: 16px;
 `;
 
 export const TrackDetails = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 16px;
 `;
 
 export const TrackName = styled.p<{ $isPlayerTrack: boolean }>`
@@ -133,9 +130,13 @@ export const TrackIndex = styled.div`
   align-items: center;
   justify-content: flex-end;
   grid-area: track-index;
+  width: 24px;
+  min-width: 24px;
+  height: 16px;
+  min-height: 16px;
   position: relative;
 
-  @media (max-width: ${MEDIA.mobile}) {
+  @media (max-width: ${MEDIA.tablet}) {
     display: none;
   }
 `;
@@ -190,19 +191,19 @@ export const TrackOptions = styled.div`
 // Track layout variants //
 ///////////////////////////
 export const Track = styled.div`
-  --track-section-index: 50px;
+  --track-section-index: 16px;
   --track-section-info: 1fr;
   --track-section-album: 120px;
   --track-section-playlist-add-track: 120px;
-  --track-section-playlist-date-added: 2fr;
-  --track-section-options: 100px;
+  --track-section-playlist-date-added: 120px;
+  --track-section-options: 120px;
 
   display: grid;
   align-items: center;
   grid-template-columns: var(--track-section-info) var(--track-section-options);
   grid-template-areas: "track-info track-options";
   grid-gap: 16px;
-  margin: -8px;
+  margin: 0 calc(var(--layout-padding) * -1);
   padding: 8px 16px;
   transition: all 0.2s ease;
 
@@ -222,6 +223,8 @@ export const Track = styled.div`
   }
 
   @media (min-width: ${MEDIA.tablet}) {
+    margin: 0;
+
     --track-section-info: 6fr;
     --track-section-album: 5fr;
     --track-section-options: 160px;
@@ -243,7 +246,7 @@ export const OrderedTrack = styled(Track)`
     display: none;
   }
 
-  @media (min-width: ${MEDIA.mobile}) {
+  @media (min-width: ${MEDIA.tablet}) {
     grid-template-columns:
       var(--track-section-index)
       var(--track-section-info)
