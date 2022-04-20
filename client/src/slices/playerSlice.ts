@@ -14,6 +14,8 @@ interface ArtistState {
   deviceId: string;
   devices: Device[];
   currentVolume: number;
+  shuffle: boolean;
+  repeat_mode: number;
   saved: { isSaved: boolean; isChecked: boolean };
 }
 
@@ -24,6 +26,8 @@ export const initialState: ArtistState = {
   deviceId: "",
   devices: [] as Device[],
   currentVolume: 10,
+  shuffle: false,
+  repeat_mode: 0,
   saved: { isSaved: false, isChecked: false },
 };
 
@@ -145,6 +149,8 @@ export const playbackSlice = createSlice({
       state.playback.is_playing = !action.payload.paused;
       state.playback.progress_ms = +action.payload.position;
       state.playback.context = action.payload.context;
+      state.shuffle = action.payload.shuffle;
+      state.repeat_mode = action.payload.repeat_mode;
     },
   },
   extraReducers: (builder) => {
@@ -202,8 +208,24 @@ export const selectPlayback = (state: RootState) => {
   return state.player.playback;
 };
 
+export const selectCheckCurrentTrack = (state: RootState) => {
+  return state.player.currentTrack;
+};
+
+export const selectCheckCurrentSavedTrack = (state: RootState) => {
+  return state.player.saved;
+};
+
 export const selectTrackProgress = (state: RootState) => {
   return state.player.trackProgress;
+};
+
+export const selectPlaybackShuffle = (state: RootState) => {
+  return state.player.shuffle;
+};
+
+export const selectPlaybackRepeat = (state: RootState) => {
+  return state.player.repeat_mode;
 };
 
 export const selectDeviceId = (state: RootState) => {
@@ -216,14 +238,6 @@ export const selectAvailableDevices = (state: RootState) => {
 
 export const selectCurrentVolume = (state: RootState) => {
   return state.player.currentVolume;
-};
-
-export const selectCheckCurrentTrack = (state: RootState) => {
-  return state.player.currentTrack;
-};
-
-export const selectCheckCurrentSavedTrack = (state: RootState) => {
-  return state.player.saved;
 };
 
 export const { updatePlayback } = playbackSlice.actions;

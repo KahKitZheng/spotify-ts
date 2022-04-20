@@ -9,7 +9,7 @@ import {
 } from "../../slices/playerSlice";
 
 interface Props {
-  variant: "track" | "artist" | "album" | "playlist";
+  variant: "track" | "artist" | "album" | "playlist" | "liked-songs";
   uri: string;
 }
 

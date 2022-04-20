@@ -4,6 +4,9 @@ import * as C from "./Card.style";
 import * as I from "./Card.interface";
 import * as SpotifyObjects from "../../types/SpotifyObjects";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks";
+import { selectCurrentUserId } from "../../slices/currentUserSlice";
+import { selectSavedTracks } from "../../slices/savedTracksSlice";
 
 const NewCard = (props: I.CardProps) => {
   const { variant, item, overflow } = props;
@@ -226,6 +229,34 @@ const AlbumDiscographyCard = (props: I.AlbumDiscographyCardProps) => {
       )}
     </C.CardWrapper>
   );
+};
+
+export const LikedSongsCard = () => {
+  const navigate = useNavigate();
+  const userId = useAppSelector(selectCurrentUserId);
+  const savedTracks = useAppSelector(selectSavedTracks);
+
+  return savedTracks?.items ? (
+    <C.CardWrapper $isLikedSongs onClick={() => navigate(`/liked-songs`)}>
+      <C.CardHeader>
+        {savedTracks?.items?.map((item) => (
+          <C.LikedSongsContentWrapper key={item.track.id}>
+            <C.LikedSongsArtist>
+              {item.track.artists[0].name}{" "}
+            </C.LikedSongsArtist>
+            <C.LikedSongsName>{item.track.name}</C.LikedSongsName>
+          </C.LikedSongsContentWrapper>
+        ))}
+      </C.CardHeader>
+      <C.LikedSongsInfo>
+        <C.LikedSongsTitle to={`/liked-songs`}>Liked Songs</C.LikedSongsTitle>
+        <C.LikedSongsDescription>
+          {savedTracks?.total} liked songs
+        </C.LikedSongsDescription>
+        <Play variant="liked-songs" uri={`spotify:user:${userId}:collection`} />
+      </C.LikedSongsInfo>
+    </C.CardWrapper>
+  ) : null;
 };
 
 export default NewCard;

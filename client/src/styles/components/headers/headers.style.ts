@@ -68,8 +68,8 @@ export const HeaderExtraInfo = styled.span`
 `;
 
 export const HeaderName = styled.h1<{ $isOwner?: boolean }>`
-  font-size: clamp(22px, 1rem + 2vw, 3rem);
-  line-height: 1.2;
+  font-size: clamp(20px, 1rem + 2vw, 4rem);
+  line-height: 1.1;
 
   :hover {
     cursor: ${({ $isOwner }) => $isOwner && "pointer"};

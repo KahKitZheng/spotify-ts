@@ -2,15 +2,17 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../../components/Card";
 import * as Tab from "../../styles/components/tabs";
+import { LikedSongsCard } from "../../components/Card/Card";
+import { CollectionGrid } from "../../components/Collection";
 import { MEDIA } from "../../styles/media";
 import { BiPlus } from "react-icons/bi";
-import { CollectionGrid } from "../../components/Collection";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectCurrentUser } from "../../slices/currentUserSlice";
 import * as savedArtists from "../../slices/userSavedArtistsSlice";
 import * as savedAlbums from "../../slices/userSavedAlbumsSlice";
 import * as savedPlaylists from "../../slices/userSavedPlaylistsSlice";
-import { useNavigate } from "react-router-dom";
-import { selectCurrentUser } from "../../slices/currentUserSlice";
+import * as savedTracksSlice from "../../slices/savedTracksSlice";
 
 type collectionTabs = "playlists" | "artists" | "albums";
 
@@ -20,6 +22,7 @@ const LibraryPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector(selectCurrentUser);
+  const savedTracks = useAppSelector(savedTracksSlice.selectSavedTracks);
   const likedArtists = useAppSelector(savedArtists.selectSavedArtists);
   const likedArtistsStatus = useAppSelector(
     savedArtists.selectSavedArtistsStatus
@@ -30,6 +33,11 @@ const LibraryPage = () => {
   const likedPlaylistsStatus = useAppSelector(
     savedPlaylists.selectPlaylistsStatus
   );
+
+  useEffect(() => {
+    if (savedTracks.items?.length > 0) return;
+    dispatch(savedTracksSlice.fetchSavedTracks({ limit: 5 }));
+  }, [dispatch, savedTracks.items?.length]);
 
   useEffect(() => {
     if (likedArtistsStatus === "idle") {
@@ -79,6 +87,7 @@ const LibraryPage = () => {
       <Tab.TabView>
         {activeTab === "playlists" && (
           <CollectionGrid>
+            <LikedSongsCard />
             {likedPlaylists.items?.map((playlist) => (
               <Card key={playlist.id} variant="playlist" item={playlist} />
             ))}

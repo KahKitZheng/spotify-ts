@@ -15,6 +15,8 @@ import {
   playPreviousTrack,
   seekPosition,
   selectPlayback,
+  selectPlaybackRepeat,
+  selectPlaybackShuffle,
   setRepeat,
   setShuffle,
   startPlayback,
@@ -25,8 +27,8 @@ const PlayerTrackControls = () => {
   const dispatch = useAppDispatch();
   const playback = useAppSelector(selectPlayback);
   const isPlaying = playback.is_playing;
-  const shuffleMode = playback.shuffle_state;
-  const repeatMode = playback.repeat_state;
+  const shuffleMode = useAppSelector(selectPlaybackShuffle);
+  const repeatMode = useAppSelector(selectPlaybackRepeat);
 
   const [seeker, setSeeker] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -71,14 +73,14 @@ const PlayerTrackControls = () => {
 
   const handleRepeatMode = () => {
     switch (repeatMode) {
-      case "context":
+      case 0:
+        dispatch(setRepeat({ repeatState: "context" }));
+        break;
+      case 1:
         dispatch(setRepeat({ repeatState: "track" }));
         break;
-      case "track":
+      case 2:
         dispatch(setRepeat({ repeatState: "off" }));
-        break;
-      case "off":
-        dispatch(setRepeat({ repeatState: "context" }));
         break;
       default:
         dispatch(setRepeat({ repeatState: "off" }));
@@ -112,10 +114,10 @@ const PlayerTrackControls = () => {
           <BiSkipNext />
         </ButtonIcon>
         <ButtonIcon
-          $active={repeatMode === "context" || repeatMode === "track"}
+          $active={repeatMode === 1 || repeatMode === 2}
           onClick={handleRepeatMode}
         >
-          {repeatMode === "track" ? <MdRepeatOne /> : <MdRepeat />}
+          {repeatMode === 2 ? <MdRepeatOne /> : <MdRepeat />}
         </ButtonIcon>
       </ControlsWrapper>
       <SeekerWrapper>

@@ -13,8 +13,8 @@ export const TabHeader = styled.ul`
   align-items: center;
   justify-content: space-between;
   list-style: none;
-  margin: -16px -16px -32px;
-  padding: 16px;
+  margin: calc(var(--layout-padding) * -1) calc(var(--layout-padding) * -1);
+  padding: 16px var(--layout-padding);
   background-color: ${({ theme }) => theme.bg.main};
   border-bottom: 1px solid #21242f;
 `;
@@ -39,10 +39,10 @@ export const Tab = styled.button<{ $isActive?: boolean }>`
 export const TabView = styled(Section)`
   flex: 2 1 auto;
   height: 100%;
-  margin-bottom: -16px;
-  margin-left: -16px;
-  margin-right: -16px;
-  padding: 16px;
+  margin-bottom: calc(var(--layout-padding) * -1);
+  margin-left: calc(var(--layout-padding) * -1);
+  margin-right: calc(var(--layout-padding) * -1);
+  padding: var(--layout-padding);
   ${overflowNoScrollbar}
   overflow-x: hidden;
 `;

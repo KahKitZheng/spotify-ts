@@ -12,6 +12,7 @@ declare module "styled-components" {
       main: string;
       card: string;
       card_thumbnail_placeholder: string;
+      liked_songs: string;
       bottom_tabs: string;
     };
 

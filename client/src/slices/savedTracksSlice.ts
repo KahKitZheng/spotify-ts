@@ -15,8 +15,8 @@ const initialState: GenreState = {
 
 export const fetchSavedTracks = createAsyncThunk(
   "savedTracks/fetchSavedTracks",
-  async () => {
-    const response = await axios.get(`/me/tracks?limit=50`);
+  async (data: { limit: number }) => {
+    const response = await axios.get(`/me/tracks?limit=${data.limit}`);
     return response.data;
   }
 );

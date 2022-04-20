@@ -1,8 +1,14 @@
 import React, { Fragment, useEffect } from "react";
 import styled from "styled-components";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { TiHomeOutline as HomeOutline, TiHome as HomeFill } from "react-icons/ti";
-import { IoSearchOutline as SearchOutline, IoSearch as SearchFill } from "react-icons/io5";
+import {
+  TiHomeOutline as HomeOutline,
+  TiHome as HomeFill,
+} from "react-icons/ti";
+import {
+  IoSearchOutline as SearchOutline,
+  IoSearch as SearchFill,
+} from "react-icons/io5";
 import {
   MdOutlineLibraryMusic as LibraryOutline,
   MdLibraryMusic as LibraryFill,
@@ -22,7 +28,9 @@ const Sidebar = () => {
   const user = useAppSelector(selectCurrentUser);
   const playlists = useAppSelector(savedPlaylists.selectUserPlaylists);
   const status = useAppSelector(savedPlaylists.selectPlaylistsStatus);
-  const offsetStatus = useAppSelector(savedPlaylists.selectPlaylistsOffsetStatus);
+  const offsetStatus = useAppSelector(
+    savedPlaylists.selectPlaylistsOffsetStatus
+  );
 
   useEffect(() => {
     if (status === "idle") {
@@ -34,9 +42,9 @@ const Sidebar = () => {
   }, [dispatch, offsetStatus, playlists.next, playlists.offset, status]);
 
   function createNewPlaylist() {
-    dispatch(savedPlaylists.createPlaylist({ user_id: user.id, name: "New Playlist" })).then(
-      (res) => navigate(`/playlist/${res.payload.id}`)
-    );
+    dispatch(
+      savedPlaylists.createPlaylist({ user_id: user.id, name: "New Playlist" })
+    ).then((res) => navigate(`/playlist/${res.payload.id}`));
   }
 
   return playlists.items ? (
@@ -53,7 +61,11 @@ const Sidebar = () => {
         <li>
           <ListItem to="/search">
             <ListItemIcon>
-              {location.pathname === "/search" ? <SearchFill /> : <SearchOutline />}
+              {location.pathname === "/search" ? (
+                <SearchFill />
+              ) : (
+                <SearchOutline />
+              )}
             </ListItemIcon>
             <ListItemText>Search</ListItemText>
           </ListItem>
@@ -61,7 +73,11 @@ const Sidebar = () => {
         <li>
           <ListItem to="/library">
             <ListItemIcon>
-              {location.pathname === "/library" ? <LibraryFill /> : <LibraryOutline />}
+              {location.pathname === "/library" ? (
+                <LibraryFill />
+              ) : (
+                <LibraryOutline />
+              )}
             </ListItemIcon>
             <ListItemText>Your Library</ListItemText>
           </ListItem>
@@ -77,7 +93,12 @@ const Sidebar = () => {
         <li>
           <ListItem to="/liked-songs">
             <ListItemIcon>
-              <MdMusicNote />
+              <img
+                src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"
+                height={20}
+                width={20}
+                alt=""
+              />
             </ListItemIcon>
             <ListItemText>Liked Songs</ListItemText>
           </ListItem>

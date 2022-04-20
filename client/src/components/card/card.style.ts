@@ -11,13 +11,20 @@ export const CardLink = styled(Link)`
   }
 `;
 
-export const CardWrapper = styled.div`
+export const CardWrapper = styled.div<{ $isLikedSongs?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  justify-content: ${({ $isLikedSongs }) =>
+    $isLikedSongs ? "flex-end" : "flex-start"};
   height: 100%;
-  background-color: ${({ theme }) => theme.bg.card};
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s cubic-bezier(0.47, 0, 0.745, 0.715);
+  grid-column: ${({ $isLikedSongs }) => ($isLikedSongs ? "1 / 3" : "")};
+  background-color: ${({ theme }) => theme.bg.card};
+  background: ${({ theme, $isLikedSongs }) =>
+    $isLikedSongs ? theme.bg.liked_songs : theme.bg.card};
 
   &:hover {
     cursor: pointer;
@@ -32,6 +39,7 @@ export const CardWrapper = styled.div`
 
 export const CardHeader = styled.div`
   position: relative;
+  ${textOverflow(3)}
 `;
 
 export const CardCover = styled.img<{
@@ -40,11 +48,12 @@ export const CardCover = styled.img<{
 }>`
   aspect-ratio: 1 / 1;
   width: 100%;
+  max-width: 10rem;
   min-width: ${({ $overflow }) =>
     $overflow && `calc(var(--column-width) - 32px)`};
   object-fit: cover;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  border-radius: ${({ $isArtist }) => $isArtist && "50%"};
+  border-radius: ${({ $isArtist }) => ($isArtist ? "50%" : null)};
 `;
 
 export const CardCoverPlaceholder = styled.div<{ $overflow?: boolean }>`
@@ -85,4 +94,36 @@ export const CardArtistLink = styled(Link)`
   font-size: 14px;
   width: fit-content;
   ${textOverflow(1)};
+`;
+
+export const LikedSongsContentWrapper = styled.span`
+  width: fit-content;
+  color: ${({ theme }) => theme.colors.white};
+
+  &:not(:first-child)::before {
+    content: "\\2022";
+    margin: 0 8px;
+    height: 1rem;
+    width: 1rem;
+  }
+`;
+
+export const LikedSongsArtist = styled.span`
+  color: ${({ theme }) => theme.colors.white};
+`;
+
+export const LikedSongsName = styled.span`
+  opacity: 0.6;
+`;
+
+export const LikedSongsInfo = styled.div`
+  position: relative;
+`;
+
+export const LikedSongsTitle = styled(CardTitle)`
+  font-size: 1.75rem;
+`;
+
+export const LikedSongsDescription = styled(CardDescription)`
+  color: ${({ theme }) => theme.colors.white};
 `;

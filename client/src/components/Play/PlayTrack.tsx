@@ -51,7 +51,7 @@ export const PlayTrackIcon = styled.button<{
   padding: 0;
   width: 100%;
   position: absolute;
-  top: 0;
+  top: 2px;
   right: 4px;
   ${({ $insideAlbum }) => ($insideAlbum ? InsideAlbumRules : "")};
 

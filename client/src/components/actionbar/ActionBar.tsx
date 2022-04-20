@@ -9,27 +9,26 @@ import * as playerSlice from "../../slices/playerSlice";
 
 interface Props {
   uri: string;
-  isSaved: boolean;
+  isSaved?: boolean;
   isPlaylistOwner?: boolean;
-  handleClick: () => void;
+  handleClick?: () => void;
 }
 
-const ActionBar = (props: Props) => {
+const ActionBar = ({ uri, isSaved, handleClick }: Props) => {
   const location = useLocation();
-
   const dispatch = useAppDispatch();
   const playback = useAppSelector(playerSlice.selectPlayback);
   const isPlayerPlaying = playback.is_playing;
 
   const handlePlayTrack = () => {
-    if (props.uri === playback.context?.uri) {
+    if (uri === playback.context?.uri) {
       if (isPlayerPlaying) {
         dispatch(playerSlice.pausePlayback());
       } else {
         dispatch(playerSlice.startPlayback());
       }
     } else {
-      dispatch(playerSlice.startPlayback({ context_uri: props.uri }));
+      dispatch(playerSlice.startPlayback({ context_uri: uri }));
     }
   };
 
@@ -44,21 +43,25 @@ const ActionBar = (props: Props) => {
           </span>
         )}
       </PlayButton>
-      {location.pathname.slice(1, 7) === "artist" ? (
-        <SaveButton
-          $isSaved={props.isSaved}
-          onClick={() => props.handleClick()}
-        >
-          <FollowButton>{props.isSaved ? "following" : "follow"}</FollowButton>
-        </SaveButton>
-      ) : (
-        <SaveButton
-          $isSaved={props.isSaved}
-          onClick={() => props.handleClick()}
-        >
-          <span>{props.isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}</span>
-        </SaveButton>
-      )}
+      <div>
+        {isSaved ? (
+          location.pathname.slice(1, 7) === "artist" ? (
+            <SaveButton
+              $isSaved={isSaved}
+              onClick={() => (handleClick !== undefined ? handleClick() : {})}
+            >
+              <FollowButton>{isSaved ? "following" : "follow"}</FollowButton>
+            </SaveButton>
+          ) : (
+            <SaveButton
+              $isSaved={isSaved}
+              onClick={() => (handleClick !== undefined ? handleClick() : {})}
+            >
+              <span>{isSaved ? <RiHeart3Fill /> : <RiHeart3Line />}</span>
+            </SaveButton>
+          )
+        ) : null}
+      </div>
     </ActionBarWrapper>
   );
 };
@@ -69,7 +72,6 @@ const ActionBarWrapper = styled.div`
   margin-top: 16px;
 
   @media (min-width: ${MEDIA.tablet}) {
-    /* justify-content: start; */
     margin-top: 24px;
   }
 `;
