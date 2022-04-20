@@ -7,6 +7,7 @@ import {
 } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import * as playerSlice from "../../slices/playerSlice";
+import debounce from "lodash.debounce";
 
 const PlayerVolume = () => {
   const dispatch = useAppDispatch();
@@ -41,10 +42,9 @@ const PlayerVolume = () => {
     }
   }
 
-  function handlePlaybackVolume(e: React.ChangeEvent<HTMLInputElement>) {
-    const payload = { volume_percent: +e.target.value };
-    dispatch(playerSlice.setPlaybackVolume(payload));
-  }
+  const debounceVolume = debounce((volume: number) => {
+    dispatch(playerSlice.setPlaybackVolume({ volume_percent: volume }));
+  }, 30);
 
   return (
     <VolumeBarWrapper>
@@ -54,7 +54,7 @@ const PlayerVolume = () => {
         min={0}
         value={volume | 0}
         max={100}
-        onChange={(e) => handlePlaybackVolume(e)}
+        onChange={(e) => debounceVolume(+e.target.value)}
       />
     </VolumeBarWrapper>
   );

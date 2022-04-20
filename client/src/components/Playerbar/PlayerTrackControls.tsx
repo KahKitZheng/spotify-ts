@@ -22,6 +22,7 @@ import {
   startPlayback,
 } from "../../slices/playerSlice";
 import { formatDuration } from "../../utils";
+import debounce from "lodash.debounce";
 
 const PlayerTrackControls = () => {
   const dispatch = useAppDispatch();
@@ -88,9 +89,9 @@ const PlayerTrackControls = () => {
     }
   };
 
-  const setSeekerPosition = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(seekPosition({ position_ms: +e.target.value }));
-  };
+  const debounceSeeker = debounce((seeker) => {
+    dispatch(seekPosition({ position_ms: seeker }));
+  }, 50);
 
   return (
     <PlayerTrackControlsWrapper>
@@ -125,7 +126,7 @@ const PlayerTrackControls = () => {
         <TrackProgress
           type="range"
           min={0}
-          onChange={(e) => setSeekerPosition(e)}
+          onChange={(e) => debounceSeeker(+e.target.value)}
           value={seeker | 0}
           max={duration | 0}
         />
