@@ -205,7 +205,6 @@ export const Track = styled.div`
   grid-gap: 16px;
   margin: 0 calc(var(--layout-padding) * -1);
   padding: 8px 16px;
-  transition: all 0.2s ease;
 
   :hover {
     background-color: #1a1c25;

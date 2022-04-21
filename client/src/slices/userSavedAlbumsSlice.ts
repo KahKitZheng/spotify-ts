@@ -24,7 +24,9 @@ export const getUserSavedAlbums = createAsyncThunk(
   async (data?: fetchParams) => {
     if (data) {
       const { limit = 20, offset = 0 } = data;
-      const response = await axios.get(`/me/albums?limit=${limit}&offset=${offset}`);
+      const response = await axios.get(
+        `/me/albums?limit=${limit}&offset=${offset}`
+      );
       return response.data;
     } else {
       const response = await axios.get(`/me/albums?limit=20`);
@@ -33,22 +35,33 @@ export const getUserSavedAlbums = createAsyncThunk(
   }
 );
 
+// Fetch current user's remaining albums
+export const getUserSavedAlbumsWithOffset = createAsyncThunk(
+  "userArtists/getUserSavedAlbumsWithOffset",
+  async (url: string) => {
+    const response = await axios.get(url);
+    return response.data;
+  }
+);
+
 export const userSavedAlbumsSlice = createSlice({
   name: "userSavedAlbums",
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(getUserSavedAlbums.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(getUserSavedAlbums.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.followedAlbums = action.payload;
-      })
-      .addCase(getUserSavedAlbums.rejected, (state) => {
-        state.status = "failed";
-      });
+    builder.addCase(getUserSavedAlbums.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.followedAlbums = action.payload;
+    });
+
+    builder.addCase(getUserSavedAlbumsWithOffset.fulfilled, (state, action) => {
+      const albums = state.followedAlbums;
+
+      albums.href = action.payload.href;
+      albums.items = albums.items.concat(action.payload.items);
+      albums.next = action.payload.next;
+      albums.limit = action.payload.limit;
+    });
   },
 });
 

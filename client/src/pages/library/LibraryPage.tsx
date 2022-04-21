@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "../../components/Card";
+import RenderIfVisible from "react-render-if-visible";
 import * as Tab from "../../styles/components/tabs";
-import { LikedSongsCard } from "../../components/Card/Card";
-import { CollectionGrid } from "../../components/Collection";
 import { MEDIA } from "../../styles/media";
 import { BiPlus } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import { LikedSongsCard } from "../../components/Card/Card";
+import { CollectionGrid } from "../../components/Collection";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectCurrentUser } from "../../slices/currentUserSlice";
 import * as savedArtists from "../../slices/userSavedArtistsSlice";
@@ -34,11 +36,13 @@ const LibraryPage = () => {
     savedPlaylists.selectPlaylistsStatus
   );
 
+  // Fetch liked songs to create the liked songs card in playlist tab
   useEffect(() => {
     if (savedTracks.items?.length > 0) return;
     dispatch(savedTracksSlice.fetchSavedTracks({ limit: 5 }));
   }, [dispatch, savedTracks.items?.length]);
 
+  // Fetch library data
   useEffect(() => {
     if (likedArtistsStatus === "idle") {
       dispatch(savedArtists.getUserSavedArtists({ type: "artist", limit: 50 }));
@@ -55,6 +59,30 @@ const LibraryPage = () => {
     dispatch(
       savedPlaylists.createPlaylist({ user_id: user.id, name: "New Playlist" })
     ).then((res) => navigate(`/playlist/${res.payload.id}`));
+  }
+
+  const lastArtistRef = useInfiniteScroll(
+    likedArtistsStatus,
+    likedArtists.artists?.next !== null,
+    handleFetchArtistOffset
+  );
+
+  function handleFetchArtistOffset() {
+    if (likedArtists.artists?.next === null) return;
+    dispatch(
+      savedArtists.getUserSavedArtistsWithOffset(likedArtists.artists?.next)
+    );
+  }
+
+  const lastAlbumRef = useInfiniteScroll(
+    likedAlbumsStatus,
+    likedAlbums.next !== null,
+    handleFetchAlbumOffset
+  );
+
+  function handleFetchAlbumOffset() {
+    if (likedAlbums.next === null) return;
+    dispatch(savedAlbums.getUserSavedAlbumsWithOffset(likedAlbums.next));
   }
 
   return (
@@ -95,15 +123,35 @@ const LibraryPage = () => {
         )}
         {activeTab === "artists" && (
           <CollectionGrid>
-            {likedArtists.artists?.items.map((artist) => (
-              <Card key={artist.id} variant="artist" item={artist} />
+            {likedArtists.artists?.items.map((artist, index) => (
+              <RenderIfVisible defaultHeight={200} key={index}>
+                <div
+                  ref={
+                    likedArtists.artists.items?.length === index + 1
+                      ? lastArtistRef
+                      : null
+                  }
+                >
+                  <Card variant="artist" item={artist} />
+                </div>
+              </RenderIfVisible>
             ))}
           </CollectionGrid>
         )}
         {activeTab === "albums" && (
           <CollectionGrid>
-            {likedAlbums.items?.map((item) => (
-              <Card key={item.album.id} variant="album-saved" item={item} />
+            {likedAlbums.items?.map((item, index) => (
+              <RenderIfVisible defaultHeight={200} key={index}>
+                <div
+                  ref={
+                    likedAlbums.items?.length === index + 1
+                      ? lastAlbumRef
+                      : null
+                  }
+                >
+                  <Card key={item.album.id} variant="album-saved" item={item} />
+                </div>
+              </RenderIfVisible>
             ))}
           </CollectionGrid>
         )}

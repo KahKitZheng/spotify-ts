@@ -35,21 +35,33 @@ export const getUserSavedArtists = createAsyncThunk(
   }
 );
 
+// Fetch current user's remaining artists
+export const getUserSavedArtistsWithOffset = createAsyncThunk(
+  "userArtists/getUserSavedArtistsWithOffset",
+  async (url: string) => {
+    const response = await axios.get(url);
+    return response.data;
+  }
+);
+
 export const userSavedArtistsSlice = createSlice({
   name: "userSavedArtists",
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getUserSavedArtists.pending, (state) => {
-        state.status = "loading";
-      })
       .addCase(getUserSavedArtists.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.followedArtists = action.payload;
       })
-      .addCase(getUserSavedArtists.rejected, (state) => {
-        state.status = "failed";
+      .addCase(getUserSavedArtistsWithOffset.fulfilled, (state, action) => {
+        const artists = state.followedArtists.artists;
+
+        artists.href = action.payload.artists.href;
+        artists.items = artists.items.concat(action.payload.artists.items);
+        artists.next = action.payload.artists.next;
+        artists.limit = action.payload.artists.limit;
+        artists.cursors = action.payload.artists.cursors;
       });
   },
 });
