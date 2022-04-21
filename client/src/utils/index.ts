@@ -5,7 +5,7 @@ import { SimplifiedTrack, Track, PlaylistItem } from "../types/SpotifyObjects";
  * Calculate HSL colors based on string value
  * src: // https://stackoverflow.com/a/21682946
  */
-export const stringToHSL = (value: string): string => {
+const stringToHue = (value: string): string => {
   let hash = 0;
   if (value.length == 0) return "hsl(236, 34%, 53%)";
 
@@ -14,8 +14,14 @@ export const stringToHSL = (value: string): string => {
     hash = hash & hash; // Convert to 32bit integer
   }
 
-  return `hsl(${hash % 360}, 70%, 40%)`;
+  return `${hash % 360}`;
 };
+
+export const getHeaderHue = (value: string) =>
+  `hsl(${stringToHue(value)}, 70%, 40%)`;
+
+export const getBrowseCardHue = (value: string) =>
+  `hsl(${stringToHue(value)}, 40%, 53%)`;
 
 /**
  * Reset scroll overflow to 0

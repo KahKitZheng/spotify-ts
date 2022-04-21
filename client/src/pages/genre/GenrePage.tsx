@@ -6,7 +6,7 @@ import { TrackList } from "../../components/Track/Track.style";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
 import * as genreSlice from "../../slices/genreSlice";
-import { stringToHSL } from "../../utils";
+import { getHeaderHue } from "../../utils";
 
 const GenrePage = () => {
   const [color, setColor] = useState("");
@@ -20,7 +20,7 @@ const GenrePage = () => {
     if (category && artist && market) {
       const payload = { category, artist, limit: 30, market };
       dispatch(genreSlice.recommendGenreTracks(payload));
-      setColor(stringToHSL(category));
+      setColor(getHeaderHue(category));
     }
   }, [dispatch, category, market, artist]);
 

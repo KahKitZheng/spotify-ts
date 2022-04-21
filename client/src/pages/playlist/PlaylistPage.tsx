@@ -126,7 +126,7 @@ const PlaylistPage = () => {
   /** Set the background gradient */
   const setPlaylistBackground = useCallback(() => {
     playlistSize > 0
-      ? setBgGradient(utils.stringToHSL(playlist.name))
+      ? setBgGradient(utils.getHeaderHue(playlist.name))
       : setBgGradient(`hsl(0, 0%, 40%)`);
   }, [playlist.name, playlistSize]);
 

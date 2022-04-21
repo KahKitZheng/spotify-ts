@@ -9,7 +9,7 @@ import * as S from "../../styles/components/section";
 import { BsDisc } from "react-icons/bs";
 import { CollectionOverflow } from "../../components/Collection";
 import { Link, useParams } from "react-router-dom";
-import { extractTrackId, formatDuration, stringToHSL } from "../../utils";
+import { extractTrackId, formatDuration, getHeaderHue } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import * as albumSlice from "../../slices/albumSlice";
 
@@ -75,7 +75,7 @@ const AlbumPage = () => {
 
   const setBgGradient = useCallback(() => {
     album.tracks?.items.length > 0
-      ? setGradient(stringToHSL(album.name))
+      ? setGradient(getHeaderHue(album.name))
       : setGradient(`hsl(0, 0%, 40%)`);
   }, [album.name, album.tracks?.items.length]);
 

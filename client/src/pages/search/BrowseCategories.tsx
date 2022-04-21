@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { stringToHSL } from "../../utils";
+import { getBrowseCardHue } from "../../utils";
 import { CollectionGrid } from "../../components/Collection";
 import { useAppSelector } from "../../app/hooks";
 import { selectCategories } from "../../slices/categoriesSlice";
@@ -18,7 +18,7 @@ const BrowseCategories = () => {
             key={category.id}
             to={`/category/${category.id}`}
           >
-            <CategoryCard bgColor={stringToHSL(category.name)}>
+            <CategoryCard bgColor={getBrowseCardHue(category.name)}>
               <CategoryName>{category.name.split("/").join("/ ")}</CategoryName>
               <CategoryCover src={category.icons[0].url} alt="" />
             </CategoryCard>

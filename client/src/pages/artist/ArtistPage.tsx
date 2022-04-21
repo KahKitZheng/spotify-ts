@@ -6,7 +6,7 @@ import * as H from "../../styles/components/headers";
 import * as S from "../../styles/components/section";
 import * as T from "../../components/Track/Track.style";
 import { Link, useParams } from "react-router-dom";
-import { extractTrackId, stringToHSL } from "../../utils";
+import { extractTrackId, getHeaderHue } from "../../utils";
 import { CollectionOverflow } from "../../components/Collection";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
@@ -42,7 +42,7 @@ const ArtistPage = () => {
     }
 
     if (artist.name) {
-      setGradient(stringToHSL(artist?.name));
+      setGradient(getHeaderHue(artist?.name));
     }
   }, [artist.name, dispatch, id]);
 
