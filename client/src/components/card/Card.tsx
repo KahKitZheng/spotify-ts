@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import { selectSavedTracks } from "../../slices/savedTracksSlice";
+import { ArtistPlaceholder, TrackPlaceholder } from "../../assets/placeholders";
 
 const NewCard = (props: I.CardProps) => {
   const { variant, item, overflow } = props;
@@ -78,16 +79,16 @@ const RecentTracksCard = ({ item, to, overflow }: I.RecentTracksCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.track.album?.id}`)}>
       <C.CardHeader>
-        <C.CardCover
-          src={
-            item.track.album?.images.length > 0
-              ? item.track.album?.images[0].url
-              : ""
-          }
-          loading="lazy"
-          alt=""
-          $overflow={overflow}
-        />
+        {item.track.album?.images.length === 0 ? (
+          <TrackPlaceholder />
+        ) : (
+          <C.CardCover
+            src={item.track.album?.images[0].url}
+            loading="lazy"
+            alt=""
+            $overflow={overflow}
+          />
+        )}
         <Play variant="track" uri={item.track.uri} />
       </C.CardHeader>
       <C.CardTitle to={`/album/${item.track.album?.id}`}>
@@ -107,13 +108,17 @@ const ArtistCard = ({ item, to, overflow }: I.ArtistCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/artist/${item.id}`)}>
       <C.CardHeader>
-        <C.CardCover
-          src={item.images?.length > 0 ? item?.images[0].url : ""}
-          alt=""
-          loading="lazy"
-          $isArtist
-          $overflow={overflow}
-        />
+        {item.images?.length === 0 ? (
+          <ArtistPlaceholder />
+        ) : (
+          <C.CardCover
+            src={item?.images[0].url}
+            alt=""
+            loading="lazy"
+            $isArtist
+            $overflow={overflow}
+          />
+        )}
         <Play variant="artist" uri={item.uri} />
       </C.CardHeader>
       <C.CardTitle to={`/artist/${item.id}`}>{item.name}</C.CardTitle>
@@ -126,12 +131,16 @@ const TrackCard = ({ item, to, overflow }: I.TrackCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.album.id}`)}>
       <C.CardHeader>
-        <C.CardCover
-          src={item.album?.images.length > 0 ? item.album?.images[0].url : ""}
-          alt=""
-          loading="lazy"
-          $overflow={overflow}
-        />
+        {item.album?.images.length === 0 ? (
+          <TrackPlaceholder />
+        ) : (
+          <C.CardCover
+            src={item.album?.images[0].url}
+            alt=""
+            loading="lazy"
+            $overflow={overflow}
+          />
+        )}
         <Play variant="track" uri={item.uri} />
       </C.CardHeader>
       <C.CardTitle to={`/album/${item.album.id}`}>{item.name}</C.CardTitle>
@@ -150,12 +159,10 @@ const PlaylistCard = ({ item, to, overflow }: I.PlaylistCardProps) => {
     <C.CardWrapper onClick={() => to(`/playlist/${item.id}`)}>
       <C.CardHeader>
         {item.images[0] === undefined ? (
-          <C.CardCoverPlaceholder $overflow={overflow}>
-            {item.name.slice(0, 1)}
-          </C.CardCoverPlaceholder>
+          <TrackPlaceholder />
         ) : (
           <C.CardCover
-            src={item.images?.length !== 0 ? item.images[0].url : ""}
+            src={item.images[0].url}
             alt=""
             loading="lazy"
             $overflow={overflow}
@@ -179,12 +186,16 @@ const AlbumCard = ({ item, to, overflow }: I.AlbumCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.id}`)}>
       <C.CardHeader>
-        <C.CardCover
-          src={item.images[0].url}
-          alt=""
-          loading="lazy"
-          $overflow={overflow}
-        />
+        {item.images.length === 0 ? (
+          <TrackPlaceholder />
+        ) : (
+          <C.CardCover
+            src={item.images[0].url}
+            alt=""
+            loading="lazy"
+            $overflow={overflow}
+          />
+        )}
         <Play variant="album" uri={item.uri} />
       </C.CardHeader>
       <C.CardTitle to={`/album/${item.id}`}>{item.name}</C.CardTitle>
@@ -197,12 +208,16 @@ const AlbumSavedCard = ({ item, to, overflow }: I.AlbumSavedCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.album.id}`)}>
       <C.CardHeader>
-        <C.CardCover
-          src={item.album.images[0].url}
-          alt=""
-          loading="lazy"
-          $overflow={overflow}
-        />
+        {item.album.images?.length === 0 ? (
+          <TrackPlaceholder />
+        ) : (
+          <C.CardCover
+            src={item.album.images[0].url}
+            alt=""
+            loading="lazy"
+            $overflow={overflow}
+          />
+        )}
         <Play variant="album" uri={item.album.uri} />
       </C.CardHeader>
       <C.CardTitle to={`/album/${item.album.id}`}>
@@ -219,12 +234,16 @@ const AlbumDiscographyCard = (props: I.AlbumDiscographyCardProps) => {
   return (
     <C.CardWrapper onClick={() => to(`/album/${item.id}`)}>
       <C.CardHeader>
-        <C.CardCover
-          src={item.images[0].url}
-          alt=""
-          loading="lazy"
-          $overflow={overflow}
-        />
+        {item.images.length === 0 ? (
+          <TrackPlaceholder />
+        ) : (
+          <C.CardCover
+            src={item.images[0].url}
+            alt=""
+            loading="lazy"
+            $overflow={overflow}
+          />
+        )}
         <Play variant="album" uri={item.uri} />
       </C.CardHeader>
       <C.CardTitle to={`/album/${item.id}`}>{item.name}</C.CardTitle>

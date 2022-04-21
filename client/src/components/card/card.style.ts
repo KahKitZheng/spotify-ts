@@ -48,7 +48,6 @@ export const CardCover = styled.img<{
 }>`
   aspect-ratio: 1 / 1;
   width: 100%;
-  max-width: 10rem;
   min-width: ${({ $overflow }) =>
     $overflow && `calc(var(--column-width) - 32px)`};
   object-fit: cover;

@@ -6,6 +6,7 @@ import { useAppSelector } from "../../app/hooks";
 import { Playlist } from "../../types/SpotifyObjects";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import { selectPlaylistDuration } from "../../slices/playlistSlice";
+import { TrackPlaceholder } from "../../assets/placeholders";
 
 interface Props {
   bgGradient: string;
@@ -30,7 +31,7 @@ const PlaylistHeader = (props: Props) => {
           $isOwner={playlist.owner.id === userId}
           onClick={handleShowModal}
         >
-          {playlist.name.slice(0, 1)}
+          <TrackPlaceholder transparent />
         </H.ThumbnailPlaceholder>
       ) : (
         <H.Thumbnail

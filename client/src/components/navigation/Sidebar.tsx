@@ -148,6 +148,7 @@ const ListItem = styled(NavLink)`
   align-items: center;
   width: 100%;
   padding: 4px 0;
+  font-size: 14px;
   font-weight: 600;
   color: ${({ theme }) => theme.font.text};
 

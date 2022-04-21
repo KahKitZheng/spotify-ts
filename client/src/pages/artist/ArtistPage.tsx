@@ -11,6 +11,7 @@ import { CollectionOverflow } from "../../components/Collection";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
 import * as artistSlice from "../../slices/artistSlice";
+import { ArtistPlaceholder } from "../../assets/placeholders";
 
 const ArtistPage = () => {
   const { id } = useParams();
@@ -74,9 +75,7 @@ const ArtistPage = () => {
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
         {artist.images[0] === undefined ? (
-          <H.ThumbnailPlaceholder>
-            {artist.name.slice(0, 1)}
-          </H.ThumbnailPlaceholder>
+          <ArtistPlaceholder />
         ) : (
           <H.Thumbnail src={artist.images[0].url} alt="" />
         )}

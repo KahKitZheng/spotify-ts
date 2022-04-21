@@ -25,6 +25,7 @@ export const Tab = styled.button<{ $isActive?: boolean }>`
   color: ${({ $isActive, theme }) =>
     $isActive ? theme.font.title : "currentColor"};
   font-size: 14px;
+  font-weight: 700;
   border: 0;
   border-radius: 4px;
   padding: 4px 16px;
