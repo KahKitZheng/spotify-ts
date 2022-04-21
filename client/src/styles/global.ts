@@ -113,11 +113,11 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
-  *::-webkit-scrollbar {
+  main::-webkit-scrollbar {
     width: .3em;
   }
 
-  *::-webkit-scrollbar-thumb {
+  main::-webkit-scrollbar-thumb {
     background-color: darkgrey;
     outline: 1px solid slategrey;
     border-radius: 12px;
