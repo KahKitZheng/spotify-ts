@@ -491,7 +491,7 @@ const LikedTrack = ({ index, item, addedAt }: LikedTrackProps) => {
         <T.TrackDuration>
           {formatDuration(track.duration_ms, "track")}
         </T.TrackDuration>
-        <TrackMenu variant="playlist" track={track} />
+        <TrackMenu variant="genre" track={track} />
       </T.TrackOptions>
     </T.PlaylistTrack>
   );
