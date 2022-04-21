@@ -52,7 +52,7 @@ export const PlayTrackIcon = styled.button<{
   width: 100%;
   position: absolute;
   top: 2px;
-  right: 4px;
+  right: -4px;
   ${({ $insideAlbum }) => ($insideAlbum ? InsideAlbumRules : "")};
 
   @media (max-width: ${MEDIA.tablet}) {

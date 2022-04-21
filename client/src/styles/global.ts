@@ -112,18 +112,12 @@ const GlobalStyle = createGlobalStyle`
       width: 12px;
     }
   }
-  
-  .List > div > div {
-    margin-top: 8px;
-    margin-left: -16px;
-    margin-right: -16px;
-  }
 
-  .List::-webkit-scrollbar {
+  *::-webkit-scrollbar {
     width: .3em;
   }
 
-  .List::-webkit-scrollbar-thumb {
+  *::-webkit-scrollbar-thumb {
     background-color: darkgrey;
     outline: 1px solid slategrey;
     border-radius: 12px;

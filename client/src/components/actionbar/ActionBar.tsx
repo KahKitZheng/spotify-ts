@@ -70,6 +70,7 @@ const ActionBarWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-top: 16px;
+  margin-bottom: 16px;
 
   @media (min-width: ${MEDIA.tablet}) {
     margin-top: 24px;

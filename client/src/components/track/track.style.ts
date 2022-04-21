@@ -130,8 +130,8 @@ export const TrackIndex = styled.div`
   align-items: center;
   justify-content: flex-end;
   grid-area: track-index;
-  width: 24px;
-  min-width: 24px;
+  width: 32px;
+  min-width: 32px;
   height: 16px;
   min-height: 16px;
   position: relative;
