@@ -1,5 +1,11 @@
 import { RefObject } from "react";
-import { SimplifiedTrack, Track, PlaylistItem } from "../types/SpotifyObjects";
+import { MEDIA } from "../styles/media";
+import {
+  SimplifiedTrack,
+  Track,
+  PlaylistItem,
+  SpotifyImage,
+} from "../types/SpotifyObjects";
 
 /**
  * Calculate HSL colors based on string value
@@ -113,4 +119,16 @@ export const extractTrackId = (
     }
   });
   return ids;
+};
+
+export const renderCardImg = (list: SpotifyImage[]) => {
+  if (window.innerWidth > +MEDIA.laptop.slice(0, -2)) {
+    return list[0]?.url;
+  }
+
+  if (list.length > 1) {
+    return list[1]?.url;
+  } else {
+    return list[0]?.url;
+  }
 };

@@ -8,6 +8,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import { selectSavedTracks } from "../../slices/savedTracksSlice";
 import { ArtistPlaceholder, TrackPlaceholder } from "../../assets/placeholders";
+import { renderCardImg } from "../../utils";
 
 const NewCard = (props: I.CardProps) => {
   const { variant, item, overflow } = props;
@@ -81,7 +82,7 @@ const RecentTracksCard = ({ item, to, overflow }: I.RecentTracksCardProps) => {
       <C.CardHeader>
         {item.track.album?.images.length > 0 ? (
           <C.CardCover
-            src={item.track.album?.images[0].url}
+            src={renderCardImg(item.track.album?.images)}
             alt=""
             loading="lazy"
             $overflow={overflow}
@@ -110,7 +111,7 @@ const ArtistCard = ({ item, to, overflow }: I.ArtistCardProps) => {
       <C.CardHeader>
         {item.images?.length > 0 ? (
           <C.CardCover
-            src={item?.images[0].url}
+            src={renderCardImg(item?.images)}
             alt=""
             loading="lazy"
             $isArtist
@@ -133,7 +134,7 @@ const TrackCard = ({ item, to, overflow }: I.TrackCardProps) => {
       <C.CardHeader>
         {item.album?.images.length > 0 ? (
           <C.CardCover
-            src={item.album?.images[0].url}
+            src={renderCardImg(item.album?.images)}
             alt=""
             loading="lazy"
             $overflow={overflow}
@@ -188,7 +189,7 @@ const AlbumCard = ({ item, to, overflow }: I.AlbumCardProps) => {
       <C.CardHeader>
         {item.images.length > 0 ? (
           <C.CardCover
-            src={item.images[0].url}
+            src={renderCardImg(item.images)}
             alt=""
             loading="lazy"
             $overflow={overflow}
@@ -210,7 +211,7 @@ const AlbumSavedCard = ({ item, to, overflow }: I.AlbumSavedCardProps) => {
       <C.CardHeader>
         {item.album.images?.length > 0 ? (
           <C.CardCover
-            src={item.album.images[0].url}
+            src={renderCardImg(item.album.images)}
             alt=""
             loading="lazy"
             $overflow={overflow}
@@ -236,7 +237,7 @@ const AlbumDiscographyCard = (props: I.AlbumDiscographyCardProps) => {
       <C.CardHeader>
         {item.images.length > 0 ? (
           <C.CardCover
-            src={item.images[0].url}
+            src={renderCardImg(item.images)}
             alt=""
             loading="lazy"
             $overflow={overflow}

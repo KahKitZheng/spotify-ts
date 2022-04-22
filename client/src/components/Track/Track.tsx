@@ -8,18 +8,10 @@ import { BiPlus } from "react-icons/bi";
 import { MEDIA } from "../../styles/media";
 import { formatDuration } from "../../utils";
 import { useViewportWidth } from "../../hooks/useViewportWidth";
+import * as TrackHooks from "./Track.hooks";
 import * as topItemsSlice from "../../slices/topItemsSlice";
 import * as SpotifyObjects from "../../types/SpotifyObjects";
 import { usePlayingTrack } from "../../hooks/usePlayingTrack";
-import {
-  useSaveAlbumTrack,
-  usePlayTrack,
-  useSavePopularArtistTrack,
-  useSavePlaylistTrack,
-  useAddRecommendationPlaylistTrack,
-  useSaveUserTopTrack,
-  useSaveGenreTrack,
-} from "./Track.hooks";
 import { TrackPlaceholder } from "../../assets/placeholders";
 
 type AlbumVariant = {
@@ -134,10 +126,10 @@ const AlbumTrack = ({ item }: AlbumTrackProps) => {
   const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
 
   const savePayload = { track: item, isSaved: item.is_saved };
-  const saveTrack = useSaveAlbumTrack(savePayload);
+  const saveTrack = TrackHooks.useSaveAlbumTrack(savePayload);
 
   const playPayload = { uris: [item.uri] };
-  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+  const [handleMobile, handleDesktop] = TrackHooks.usePlayTrack(playPayload);
 
   const handleSaveTrack = (e: MouseEventType) => {
     e.stopPropagation();
@@ -182,10 +174,10 @@ const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
   const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
 
   const savePayload = { track: item, isSaved: item.is_saved };
-  const saveTrack = useSavePopularArtistTrack(savePayload);
+  const saveTrack = TrackHooks.useSavePopularArtistTrack(savePayload);
 
   const playPayload = { uris: [item.uri] };
-  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+  const [handleMobile, handleDesktop] = TrackHooks.usePlayTrack(playPayload);
 
   const handleSaveTrack = (e: MouseEventType) => {
     e.stopPropagation();
@@ -206,7 +198,7 @@ const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
       <T.TrackInfo>
         {item.album?.images.length > 0 ? (
           <T.TrackAlbumCover
-            src={item.album?.images[0].url}
+            src={item.album?.images[2].url}
             alt=""
             loading="lazy"
             $small
@@ -240,10 +232,10 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
   const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(trackUri);
 
   const savePayload = { track: track, isSaved: item.track.is_saved };
-  const saveTrack = useSavePlaylistTrack(savePayload);
+  const saveTrack = TrackHooks.useSavePlaylistTrack(savePayload);
 
   const playPayload = { uris: [trackUri] };
-  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+  const [handleMobile, handleDesktop] = TrackHooks.usePlayTrack(playPayload);
 
   const handleSaveTrack = (e: MouseEventType) => {
     e.stopPropagation();
@@ -264,7 +256,7 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
       <T.TrackInfo>
         {track.album?.images.length > 0 ? (
           <T.TrackAlbumCover
-            src={track.album?.images[0].url}
+            src={track.album?.images[2].url}
             alt=""
             loading="lazy"
           />
@@ -304,10 +296,10 @@ const PlaylistAddTrack = ({ item }: PlaylistAddTrackProps) => {
   const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
 
   const savePayload = { track: item, isSaved: item.is_saved };
-  const saveTrack = useAddRecommendationPlaylistTrack(savePayload);
+  const saveTrack = TrackHooks.useAddRecommendationPlaylistTrack(savePayload);
 
   const playPayload = { uris: [item.uri] };
-  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+  const [handleMobile, handleDesktop] = TrackHooks.usePlayTrack(playPayload);
 
   const handleSaveTrack = (e: MouseEventType) => {
     e.stopPropagation();
@@ -324,7 +316,7 @@ const PlaylistAddTrack = ({ item }: PlaylistAddTrackProps) => {
         <T.TrackAlbumWrapper>
           {item.album?.images.length > 0 ? (
             <T.TrackAlbumCover
-              src={item.album?.images[0].url}
+              src={item.album?.images[2].url}
               alt=""
               loading="lazy"
             />
@@ -366,10 +358,10 @@ const UserTopTrack = ({ index, item, timeRange }: UserTopTrackProps) => {
   const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
 
   const savePayload = { track: item, isSaved: item.is_saved, timeRange };
-  const saveTrack = useSaveUserTopTrack(savePayload);
+  const saveTrack = TrackHooks.useSaveUserTopTrack(savePayload);
 
   const playPayload = { uris: [item.uri] };
-  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+  const [handleMobile, handleDesktop] = TrackHooks.usePlayTrack(playPayload);
 
   const handleSaveTrack = (e: MouseEventType) => {
     e.stopPropagation();
@@ -390,7 +382,7 @@ const UserTopTrack = ({ index, item, timeRange }: UserTopTrackProps) => {
       <T.TrackInfo>
         {item.album?.images.length > 0 ? (
           <T.TrackAlbumCover
-            src={item.album?.images[0].url}
+            src={item.album?.images[2].url}
             alt=""
             loading="lazy"
           />
@@ -428,10 +420,10 @@ const GenreTrack = ({ item }: GenreTrackProps) => {
   const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(item.uri);
 
   const savePayload = { track: item, isSaved: item.is_saved };
-  const saveTrack = useSaveGenreTrack(savePayload);
+  const saveTrack = TrackHooks.useSaveGenreTrack(savePayload);
 
   const playPayload = { uris: [item.uri] };
-  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+  const [handleMobile, handleDesktop] = TrackHooks.usePlayTrack(playPayload);
 
   const handleSaveTrack = (e: MouseEventType) => {
     e.stopPropagation();
@@ -448,7 +440,7 @@ const GenreTrack = ({ item }: GenreTrackProps) => {
         <T.TrackAlbumWrapper>
           {item.album?.images.length > 0 ? (
             <T.TrackAlbumCover
-              src={item.album?.images[0].url}
+              src={item.album?.images[2].url}
               alt=""
               loading="lazy"
             />
