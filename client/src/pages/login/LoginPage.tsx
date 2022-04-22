@@ -7,7 +7,7 @@ const LoginPage = () => {
   const SIGN_IN_URI =
     process.env.NODE_ENV !== "production"
       ? "http://localhost:8888/login"
-      : "spotify-ts.vercel.app";
+      : "spotify-ts.vercel.app/api";
 
   return (
     <LoginPageWrapper>
