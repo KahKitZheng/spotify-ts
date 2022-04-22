@@ -60,11 +60,11 @@ app
   )
   .use(express.static(path.resolve(__dirname, "../client/build")));
 
-app.get("/", function (req, res) {
+app.get("/api/", function (req, res) {
   res.render(path.resolve(__dirname, "../client/build/index.html"));
 });
 
-app.get("/login", function (req, res) {
+app.get("/api/login", function (req, res) {
   const state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -98,7 +98,7 @@ app.get("/login", function (req, res) {
   );
 });
 
-app.get("/callback", function (req, res) {
+app.get("/api/callback", function (req, res) {
   // your application requests refresh and access tokens after checking the state parameter
 
   const code = req.query.code || null;
@@ -162,7 +162,7 @@ app.get("/callback", function (req, res) {
     });
 });
 
-app.get("/refresh_token", function (req, res) {
+app.get("/api/refresh_token", function (req, res) {
   axios({
     url: "https://accounts.spotify.com/api/token",
     method: "post",
