@@ -103,7 +103,7 @@ const ArtistPage = () => {
         <S.Section>
           <S.SectionName>Popular</S.SectionName>
           <T.TrackList>
-            {topTracks.tracks?.slice(0, 10).map((track, index) => (
+            {topTracks.tracks?.slice(0, 5).map((track, index) => (
               <Track
                 key={track.id}
                 variant="popular-artist-tracks"
