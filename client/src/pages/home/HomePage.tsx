@@ -132,6 +132,8 @@ const HomePage = () => {
               {seedArtist.images?.length > 0 ? (
                 <SeedArtistCover
                   src={seedArtist.images[0].url}
+                  height={54}
+                  width={54}
                   alt=""
                   loading="lazy"
                 />
