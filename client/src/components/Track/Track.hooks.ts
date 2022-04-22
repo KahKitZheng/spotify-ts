@@ -10,6 +10,7 @@ import { replaceRecommendationTrack } from "../../slices/recommendationSlice";
 import { useViewportWidth } from "../../hooks/useViewportWidth";
 import { MEDIA } from "../../styles/media";
 import { startPlayback } from "../../slices/playerSlice";
+import { removeSavedTrack } from "../../slices/savedTracksSlice";
 
 type SaveTrackProps = {
   track: Track;
@@ -94,6 +95,16 @@ export const useSaveGenreTrack = (data: SaveTrackProps) => {
     isSaved
       ? dispatch(genreSlice.removeGenreTrack(track.id))
       : dispatch(genreSlice.saveGenreTrack(track.id));
+  };
+
+  return handleSaveGenreTrack;
+};
+
+export const useRemoveSavedTrack = ({ track }: SaveTrackProps) => {
+  const dispatch = useAppDispatch();
+
+  const handleSaveGenreTrack = () => {
+    dispatch(removeSavedTrack(track.id));
   };
 
   return handleSaveGenreTrack;

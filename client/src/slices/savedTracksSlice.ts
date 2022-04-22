@@ -29,6 +29,14 @@ export const fetchOffsetSavedTrack = createAsyncThunk(
   }
 );
 
+export const removeSavedTrack = createAsyncThunk(
+  "savedTracks/removeSavedTrack",
+  async (id: string) => {
+    await axios.delete(`/me/tracks?ids=${id}`, {});
+    return id;
+  }
+);
+
 export const savedTracksSlice = createSlice({
   name: "savedTracks",
   initialState: initialState,
@@ -41,6 +49,7 @@ export const savedTracksSlice = createSlice({
     builder.addCase(fetchOffsetSavedTrack.pending, (state) => {
       state.status = "loading";
     });
+
     builder.addCase(fetchOffsetSavedTrack.fulfilled, (state, action) => {
       const updatedList = [...state.savedTracks.items, ...action.payload.items];
 
@@ -51,6 +60,14 @@ export const savedTracksSlice = createSlice({
       state.savedTracks.items = updatedList;
 
       state.status = "idle";
+    });
+
+    builder.addCase(removeSavedTrack.fulfilled, (state, action) => {
+      const list = state.savedTracks.items;
+      const index = list.findIndex((item) => item.track.id === action.payload);
+
+      list[index].track.is_saved = false;
+      list.splice(index, 1);
     });
   },
 });

@@ -484,15 +484,15 @@ const LikedTrack = ({ index, item, addedAt }: LikedTrackProps) => {
   const trackUri = item.track.uri;
   const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(trackUri);
 
-  // const savePayload = { track: track, isSaved: item.track.is_saved };
-  // const saveTrack = useSavePlaylistTrack(savePayload);
-
   const playPayload = { uris: [trackUri] };
-  const [handleMobile, handleDesktop] = usePlayTrack(playPayload);
+  const [handleMobile, handleDesktop] = TrackHooks.usePlayTrack(playPayload);
 
-  const handleSaveTrack = (e: MouseEventType) => {
+  const removePayload = { track: item.track, isSaved: true };
+  const removeTrack = TrackHooks.useRemoveSavedTrack(removePayload);
+
+  const handleRemoveSavedTrack = (e: MouseEventType) => {
     e.stopPropagation();
-    // saveTrack();
+    removeTrack();
   };
 
   return (
@@ -531,7 +531,7 @@ const LikedTrack = ({ index, item, addedAt }: LikedTrackProps) => {
       </T.TrackAlbum>
       {addedAt !== null && <T.TrackDateAdded>{addedAt}</T.TrackDateAdded>}
       <T.TrackOptions>
-        <TrackSaveButton isSaved={true} handleClick={handleSaveTrack} />
+        <TrackSaveButton isSaved={true} handleClick={handleRemoveSavedTrack} />
         <T.TrackDuration>
           {formatDuration(track.duration_ms, "track")}
         </T.TrackDuration>
