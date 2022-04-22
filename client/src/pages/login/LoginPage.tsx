@@ -3,51 +3,58 @@ import styled from "styled-components";
 import { MEDIA } from "../../styles/media";
 import { BsSpotify } from "react-icons/bs";
 
-const LoginPage = () => (
-  <LoginPageWrapper>
-    <div>
-      <Title>
-        Spotify-TS <BsSpotify />
-      </Title>
-      <Description>
-        Yet another Spotify clone on the web. The biggest difference is that it
-        has almost all of the core features implemented. This includes playing
-        songs with the Spotify Web Playback SDK, creating playlists, saving
-        songs and etc. Furthermore it is created with both mobile and desktop
-        viewport in mind.
-      </Description>
-      <TechnologyListWrapper>
-        <TechnologyListTitle>
-          This application is built with:
-        </TechnologyListTitle>
-        <TechnologyList>
-          <TechnologyListItem>Create React App</TechnologyListItem>
-          <TechnologyListItem>TypeScript</TechnologyListItem>
-          <TechnologyListItem>Redux Toolkit</TechnologyListItem>
-          <TechnologyListItem>styled-components</TechnologyListItem>
-          <TechnologyListItem>Spotify Web API</TechnologyListItem>
-          <TechnologyListItem>Spotify Web Playback SDK</TechnologyListItem>
-        </TechnologyList>
-      </TechnologyListWrapper>
-    </div>
-    <Footer>
+const LoginPage = () => {
+  const SIGN_IN_URI =
+    process.env.NODE_ENV !== "production"
+      ? "http://localhost:8888/login"
+      : "spotify-ts.vercel.app";
+
+  return (
+    <LoginPageWrapper>
       <div>
-        <SignInLink href="http://localhost:8888/login">login</SignInLink>
-        <PermissionNote>
-          *Permissions from this app can always be revoked from your{" "}
-          <a href="https://www.spotify.com/us/account/overview/">
-            Spotify account
-          </a>
-          .
-        </PermissionNote>
+        <Title>
+          Spotify-TS <BsSpotify />
+        </Title>
+        <Description>
+          Yet another Spotify clone on the web. The biggest difference is that
+          it has almost all of the core features implemented. This includes
+          playing songs with the Spotify Web Playback SDK, creating playlists,
+          saving songs and etc. Furthermore it is created with both mobile and
+          desktop viewport in mind.
+        </Description>
+        <TechnologyListWrapper>
+          <TechnologyListTitle>
+            This application is built with:
+          </TechnologyListTitle>
+          <TechnologyList>
+            <TechnologyListItem>Create React App</TechnologyListItem>
+            <TechnologyListItem>TypeScript</TechnologyListItem>
+            <TechnologyListItem>Redux Toolkit</TechnologyListItem>
+            <TechnologyListItem>styled-components</TechnologyListItem>
+            <TechnologyListItem>Spotify Web API</TechnologyListItem>
+            <TechnologyListItem>Spotify Web Playback SDK</TechnologyListItem>
+          </TechnologyList>
+        </TechnologyListWrapper>
       </div>
-      <FooterLinks>
-        <a href="">Made by Kah Kit Zheng</a>
-        <a href="https://github.com/KahKitZheng/spotify-ts">Github</a>
-      </FooterLinks>
-    </Footer>
-  </LoginPageWrapper>
-);
+      <Footer>
+        <div>
+          <SignInLink href={SIGN_IN_URI}>login</SignInLink>
+          <PermissionNote>
+            *Permissions from this app can always be revoked from your{" "}
+            <a href="https://www.spotify.com/us/account/overview/">
+              Spotify account
+            </a>
+            .
+          </PermissionNote>
+        </div>
+        <FooterLinks>
+          <a href="">Made by Kah Kit Zheng</a>
+          <a href="https://github.com/KahKitZheng/spotify-ts">Github</a>
+        </FooterLinks>
+      </Footer>
+    </LoginPageWrapper>
+  );
+};
 
 const LoginPageWrapper = styled.div`
   display: flex;
