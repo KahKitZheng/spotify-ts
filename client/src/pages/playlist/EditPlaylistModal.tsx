@@ -52,7 +52,9 @@ const EditPlaylistModal = (props: Props) => {
             {playlist.images?.length > 0 ? (
               <img src={playlist.images[0].url} alt="" loading="lazy" />
             ) : (
-              <TrackPlaceholder />
+              <EditThumbnail>
+                <TrackPlaceholder transparent />
+              </EditThumbnail>
             )}
           </FormThumbnail>
           <FormInputGroup>
