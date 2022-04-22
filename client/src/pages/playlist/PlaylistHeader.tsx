@@ -26,14 +26,7 @@ const PlaylistHeader = (props: Props) => {
 
   return (
     <H.HeaderWrapper $bgGradient={bgGradient}>
-      {playlist.images[0] === undefined ? (
-        <H.ThumbnailPlaceholder
-          $isOwner={playlist.owner.id === userId}
-          onClick={handleShowModal}
-        >
-          <TrackPlaceholder transparent />
-        </H.ThumbnailPlaceholder>
-      ) : (
+      {playlist.images?.length > 0 ? (
         <H.Thumbnail
           src={playlist.images[0].url}
           onClick={handleShowModal}
@@ -41,6 +34,13 @@ const PlaylistHeader = (props: Props) => {
           alt=""
           loading="lazy"
         />
+      ) : (
+        <H.ThumbnailPlaceholder
+          $isOwner={playlist.owner.id === userId}
+          onClick={handleShowModal}
+        >
+          <TrackPlaceholder transparent />
+        </H.ThumbnailPlaceholder>
       )}
       <div>
         <H.HeaderExtraInfo>

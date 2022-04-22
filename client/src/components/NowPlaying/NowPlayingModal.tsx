@@ -123,7 +123,7 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
       : dispatch(playerSlice.saveCurrentTrack(track.id));
   };
 
-  return (
+  return track ? (
     <>
       <Modal
         isOpen={modal}
@@ -139,14 +139,14 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
             <DeviceIcon onClick={() => setDevicesModal(true)}>
               <bi.BiDevices />
             </DeviceIcon>
-            {track?.album.images === undefined ? (
-              <TrackPlaceholder />
-            ) : (
+            {track.album.images?.length > 0 ? (
               <TrackCover
                 src={track?.album.images[0].url}
                 alt=""
                 loading="lazy"
               />
+            ) : (
+              <TrackPlaceholder />
             )}
           </ModalHeader>
           <div>
@@ -212,7 +212,7 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
       </Modal>
       <NowPlayingDevicesModal modal={devicesModal} setModal={setDevicesModal} />
     </>
-  );
+  ) : null;
 };
 
 const fadeIn = keyframes`
