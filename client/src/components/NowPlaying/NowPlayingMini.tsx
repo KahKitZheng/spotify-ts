@@ -18,6 +18,7 @@ import { SimplifiedArtist } from "../../types/SpotifyObjects";
 import NowPlayingModal from "./NowPlayingModal";
 import NowPlayingDevicesModal from "./NowPlayingDevicesModal";
 import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
+import { TrackPlaceholder } from "../../assets/placeholders";
 
 const NowPlayingMini = () => {
   const [devicesModal, setDevicesModal] = useState(false);
@@ -66,7 +67,15 @@ const NowPlayingMini = () => {
       <NowPlayingWrapper onClick={() => setNowPlayingModal(true)}>
         {track !== undefined && (
           <CurrentTrack>
-            <TrackCover src={track?.album.images[0].url} alt="" />
+            {track?.album.images.length > 0 ? (
+              <TrackCover
+                src={track?.album.images[0].url}
+                alt=""
+                loading="lazy"
+              />
+            ) : (
+              <TrackPlaceholder />
+            )}
             <PlaybackInfo>
               <Marquee>
                 <MarqueeInner>

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { ArtistPlaceholder } from "../../assets/placeholders";
 import { logout } from "../../spotify/auth";
 
 type Props = {
@@ -15,7 +16,11 @@ const UserSummary = (props: Props) => {
 
   return (
     <UserSummaryWrapper>
-      <UserImage src={image} height={128} width={128} alt="" />
+      {image ? (
+        <UserImage src={image} height={128} width={128} alt="" loading="lazy" />
+      ) : (
+        <ArtistPlaceholder />
+      )}
       <UserName>{name}</UserName>
       <UserStats>
         <StatItem>

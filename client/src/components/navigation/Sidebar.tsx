@@ -98,6 +98,7 @@ const Sidebar = () => {
                 height={20}
                 width={20}
                 alt=""
+                loading="lazy"
               />
             </ListItemIcon>
             <ListItemText>Liked Songs</ListItemText>

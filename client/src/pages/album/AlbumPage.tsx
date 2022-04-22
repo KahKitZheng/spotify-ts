@@ -12,6 +12,7 @@ import { Link, useParams } from "react-router-dom";
 import { extractTrackId, formatDuration, getHeaderHue } from "../../utils";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import * as albumSlice from "../../slices/albumSlice";
+import { TrackPlaceholder } from "../../assets/placeholders";
 
 const AlbumPage = () => {
   const { id } = useParams();
@@ -124,7 +125,11 @@ const AlbumPage = () => {
   return id === album.id ? (
     <div>
       <H.HeaderWrapper $bgGradient={gradient}>
-        <H.Thumbnail src={album.images && album.images[0].url} alt="" />
+        {album.images.length > 0 ? (
+          <H.Thumbnail src={album.images[0].url} alt="" loading="lazy" />
+        ) : (
+          <TrackPlaceholder />
+        )}
         <div>
           <AlbumType>{album.album_type}</AlbumType>
           <H.HeaderName>{album.name}</H.HeaderName>

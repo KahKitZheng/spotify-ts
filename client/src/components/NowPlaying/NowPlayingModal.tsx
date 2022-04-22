@@ -12,6 +12,7 @@ import { BsChevronDown } from "react-icons/bs";
 import { formatDuration } from "../../utils";
 import NowPlayingDevicesModal from "./NowPlayingDevicesModal";
 import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
+import { TrackPlaceholder } from "../../assets/placeholders";
 
 interface Props {
   modal: boolean;
@@ -138,7 +139,15 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
             <DeviceIcon onClick={() => setDevicesModal(true)}>
               <bi.BiDevices />
             </DeviceIcon>
-            <TrackCover src={track?.album.images[0].url} alt="" />
+            {track?.album.images === undefined ? (
+              <TrackPlaceholder />
+            ) : (
+              <TrackCover
+                src={track?.album.images[0].url}
+                alt=""
+                loading="lazy"
+              />
+            )}
           </ModalHeader>
           <div>
             {track !== null && (

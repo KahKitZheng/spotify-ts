@@ -79,7 +79,6 @@ const ArtistPage = () => {
         ) : (
           <H.Thumbnail src={artist.images[0].url} alt="" />
         )}
-
         <div>
           <H.HeaderName>{artist.name}</H.HeaderName>
           <small>{artist.followers?.total.toLocaleString()} followers</small>

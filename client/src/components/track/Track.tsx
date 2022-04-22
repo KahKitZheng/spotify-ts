@@ -20,6 +20,7 @@ import {
   useSaveUserTopTrack,
   useSaveGenreTrack,
 } from "./Track.hooks";
+import { TrackPlaceholder } from "../../assets/placeholders";
 
 type AlbumVariant = {
   variant: "album";
@@ -203,7 +204,16 @@ const PopularArtistTrack = ({ item, index = 1 }: PopularArtistTrackProps) => {
         <PlayTrack uri={item.uri} handlePlay={handleDesktop} />
       </T.TrackIndex>
       <T.TrackInfo>
-        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" $small />
+        {item.album?.images.length > 0 ? (
+          <T.TrackAlbumCover
+            src={item.album?.images[0].url}
+            alt=""
+            loading="lazy"
+            $small
+          />
+        ) : (
+          <TrackPlaceholder />
+        )}
         <T.TrackDetails>
           <T.TrackName $isPlayerTrack={isCurrentTrack}>{item.name}</T.TrackName>
           {item.explicit && <T.ExplicitTrack>E</T.ExplicitTrack>}
@@ -252,10 +262,15 @@ const PlaylistTrack = (props: PlaylistTrackProps) => {
         <PlayTrack uri={trackUri} handlePlay={handleDesktop} />
       </T.TrackIndex>
       <T.TrackInfo>
-        <T.TrackAlbumCover
-          src={track.album?.images[0] && track.album?.images[0].url}
-          alt=""
-        />
+        {track.album?.images.length > 0 ? (
+          <T.TrackAlbumCover
+            src={track.album?.images[0].url}
+            alt=""
+            loading="lazy"
+          />
+        ) : (
+          <TrackPlaceholder />
+        )}
         <T.TrackDetails>
           <T.TrackName $isPlayerTrack={isCurrentTrack}>
             {track.name}
@@ -307,7 +322,15 @@ const PlaylistAddTrack = ({ item }: PlaylistAddTrackProps) => {
     >
       <T.TrackInfo>
         <T.TrackAlbumWrapper>
-          <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+          {item.album?.images.length > 0 ? (
+            <T.TrackAlbumCover
+              src={item.album?.images[0].url}
+              alt=""
+              loading="lazy"
+            />
+          ) : (
+            <TrackPlaceholder />
+          )}
           <PlayTrack uri={item.uri} handlePlay={handleDesktop} $insideAlbum />
         </T.TrackAlbumWrapper>
         <T.TrackDetails>
@@ -365,7 +388,15 @@ const UserTopTrack = ({ index, item, timeRange }: UserTopTrackProps) => {
         <PlayTrack uri={item.uri} handlePlay={handleDesktop} />
       </T.TrackIndex>
       <T.TrackInfo>
-        <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+        {item.album?.images.length > 0 ? (
+          <T.TrackAlbumCover
+            src={item.album?.images[0].url}
+            alt=""
+            loading="lazy"
+          />
+        ) : (
+          <TrackPlaceholder />
+        )}
         <T.TrackDetails>
           <T.TrackName $isPlayerTrack={isCurrentTrack}>{item.name}</T.TrackName>
           <T.TrackArtists>
@@ -415,7 +446,15 @@ const GenreTrack = ({ item }: GenreTrackProps) => {
     >
       <T.TrackInfo>
         <T.TrackAlbumWrapper>
-          <T.TrackAlbumCover src={item.album?.images[0].url} alt="" />
+          {item.album?.images.length > 0 ? (
+            <T.TrackAlbumCover
+              src={item.album?.images[0].url}
+              alt=""
+              loading="lazy"
+            />
+          ) : (
+            <TrackPlaceholder />
+          )}
           <PlayTrack uri={item.uri} handlePlay={handleDesktop} $insideAlbum />
         </T.TrackAlbumWrapper>
         <T.TrackDetails>
@@ -468,10 +507,15 @@ const LikedTrack = ({ index, item, addedAt }: LikedTrackProps) => {
         <PlayTrack uri={trackUri} handlePlay={handleDesktop} />
       </T.TrackIndex>
       <T.TrackInfo>
-        <T.TrackAlbumCover
-          src={track.album?.images[0] && track.album?.images[0].url}
-          alt=""
-        />
+        {track.album?.images.length > 0 ? (
+          <T.TrackAlbumCover
+            src={track.album?.images[0].url}
+            alt=""
+            loading="lazy"
+          />
+        ) : (
+          <TrackPlaceholder />
+        )}
         <T.TrackDetails>
           <T.TrackName $isPlayerTrack={isCurrentTrack}>
             {track.name}

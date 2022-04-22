@@ -84,8 +84,8 @@ const RecentTracksCard = ({ item, to, overflow }: I.RecentTracksCardProps) => {
         ) : (
           <C.CardCover
             src={item.track.album?.images[0].url}
-            loading="lazy"
             alt=""
+            loading="lazy"
             $overflow={overflow}
           />
         )}

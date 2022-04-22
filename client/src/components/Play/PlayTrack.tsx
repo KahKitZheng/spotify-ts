@@ -23,6 +23,7 @@ const PlayTrack = ({ uri, handlePlay, $insideAlbum }: Props) => {
         <TrackPlaying
           src="https://open.scdn.co/cdn/images/equaliser-animated-green.f93a2ef4.gif"
           alt=""
+          loading="lazy"
         />
       ) : (
         <PlayIconWrapper>

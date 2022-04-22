@@ -35,10 +35,11 @@ const PlaylistHeader = (props: Props) => {
         </H.ThumbnailPlaceholder>
       ) : (
         <H.Thumbnail
-          src={playlist.images && playlist.images[0].url}
+          src={playlist.images[0].url}
           onClick={handleShowModal}
           $isOwner={playlist.owner.id === userId}
           alt=""
+          loading="lazy"
         />
       )}
       <div>

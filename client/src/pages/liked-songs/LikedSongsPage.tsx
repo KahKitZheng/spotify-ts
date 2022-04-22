@@ -40,7 +40,10 @@ const LikedSongs = () => {
   return savedTracks.items?.length > 0 ? (
     <>
       <H.HeaderWrapper $bgGradient={`hsl(254, 48%, 42%)`}>
-        <H.Thumbnail src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png" />
+        <H.Thumbnail
+          src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"
+          loading="lazy"
+        />
         <div>
           <H.HeaderName>Liked Songs</H.HeaderName>
           <UserName>{user.display_name}</UserName>

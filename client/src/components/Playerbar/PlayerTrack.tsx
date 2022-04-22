@@ -13,6 +13,7 @@ import {
   selectPlayback,
 } from "../../slices/playerSlice";
 import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
+import { TrackPlaceholder } from "../../assets/placeholders";
 
 const PlayerTrack = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +52,15 @@ const PlayerTrack = () => {
 
   return track ? (
     <PlayerTrackWrapper>
-      <PlayerTrackCover src={track.album.images[0].url.slice()} alt="" />
+      {track.album.images.length > 0 ? (
+        <PlayerTrackCover
+          src={track.album.images[0].url}
+          alt=""
+          loading="lazy"
+        />
+      ) : (
+        <TrackPlaceholder />
+      )}
       <TrackInfo>
         <PlayerTrackName
           to={`/album/${track.album.uri.slice(

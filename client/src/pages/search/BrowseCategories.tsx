@@ -20,7 +20,11 @@ const BrowseCategories = () => {
           >
             <CategoryCard bgColor={getBrowseCardHue(category.name)}>
               <CategoryName>{category.name.split("/").join("/ ")}</CategoryName>
-              <CategoryCover src={category.icons[0].url} alt="" />
+              <CategoryCover
+                src={category.icons[0].url}
+                alt=""
+                loading="lazy"
+              />
             </CategoryCard>
           </CategoryCardWrapper>
         ))}

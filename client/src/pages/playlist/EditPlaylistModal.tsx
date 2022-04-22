@@ -7,6 +7,7 @@ import { useAppDispatch } from "../../app/hooks";
 import { Playlist } from "../../types/SpotifyObjects";
 import { editPlaylistDetails } from "../../slices/userSavedPlaylistsSlice";
 import { editCurrentPlaylistDetails } from "../../slices/playlistSlice";
+import { TrackPlaceholder } from "../../assets/placeholders";
 
 interface Props {
   modal: boolean;
@@ -19,7 +20,9 @@ const EditPlaylistModal = (props: Props) => {
 
   const dispatch = useAppDispatch();
   const [playlistName, setPlaylistName] = useState(playlist.name);
-  const [playlistDescription, setPlaylistDescription] = useState(playlist.description || "");
+  const [playlistDescription, setPlaylistDescription] = useState(
+    playlist.description || ""
+  );
 
   function handleEditPlaylist() {
     const id = playlist.id;
@@ -47,9 +50,9 @@ const EditPlaylistModal = (props: Props) => {
         <FormBody>
           <FormThumbnail>
             {playlist.images[0] === undefined ? (
-              <EditThumbnail>{playlist.name.slice(0, 1)}</EditThumbnail>
+              <TrackPlaceholder />
             ) : (
-              <img src={playlist.images[0].url} alt="" />
+              <img src={playlist.images[0].url} alt="" loading="lazy" />
             )}
           </FormThumbnail>
           <FormInputGroup>

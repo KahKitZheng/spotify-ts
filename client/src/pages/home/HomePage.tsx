@@ -18,6 +18,7 @@ import {
 import * as topItems from "../../slices/topItemsSlice";
 import * as recommend from "../../slices/recommendationSlice";
 import * as savedArtists from "../../slices/userSavedArtistsSlice";
+import { ArtistPlaceholder } from "../../assets/placeholders";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -128,12 +129,15 @@ const HomePage = () => {
         <S.Section>
           <SeedArtist>
             <Link to={`/artist/${seedArtist?.id}`}>
-              <SeedArtistCover
-                src={
-                  seedArtist.images.length > 0 ? seedArtist.images[0].url : ""
-                }
-                alt=""
-              />
+              {seedArtist.images.length > 0 ? (
+                <SeedArtistCover
+                  src={seedArtist.images[0].url}
+                  alt=""
+                  loading="lazy"
+                />
+              ) : (
+                <ArtistPlaceholder />
+              )}
             </Link>
             <SeedArtistInfo>
               <SeedArtistDescription>Based on</SeedArtistDescription>
