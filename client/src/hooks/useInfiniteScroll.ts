@@ -1,7 +1,4 @@
-import { Action } from "@reduxjs/toolkit";
-import { Dispatch, useCallback, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../app/store";
+import { useCallback, useRef } from "react";
 
 export const useInfiniteScroll = (
   status: string,

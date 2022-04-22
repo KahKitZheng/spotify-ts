@@ -13,7 +13,7 @@ import {
   MdOutlineLibraryMusic as LibraryOutline,
   MdLibraryMusic as LibraryFill,
 } from "react-icons/md";
-import { MdAddBox, MdMusicNote } from "react-icons/md";
+import { MdAddBox } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import * as savedPlaylists from "../../slices/userSavedPlaylistsSlice";
 import { overflowNoScrollbar, textOverflow } from "../../styles/utils";
