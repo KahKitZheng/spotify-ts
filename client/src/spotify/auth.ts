@@ -8,8 +8,8 @@ const REFRESH_TOKEN = "spotify_clone_refresh_token";
 
 const REFRESH_URI =
   process.env.NODE_ENV !== "production"
-    ? `https://spotify-ts-server.vercel.app/refresh_token?refresh_token=${getLocalRefreshToken()}`
-    : `http://localhost:8888/refresh_token?refresh_token=${getLocalRefreshToken()}`;
+    ? `http://localhost:8888/refresh_token?refresh_token=${getLocalRefreshToken()}`
+    : `https://spotify-ts-server.vercel.app/refresh_token?refresh_token=${getLocalRefreshToken()}`;
 
 // Get tokens from localstorage
 function getTokenTimestamp() {
