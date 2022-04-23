@@ -15,6 +15,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectCurrentUserId } from "../../slices/currentUserSlice";
 import * as playlistSlice from "../../slices/playlistSlice";
 import * as recommendationSlice from "../../slices/recommendationSlice";
+import RenderIfVisible from "react-render-if-visible";
 
 const PlaylistPage = () => {
   const { id } = useParams();
@@ -186,15 +187,18 @@ const PlaylistPage = () => {
       {playlist.tracks.items?.length > 0 && (
         <T.TrackList>
           {playlist.tracks?.items.map((item, index) => (
-            <Track
-              key={item.track.id + index}
-              variant="playlist"
-              index={index}
-              item={item}
-              addedAt={
-                item.added_at !== null ? utils.formatAddedAt(item.added_at) : ""
-              }
-            />
+            <RenderIfVisible defaultHeight={64} key={index}>
+              <Track
+                variant="playlist"
+                index={index}
+                item={item}
+                addedAt={
+                  item.added_at !== null
+                    ? utils.formatAddedAt(item.added_at)
+                    : ""
+                }
+              />
+            </RenderIfVisible>
           ))}
         </T.TrackList>
       )}
