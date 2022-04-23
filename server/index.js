@@ -17,10 +17,11 @@ const path = require("path");
 const qs = require("qs");
 const history = require("connect-history-api-fallback");
 
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-let REDIRECT_URI = process.env.REDIRECT_URI || "http://localhost:8888/callback";
-let FRONTEND_URI = process.env.FRONTEND_URI || "http://localhost:3000";
+const CLIENT_ID = process.env.local.CLIENT_ID;
+const CLIENT_SECRET = process.env.local.CLIENT_SECRET;
+let REDIRECT_URI =
+  process.env.local.REDIRECT_URI || "http://localhost:8888/callback";
+let FRONTEND_URI = process.env.local.FRONTEND_URI || "http://localhost:3000";
 
 /**
  * Generates a random string containing numbers and letters
