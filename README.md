@@ -21,7 +21,7 @@ production environment to the Redirect URIs. This is your base url with
 
 ### Server
 
-Next go to the server folder and make a copy of `env.example` and rename it to `env.local`. The values of Client ID and Client Secret can be found in your Spotify Dashboard. Afterwards install the dependecies with
+Next go to the server folder and make a copy of `.env.example` and rename it to `.env`. The values of Client ID and Client Secret can be found in your Spotify Dashboard. Afterwards install the dependecies with
 
 ```
 npm install
