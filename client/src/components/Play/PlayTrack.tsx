@@ -11,7 +11,7 @@ interface Props {
 }
 
 const PlayTrack = ({ uri, handlePlay, $insideAlbum }: Props) => {
-  const [isCurrentTrackPlaying] = usePlayingTrack(uri);
+  const [isCurrentTrack, isCurrentTrackPlaying] = usePlayingTrack(uri);
 
   return (
     <PlayTrackIcon
