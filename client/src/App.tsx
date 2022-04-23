@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { refreshAccessToken, token } from "./spotify/auth";
+import { getAccessToken, token } from "./spotify/auth";
 import Modal from "react-modal";
 import LoginPage from "./pages/login";
 import AppRouter from "./components/AppRouter";
@@ -27,7 +27,7 @@ function App() {
   }, [currentUserStatus, dispatch]);
 
   useEffect(() => {
-    if (!token) refreshAccessToken();
+    if (!token) getAccessToken();
 
     const script = document.createElement("script");
 

@@ -39,7 +39,7 @@ function setLocalRefreshToken(token: string) {
   window.localStorage.setItem(REFRESH_TOKEN, token);
 }
 
-export async function refreshAccessToken() {
+async function refreshAccessToken() {
   try {
     const { data } = await axios.get(REFRESH_URI);
     const { access_token } = data;
