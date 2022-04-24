@@ -3,28 +3,52 @@ import { getAccessToken, token } from "./spotify/auth";
 import Modal from "react-modal";
 import LoginPage from "./pages/login";
 import AppRouter from "./components/AppRouter";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
 import {
   getCurrentUser,
   selectCurrentUserStatus,
 } from "./slices/currentUserSlice";
 import {
   getPlaybackDevices,
+  selectPlayback,
   setPlaybackDevice,
   updatePlayback,
 } from "./slices/playerSlice";
+import { SimplifiedArtist } from "./types/SpotifyObjects";
 
 Modal.setAppElement("#root");
 
 function App() {
-  const dispatch = useDispatch();
-  const currentUserStatus = useSelector(selectCurrentUserStatus);
+  const dispatch = useAppDispatch();
+  const currentUserStatus = useAppSelector(selectCurrentUserStatus);
+  const playback = useAppSelector(selectPlayback);
+  const track = playback.item;
 
   useEffect(() => {
     if (currentUserStatus === "idle" && token) {
       dispatch(getCurrentUser());
     }
   }, [currentUserStatus, dispatch]);
+
+  useEffect(() => {
+    const renderArtistNames = (list: SimplifiedArtist[]) => {
+      let artists = "";
+
+      list.map((artist, index, arr) => {
+        artists = artists.concat(
+          `${artist.name}${index !== arr.length - 1 ? `, ` : ""}`
+        );
+      });
+
+      return artists;
+    };
+
+    if (track?.artists === undefined) return;
+
+    document.title = playback.is_playing
+      ? `${track?.name} ${`\u2022`} ${renderArtistNames(track?.artists)}`
+      : "Spotify-TS";
+  }, [playback.is_playing, track?.artists, track?.name]);
 
   useEffect(() => {
     if (!token) getAccessToken();
