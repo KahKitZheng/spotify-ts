@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../app/axios";
 import { RootState } from "../app/store";
 import {
   Playlist,
@@ -131,7 +131,9 @@ export const removeTrackFromPlaylist = createAsyncThunk(
   "playlist/removeTrackFromPlaylist",
   async (data: { playlist_id: string; uris: string[] }) => {
     const { playlist_id, uris } = data;
-    await axios.delete(`/playlists/${playlist_id}/tracks`, { data: { uris } });
+    await axios.delete(`/playlists/${playlist_id}/tracks`, {
+      data: { uris },
+    });
   }
 );
 

@@ -1,35 +1,34 @@
 import React, { useEffect } from "react";
-import { getAccessToken, token } from "./spotify/auth";
+import { token } from "./spotify/auth";
 import Modal from "react-modal";
 import LoginPage from "./pages/login";
 import AppRouter from "./components/AppRouter";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import {
-  getCurrentUser,
-  selectCurrentUserStatus,
-} from "./slices/currentUserSlice";
-import {
-  getPlaybackDevices,
-  selectPlayback,
-  setPlaybackDevice,
-  updatePlayback,
-} from "./slices/playerSlice";
 import { SimplifiedArtist } from "./types/SpotifyObjects";
+import * as currentUserSlice from "./slices/currentUserSlice";
+import * as playerSlice from "./slices/playerSlice";
 
 Modal.setAppElement("#root");
 
 function App() {
   const dispatch = useAppDispatch();
-  const currentUserStatus = useAppSelector(selectCurrentUserStatus);
-  const playback = useAppSelector(selectPlayback);
+  const currentUserStatus = useAppSelector(
+    currentUserSlice.selectCurrentUserStatus
+  );
+  const playback = useAppSelector(playerSlice.selectPlayback);
   const track = playback.item;
+  const access_token = window.localStorage.getItem(
+    "spotify_clone_access_token"
+  );
 
+  // Get current user info
   useEffect(() => {
     if (currentUserStatus === "idle" && token) {
-      dispatch(getCurrentUser());
+      dispatch(currentUserSlice.getCurrentUser());
     }
   }, [currentUserStatus, dispatch]);
 
+  // Change html title to current song
   useEffect(() => {
     const renderArtistNames = (list: SimplifiedArtist[]) => {
       let artists = "";
@@ -50,8 +49,9 @@ function App() {
       : "Spotify-TS";
   }, [playback.is_playing, track?.artists, track?.name]);
 
+  // Init the Spotify playback SDK
   useEffect(() => {
-    if (!token) getAccessToken();
+    if (!access_token) return;
 
     const script = document.createElement("script");
 
@@ -67,7 +67,7 @@ function App() {
       const player = new window.Spotify.Player({
         name: "KKZ | Web Playback SDK",
         getOAuthToken: (cb) => {
-          cb(token as string);
+          cb(access_token as string);
         },
         volume: 0.1,
       });
@@ -89,8 +89,8 @@ function App() {
       player.addListener("ready", ({ device_id }) => {
         console.log("Ready with Device ID", device_id);
 
-        dispatch(getPlaybackDevices());
-        dispatch(setPlaybackDevice({ device_ids: [device_id] }));
+        dispatch(playerSlice.getPlaybackDevices());
+        dispatch(playerSlice.setPlaybackDevice({ device_ids: [device_id] }));
       });
 
       player.addListener("not_ready", ({ device_id }) => {
@@ -100,12 +100,12 @@ function App() {
       player.addListener("player_state_changed", (state) => {
         if (!state) return;
 
-        dispatch(updatePlayback(state));
+        dispatch(playerSlice.updatePlayback(state));
       });
 
       player.connect();
     };
-  }, [dispatch]);
+  }, [access_token, dispatch]);
 
   return <div className="App">{token ? <AppRouter /> : <LoginPage />}</div>;
 }

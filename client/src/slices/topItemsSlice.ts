@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../app/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Paging, Track, Artist } from "../types/SpotifyObjects";
 import { RootState } from "../app/store";
@@ -55,7 +55,9 @@ export const getTopArtists = createAsyncThunk(
       );
       return response.data;
     } else {
-      const response = await axios.get(`/me/top/artists?limit=20&offset=0&time_range=medium_term`);
+      const response = await axios.get(
+        `/me/top/artists?limit=20&offset=0&time_range=medium_term`
+      );
       return response.data;
     }
   }
@@ -72,7 +74,9 @@ export const getTopTracks = createAsyncThunk(
       );
       return response.data;
     } else {
-      const response = await axios.get(`/me/top/tracks?limit=20&offset=0&time_range=short_term`);
+      const response = await axios.get(
+        `/me/top/tracks?limit=20&offset=0&time_range=short_term`
+      );
       return response.data;
     }
   }

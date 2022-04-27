@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// 3600 seconds * 1000 = 1 hour in milliseconds
 const EXPIRATION_TIME = 3600 * 1000;
 const TOKEN_TIMESTAMP = "spotify_clone_token_timestamp";
 const ACCESS_TOKEN = "spotify_clone_access_token";
@@ -39,13 +38,13 @@ function setLocalRefreshToken(token: string) {
   window.localStorage.setItem(REFRESH_TOKEN, token);
 }
 
-async function refreshAccessToken() {
+export async function refreshAccessToken() {
   try {
     const { data } = await axios.get(REFRESH_URI);
     const { access_token } = data;
     setLocalAccessToken(access_token);
-    window.location.reload();
-    return;
+
+    return access_token;
   } catch (e) {
     console.error(e);
   }
@@ -78,7 +77,7 @@ export const getAccessToken = () => {
 
   // If token has expired
   if (typeof tokenTimestamp === "string") {
-    if (Date.now() - parseInt(tokenTimestamp) > EXPIRATION_TIME) {
+    if (parseInt(tokenTimestamp) + EXPIRATION_TIME < Date.now()) {
       console.warn("Access token has expired, refreshing...");
       refreshAccessToken();
     }

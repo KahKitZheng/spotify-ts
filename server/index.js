@@ -16,6 +16,8 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const qs = require("qs");
 const history = require("connect-history-api-fallback");
+const base64url = require("base64url");
+const SHA256 = require("crypto-js/sha256");
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
@@ -93,6 +95,8 @@ app.get("/login", function (req, res) {
       scope: scope.join(", "),
       redirect_uri: REDIRECT_URI,
       state: state,
+      code_challenge_method: "S256",
+      code_challenge: SHA256(base64url(state)),
     })}`
   );
 });
@@ -118,14 +122,13 @@ app.get("/callback", function (req, res) {
       code: code,
       redirect_uri: REDIRECT_URI,
       grant_type: "authorization_code",
+      client_id: CLIENT_ID,
+      code_verifier: SHA256(base64url(state)),
     },
     headers: {
       Accept: "application/json",
       "Content-Type": "application/x-www-form-urlencoded",
-    },
-    auth: {
-      username: CLIENT_ID,
-      password: CLIENT_SECRET,
+      Authorization: `Basic ${base64url(`${CLIENT_ID}:${CLIENT_SECRET}`)}`,
     },
   })
     .then((response) => {
@@ -168,6 +171,7 @@ app.get("/refresh_token", function (req, res) {
     params: {
       grant_type: "refresh_token",
       refresh_token: req.query.refresh_token,
+      client_id: CLIENT_ID,
     },
     headers: {
       Accept: "application/json",
@@ -177,10 +181,12 @@ app.get("/refresh_token", function (req, res) {
       username: CLIENT_ID,
       password: CLIENT_SECRET,
     },
-  }).then((response) => {
-    const access_token = response.data.access_token;
-    res.send({ access_token: access_token });
-  });
+  })
+    .then((response) => {
+      const access_token = response.data.access_token;
+      res.send({ access_token: access_token });
+    })
+    .catch((error) => console.log(error));
 });
 
 app.get("*", function (request, response) {

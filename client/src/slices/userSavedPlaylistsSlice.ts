@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../app/axios";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Paging, SimplifiedPlaylist } from "../types/SpotifyObjects";
@@ -19,7 +19,9 @@ export const getCurrentUserPlaylists = createAsyncThunk(
   "userSavedPlaylists/getCurrentUserPlaylists",
   async (data: { limit: number; offset?: number }) => {
     const { limit = 20, offset = 0 } = data;
-    const response = await axios.get(`/me/playlists?limit=${limit}&offset=${offset}`);
+    const response = await axios.get(
+      `/me/playlists?limit=${limit}&offset=${offset}`
+    );
     return response.data;
   }
 );
@@ -67,7 +69,9 @@ export const userPlaylistsSlice = createSlice({
         : (state.offsetStatus = "idle");
       state.userPlaylists.next = action.payload.next;
       state.userPlaylists.offset = action.payload.offset;
-      state.userPlaylists.items = state.userPlaylists.items.concat(action.payload.items);
+      state.userPlaylists.items = state.userPlaylists.items.concat(
+        action.payload.items
+      );
     });
     builder.addCase(createPlaylist.fulfilled, (state, action) => {
       const playlist = action.payload;
@@ -79,7 +83,8 @@ export const userPlaylistsSlice = createSlice({
         (playlist) => playlist.id === action.meta.arg.id
       );
       state.userPlaylists.items[index].name = action.meta.arg.name;
-      state.userPlaylists.items[index].description = action.meta.arg.description;
+      state.userPlaylists.items[index].description =
+        action.meta.arg.description;
     });
   },
 });

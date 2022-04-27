@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from "../app/axios";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CursorBasedPaging, PlayHistory, Track } from "../types/SpotifyObjects";
+import { CursorBasedPaging, PlayHistory } from "../types/SpotifyObjects";
 
 interface recentTracksState {
   recentTracks: CursorBasedPaging<PlayHistory>;
@@ -48,7 +48,7 @@ export const recentTracksSlice = createSlice({
         const response = action.payload;
         const list = [
           ...new Map(
-            response.items.map((item: PlayHistory) => [item.track.id, item])
+            response.items?.map((item: PlayHistory) => [item.track.id, item])
           ).values(),
         ];
 

@@ -1,8 +1,6 @@
 import React from "react";
 import App from "./App";
-import axios from "axios";
 import ReactDOM from "react-dom";
-import { token } from "./spotify/auth";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 
@@ -15,10 +13,6 @@ import "@fontsource/source-sans-3/600.css";
 import "@fontsource/source-sans-3/700.css";
 
 import * as serviceWorker from "./serviceWorker";
-
-axios.defaults.baseURL = "https://api.spotify.com/v1";
-axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-axios.defaults.headers.post["Content-Type"] = "application/json";
 
 ReactDOM.render(
   <React.StrictMode>

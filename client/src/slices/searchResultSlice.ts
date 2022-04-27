@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../app/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { SearchResponse } from "../types/SpotifyResponses";
 import { SearchType } from "../types/SpotifyObjects";
@@ -28,7 +28,9 @@ export const getAllSearchResults = createAsyncThunk(
   async (data?: fetchParams) => {
     if (data) {
       const { q, type = "artist,album,track,playlist", limit = 20 } = data;
-      const response = await axios.get(`/search?q=${q}&type=${type}&limit=${limit}`);
+      const response = await axios.get(
+        `/search?q=${q}&type=${type}&limit=${limit}`
+      );
       return response.data;
     }
   }

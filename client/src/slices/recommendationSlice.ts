@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../app/axios";
 import { random } from "../utils";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -29,7 +29,9 @@ export const recommendArtistTracks = createAsyncThunk(
   "recommendation/recommendArtistTracks",
   async (data: { seed: string[]; limit?: number }) => {
     const { seed, limit = 20 } = data;
-    const response = await axios.get(`/recommendations?seed_artists=${seed.join()}&limit=${limit}`);
+    const response = await axios.get(
+      `/recommendations?seed_artists=${seed.join()}&limit=${limit}`
+    );
     return response.data;
   }
 );
@@ -38,7 +40,9 @@ export const recommendPlaylistTracks = createAsyncThunk(
   "recommendation/recommendPlaylistTracks",
   async (data: { seed: string[]; limit?: number }) => {
     const { seed, limit = 20 } = data;
-    const response = await axios.get(`/recommendations?seed_tracks=${seed.join()}&limit=${limit}`);
+    const response = await axios.get(
+      `/recommendations?seed_tracks=${seed.join()}&limit=${limit}`
+    );
     return response.data;
   }
 );
@@ -63,7 +67,9 @@ export const replaceRecommendationTrack = createAsyncThunk(
       }
     }
 
-    const response = await axios.get(`/recommendations?seed_tracks=${seed.join()}&limit=1`);
+    const response = await axios.get(
+      `/recommendations?seed_tracks=${seed.join()}&limit=1`
+    );
     return response.data;
   }
 );

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../app/axios";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { PrivateUser } from "../types/SpotifyObjects";
