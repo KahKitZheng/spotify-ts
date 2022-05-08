@@ -24,6 +24,10 @@ const SpotifyTextLogo = styled(Link)`
   height: 40px;
   max-width: 130px;
   width: 100%;
+
+  svg {
+    height: 100%;
+  }
 `;
 
 export default SpotifySidebarLogo;
