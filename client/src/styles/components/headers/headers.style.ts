@@ -13,8 +13,8 @@ export const HeaderWrapper = styled.div<{ $bgGradient: string }>`
 
   @media (min-width: ${MEDIA.tablet}) {
     flex-direction: row;
-    align-items: end;
-    justify-content: start;
+    align-items: flex-end;
+    justify-content: flex-start;
   }
 `;
 
