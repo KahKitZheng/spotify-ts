@@ -15,11 +15,10 @@ export const CollectionOverflow = (props: Props) => (
 );
 
 const CollectionBase = styled.div`
-  --gap: 16px;
   --column-width: 190px;
 
   display: grid;
-  grid-gap: var(--gap);
+  grid-gap: 16px;
 `;
 
 const CollectionGridWrapper = styled(CollectionBase)`
@@ -30,11 +29,11 @@ const CollectionGridWrapper = styled(CollectionBase)`
 const CollectionOverflowWrapper = styled(CollectionBase)`
   grid-auto-flow: column;
   grid-template-columns: repeat(auto-fit, var(--column-width));
-  margin-left: calc(var(--gap) * -1);
-  margin-right: calc(var(--gap) * -1);
-  padding-top: calc(var(--gap) / 2);
-  padding-left: var(--gap);
-  padding-right: var(--gap);
+  margin-left: calc(var(--layout-padding) * -1);
+  margin-right: calc(var(--layout-padding) * -1);
+  padding-top: calc(var(--layout-padding) / 2);
+  padding-left: var(--layout-padding);
+  padding-right: var(--layout-padding);
   ${overflowNoScrollbar};
   overflow-y: hidden;
 `;
