@@ -33,7 +33,14 @@ const PlayTrack = ({ uri, handlePlay, $insideAlbum }: Props) => {
   );
 };
 
-const InsideAlbumRules = css`
+const InsideAlbumPlaying = css`
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 24px;
+`;
+
+const InsideAlbumHovering = css`
   position: absolute;
   top: 12px;
   left: 12px;
@@ -52,8 +59,13 @@ export const PlayTrackIcon = styled.button<{
   width: 100%;
   position: absolute;
   top: 2px;
-  right: -4px;
-  ${({ $insideAlbum }) => ($insideAlbum ? InsideAlbumRules : "")};
+  right: 0;
+  ${({ $insideAlbum, $isPlaying }) =>
+    $insideAlbum
+      ? $isPlaying
+        ? InsideAlbumPlaying
+        : InsideAlbumHovering
+      : ""};
 
   @media (max-width: ${MEDIA.tablet}) {
     display: ${({ $isPlaying }) => ($isPlaying ? "block" : "none")};

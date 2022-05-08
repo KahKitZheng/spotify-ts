@@ -28,7 +28,7 @@ export const TrackIndexNumber = styled.span<{
   $isPlayerTrack: boolean;
 }>`
   position: absolute;
-  right: 16px;
+  right: 20px;
   top: 0;
   opacity: ${({ $isTrackPlaying }) => ($isTrackPlaying ? 0 : 1)};
   color: ${({ $isPlayerTrack, theme }) =>
