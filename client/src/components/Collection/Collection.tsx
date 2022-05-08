@@ -35,6 +35,6 @@ const CollectionOverflowWrapper = styled(CollectionBase)`
   padding-top: calc(var(--gap) / 2);
   padding-left: var(--gap);
   padding-right: var(--gap);
-  overflow-x: auto;
   ${overflowNoScrollbar};
+  overflow-y: hidden;
 `;
