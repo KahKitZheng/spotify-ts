@@ -65,7 +65,7 @@ function App() {
 
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new window.Spotify.Player({
-        name: "KKZ | Web Playback SDK",
+        name: "Spotify-ts | Web Playback SDK",
         getOAuthToken: (cb) => {
           cb(access_token as string);
         },
@@ -91,6 +91,9 @@ function App() {
 
         dispatch(playerSlice.getPlaybackDevices());
         dispatch(playerSlice.setPlaybackDevice({ device_ids: [device_id] }));
+        dispatch(playerSlice.getPlaybackDevices()).then(() =>
+          dispatch(playerSlice.setPlaybackDevice({ device_ids: [device_id] }))
+        );
       });
 
       player.addListener("not_ready", ({ device_id }) => {
