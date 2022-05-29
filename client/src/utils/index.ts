@@ -24,7 +24,7 @@ const stringToHue = (value: string): string => {
 };
 
 export const getHeaderHue = (value: string) =>
-  `hsl(${stringToHue(value)}, 70%, 40%)`;
+  `hsl(${stringToHue(value)}, 45%, 60%)`;
 
 export const getBrowseCardHue = (value: string) =>
   `hsl(${stringToHue(value)}, 40%, 53%)`;
