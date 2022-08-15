@@ -44,7 +44,7 @@ const ActionBar = ({ uri, isSaved, handleClick }: Props) => {
         )}
       </PlayButton>
       <div>
-        {isSaved ? (
+        {isSaved !== undefined ? (
           location.pathname.slice(1, 7) === "artist" ? (
             <SaveButton
               $isSaved={isSaved}

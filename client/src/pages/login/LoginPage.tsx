@@ -5,7 +5,7 @@ import { BsSpotify } from "react-icons/bs";
 
 const LoginPage = () => {
   const SIGN_IN_URI =
-    process.env.NODE_ENV !== "production"
+    import.meta.env.NODE_ENV !== "production"
       ? "http://localhost:8888/login"
       : "https://spotify-ts-server.vercel.app/login";
 

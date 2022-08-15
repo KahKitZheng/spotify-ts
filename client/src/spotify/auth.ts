@@ -6,7 +6,7 @@ const ACCESS_TOKEN = "spotify_clone_access_token";
 const REFRESH_TOKEN = "spotify_clone_refresh_token";
 
 const REFRESH_URI =
-  process.env.NODE_ENV !== "production"
+  import.meta.env.NODE_ENV !== "production"
     ? `http://localhost:8888/refresh_token?refresh_token=${getLocalRefreshToken()}`
     : `https://spotify-ts-server.vercel.app/refresh_token?refresh_token=${getLocalRefreshToken()}`;
 
