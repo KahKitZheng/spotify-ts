@@ -10,6 +10,7 @@ import {
 import { Popover, ArrowContainer } from "react-tiny-popover";
 import { MdComputer, MdOutlinePhoneIphone } from "react-icons/md";
 import { BiDevices } from "react-icons/bi";
+import { overflowNoScrollbar } from "../../styles/utils";
 
 const PlayerDevices = () => {
   const dispatch = useAppDispatch();
@@ -88,6 +89,9 @@ const DeviceList = styled.div`
   box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   list-style: none;
+  /* height: 25rem; */
+  max-height: 88vh;
+  ${overflowNoScrollbar};
 `;
 
 const DeviceListName = styled.h3`

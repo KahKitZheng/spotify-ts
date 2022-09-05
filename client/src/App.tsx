@@ -17,9 +17,6 @@ function App() {
   );
   const playback = useAppSelector(playerSlice.selectPlayback);
   const track = playback.item;
-  const access_token = window.localStorage.getItem(
-    "spotify_clone_access_token"
-  );
 
   // Get current user info
   useEffect(() => {
@@ -49,66 +46,9 @@ function App() {
       : "Spotify-TS";
   }, [playback.is_playing, track?.artists, track?.name]);
 
-  // Init the Spotify playback SDK
   useEffect(() => {
-    if (!access_token) return;
-
-    const script = document.createElement("script");
-
-    script.id = "spotify-player";
-    script.type = "text/javascript";
-    script.async = true;
-    script.defer = true;
-    script.src = "https://sdk.scdn.co/spotify-player.js";
-
-    document.body.appendChild(script);
-
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const player = new window.Spotify.Player({
-        name: "Spotify-ts | Web Playback SDK",
-        getOAuthToken: (cb: any) => {
-          cb(access_token as string);
-        },
-        volume: 0.1,
-      });
-
-      // Error handling
-      player.addListener("initialization_error", ({ message }: any) => {
-        console.error(message);
-      });
-      player.addListener("authentication_error", ({ message }: any) => {
-        console.error(message);
-      });
-      player.addListener("account_error", ({ message }: any) => {
-        console.error(message);
-      });
-      player.addListener("playback_error", ({ message }: any) => {
-        console.error(message);
-      });
-
-      player.addListener("ready", ({ device_id }: any) => {
-        console.log("Ready with Device ID", device_id);
-
-        dispatch(playerSlice.getPlaybackDevices());
-        dispatch(playerSlice.setPlaybackDevice({ device_ids: [device_id] }));
-        dispatch(playerSlice.getPlaybackDevices()).then(() =>
-          dispatch(playerSlice.setPlaybackDevice({ device_ids: [device_id] }))
-        );
-      });
-
-      player.addListener("not_ready", ({ device_id }: any) => {
-        console.log("Device ID has gone offline", device_id);
-      });
-
-      player.addListener("player_state_changed", (state: any) => {
-        if (!state) return;
-
-        dispatch(playerSlice.updatePlayback(state));
-      });
-
-      player.connect();
-    };
-  }, [access_token, dispatch]);
+    dispatch(playerSlice.getPlaybackDevices());
+  }, [dispatch]);
 
   return <div className="App">{token ? <AppRouter /> : <LoginPage />}</div>;
 }
