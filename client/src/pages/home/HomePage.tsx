@@ -91,14 +91,14 @@ const HomePage = () => {
             <h1>{user.display_name ?? "Unknown"}</h1>
             <UserStats>
               <StatItem>
-                <StatValue>{user.followers.total ?? 0}</StatValue> followers
+                <StatValue>{user.followers?.total ?? 0}</StatValue> followers
               </StatItem>
               <StatItem>
-                <StatValue>{likedArtists.artists.total ?? 0}</StatValue>{" "}
+                <StatValue>{likedArtists.artists?.total ?? 0}</StatValue>{" "}
                 following
               </StatItem>
               <StatItem>
-                <StatValue>{userPlaylists.total ?? 0}</StatValue> playlists
+                <StatValue>{userPlaylists?.total ?? 0}</StatValue> playlists
               </StatItem>
             </UserStats>
           </UserInfo>
