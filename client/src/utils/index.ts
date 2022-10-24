@@ -43,7 +43,7 @@ export const resetScroll = (htmlElement: RefObject<HTMLElement>) => {
  */
 export const formatDuration = (
   duration: number,
-  formatType: "playlist" | "short" | "track"
+  formatType: "playlist" | "track"
 ) => {
   const seconds = Math.floor((duration / 1000) % 60);
   const minutes = Math.floor((duration / (1000 * 60)) % 60);
@@ -55,8 +55,6 @@ export const formatDuration = (
     } else {
       return `${minutes} min ${seconds < 10 ? "0" + seconds : seconds} sec`;
     }
-  } else if (formatType === "short") {
-    return `${minutes} min ${seconds < 10 ? "0" + seconds : seconds} sec`;
   } else if (formatType === "track") {
     return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
   }

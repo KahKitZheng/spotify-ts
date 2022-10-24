@@ -145,7 +145,7 @@ const AlbumPage = () => {
             <span className="bull">&bull;</span>
             <span>{album.total_tracks} songs</span>
             <span className="bull">&bull;</span>
-            <span>{formatDuration(albumDuration, "short")}</span>
+            <span>{formatDuration(albumDuration, "playlist")}</span>
           </H.HeaderStats>
         </div>
       </H.HeaderWrapper>
