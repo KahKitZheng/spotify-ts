@@ -59,7 +59,9 @@ const PlayerTrack = () => {
           loading="lazy"
         />
       ) : (
-        <TrackPlaceholder />
+        <PlaceholderTrackWrapper>
+          <TrackPlaceholder transparent />
+        </PlaceholderTrackWrapper>
       )}
       <TrackInfo>
         <PlayerTrackName
@@ -94,6 +96,15 @@ const PlayerTrackCover = styled.img`
   object-fit: cover;
   height: 54px;
   width: 54px;
+`;
+
+const PlaceholderTrackWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 54px;
+  width: 54px;
+  scale: 0.4;
 `;
 
 const TrackInfo = styled.div`
