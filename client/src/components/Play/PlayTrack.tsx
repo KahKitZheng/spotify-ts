@@ -21,7 +21,7 @@ const PlayTrack = ({ uri, handlePlay, $insideAlbum }: Props) => {
     >
       {isCurrentTrackPlaying ? (
         <TrackPlaying
-          src="https://open.scdn.co/cdn/images/equaliser-animated-green.f93a2ef4.gif"
+          src="https://open.spotifycdn.com/cdn/images/equaliser-animated-green.f93a2ef4.gif"
           alt=""
         />
       ) : (
