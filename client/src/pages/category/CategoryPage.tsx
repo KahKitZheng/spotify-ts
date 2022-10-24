@@ -30,8 +30,8 @@ const CategoryPage = () => {
     <div>
       <CategoryName>{categoryInfo.name}</CategoryName>
       <CollectionGrid>
-        {category.playlists?.items.map((category) => (
-          <Card key={category.id} variant="playlist" item={category} />
+        {category.playlists?.items.map((category, index) => (
+          <Card key={index} variant="playlist" item={category} />
         ))}
       </CollectionGrid>
     </div>
