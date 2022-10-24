@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { MEDIA } from "../../styles/media";
 import { IoIosPlay, IoIosPause } from "react-icons/io";
 import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri";
 import { useLocation } from "react-router-dom";
+import { selectPlayback } from "../../slices/playerSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import * as playerSlice from "../../slices/playerSlice";
 
@@ -15,18 +16,26 @@ interface Props {
 }
 
 const ActionBar = ({ uri, isSaved, handleClick }: Props) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const playback = useAppSelector(playerSlice.selectPlayback);
+  const playback = useAppSelector(selectPlayback);
   const isPlayerPlaying = playback.is_playing;
+
+  const checkIsPlaying = useCallback(() => {
+    return isPlayerPlaying && uri === playback.context?.uri;
+  }, [isPlayerPlaying, playback.context?.uri, uri]);
+
+  useEffect(() => {
+    checkIsPlaying() ? setIsPlaying(true) : setIsPlaying(false);
+  }, [checkIsPlaying]);
 
   const handlePlayTrack = () => {
     if (uri === playback.context?.uri) {
-      if (isPlayerPlaying) {
-        dispatch(playerSlice.pausePlayback());
-      } else {
-        dispatch(playerSlice.startPlayback());
-      }
+      isPlayerPlaying
+        ? dispatch(playerSlice.pausePlayback())
+        : dispatch(playerSlice.startPlayback());
     } else {
       dispatch(playerSlice.startPlayback({ context_uri: uri }));
     }
@@ -35,7 +44,7 @@ const ActionBar = ({ uri, isSaved, handleClick }: Props) => {
   return (
     <ActionBarWrapper>
       <PlayButton onClick={handlePlayTrack}>
-        {isPlayerPlaying ? (
+        {isPlaying ? (
           <IoIosPause />
         ) : (
           <span>
