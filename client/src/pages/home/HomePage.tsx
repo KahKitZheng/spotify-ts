@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import Card from "../../components/Card";
-import UserSummary from "./UserSummary";
 import * as S from "../../styles/components/section";
 import { Link, useLocation } from "react-router-dom";
 import { random } from "../../utils";
@@ -18,6 +17,8 @@ import {
 import * as topItems from "../../slices/topItemsSlice";
 import * as recommend from "../../slices/recommendationSlice";
 import * as savedArtists from "../../slices/userSavedArtistsSlice";
+import { MEDIA } from "../../styles/media";
+import { logout } from "../../spotify/auth";
 import { ArtistPlaceholder } from "../../assets/placeholders";
 
 const HomePage = () => {
@@ -72,13 +73,38 @@ const HomePage = () => {
 
   return (
     <div>
-      <UserSummary
-        image={user.images && user.images[0].url}
-        name={user.display_name || "Not Available"}
-        followerCount={user.followers?.total}
-        followingCount={likedArtists.artists?.total}
-        playlistCount={userPlaylists?.total}
-      />
+      <Header>
+        <User>
+          <ArtistPlaceholder />
+          {user.images ? (
+            <UserImage
+              src={user.images[0].url}
+              height={80}
+              width={80}
+              alt=""
+              loading="lazy"
+            />
+          ) : (
+            <ArtistPlaceholder />
+          )}
+          <UserInfo>
+            <h1>{user.display_name ?? "Unknown"}</h1>
+            <UserStats>
+              <StatItem>
+                <StatValue>{user.followers.total ?? 0}</StatValue> followers
+              </StatItem>
+              <StatItem>
+                <StatValue>{likedArtists.artists.total ?? 0}</StatValue>{" "}
+                following
+              </StatItem>
+              <StatItem>
+                <StatValue>{userPlaylists.total ?? 0}</StatValue> playlists
+              </StatItem>
+            </UserStats>
+          </UserInfo>
+        </User>
+        <LogoutButton onClick={logout}>Logout</LogoutButton>
+      </Header>
 
       <S.Section>
         <S.SectionLink to="/genre/recently-played">
@@ -125,7 +151,7 @@ const HomePage = () => {
         </S.Section>
       )}
 
-      {seedArtist && recommendArtists && (
+      {seedArtist && recommendArtists && recommendArtists.tracks?.length && (
         <S.Section>
           <SeedArtist>
             <Link to={`/artist/${seedArtist?.id}`}>
@@ -158,6 +184,90 @@ const HomePage = () => {
     </div>
   );
 };
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 16px;
+  margin-bottom: 64px;
+
+  @media (min-width: ${MEDIA.tablet}) {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  @media (min-width: ${MEDIA.laptop}) {
+    margin-top: 0;
+  }
+`;
+
+const User = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (min-width: ${MEDIA.tablet}) {
+    flex-direction: row;
+  }
+`;
+
+const UserImage = styled.img`
+  border-radius: 50%;
+  margin-bottom: 16px;
+
+  @media (min-width: ${MEDIA.tablet}) {
+    margin-bottom: 0px;
+    margin-right: 16px;
+  }
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  @media (min-width: ${MEDIA.tablet}) {
+    align-items: flex-start;
+  }
+`;
+
+const UserStats = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const StatItem = styled.small`
+  text-transform: uppercase;
+
+  &:nth-child(even) {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+`;
+
+const StatValue = styled.span`
+  color: ${({ theme }) => theme.colors.white};
+  font-weight: 700;
+`;
+
+const LogoutButton = styled.button`
+  background-color: transparent;
+  border: 1px solid currentColor;
+  border-radius: 20px;
+  font-weight: 600;
+  margin-top: 16px;
+  padding: 2px 12px;
+  color: ${({ theme }) => theme.font.text};
+  transition: color 0.2s ease;
+
+  :hover {
+    color: ${({ theme }) => theme.colors.white};
+  }
+`;
 
 const SeedArtist = styled.div`
   display: flex;
