@@ -115,7 +115,7 @@ const PlayButton = styled(Button)`
   }
 `;
 
-const FollowButton = styled.button`
+const FollowButton = styled.span`
   background-color: transparent;
   color: ${({ theme }) => theme.font.text};
   border: 1px solid currentColor;
