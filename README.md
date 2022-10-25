@@ -8,6 +8,10 @@ desktop viewport in mind.
 
 ---
 
+![Preview](./Preview.png)
+
+---
+
 ## Getting Started
 
 To get this application up and running, several configurations must be set.
@@ -71,3 +75,7 @@ As for the server side, you need to create another Vercel project as instructed 
 - styled-components
 - Spotify Web API
 - Spotify Web Playback SDK
+
+## Known problems
+
+[] Spotify playback SDK does not work after access token is expired (1 hour).
