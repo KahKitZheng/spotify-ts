@@ -5,13 +5,13 @@ import ActionBar from "../../components/ActionBar";
 import * as H from "../../styles/components/headers";
 import * as S from "../../styles/components/section";
 import * as T from "../../components/Track/Track.style";
+import * as artistSlice from "../../slices/artistSlice";
+import { CollectionGrid } from "../../components/Collection";
 import { Link, useParams } from "react-router-dom";
+import { ArtistPlaceholder } from "../../assets/placeholders";
 import { extractTrackId, getHeaderHue } from "../../utils";
-import { CollectionOverflow } from "../../components/Collection";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
-import * as artistSlice from "../../slices/artistSlice";
-import { ArtistPlaceholder } from "../../assets/placeholders";
 
 const ArtistPage = () => {
   const { id } = useParams();
@@ -118,8 +118,8 @@ const ArtistPage = () => {
       {albums?.length > 0 && (
         <S.Section>
           <S.SectionName>Albums</S.SectionName>
-          <CollectionOverflow>
-            {albums?.slice(0, 10).map((album) => (
+          <CollectionGrid>
+            {albums?.map((album) => (
               <Card
                 key={album.id}
                 variant="album-discography"
@@ -127,15 +127,15 @@ const ArtistPage = () => {
                 overflow
               />
             ))}
-          </CollectionOverflow>
+          </CollectionGrid>
         </S.Section>
       )}
 
       {singles?.length > 0 && (
         <S.Section>
           <S.SectionName>Singles and EPs</S.SectionName>
-          <CollectionOverflow>
-            {singles?.slice(0, 10).map((album) => (
+          <CollectionGrid>
+            {singles?.map((album) => (
               <Card
                 key={album.id}
                 variant="album-discography"
@@ -143,15 +143,15 @@ const ArtistPage = () => {
                 overflow
               />
             ))}
-          </CollectionOverflow>
+          </CollectionGrid>
         </S.Section>
       )}
 
       {appearsOn?.length > 0 && (
         <S.Section>
           <S.SectionName>Appears On</S.SectionName>
-          <CollectionOverflow>
-            {appearsOn?.slice(0, 10).map((album) => (
+          <CollectionGrid>
+            {appearsOn?.map((album) => (
               <Card
                 key={album.id}
                 variant="album-discography"
@@ -159,18 +159,18 @@ const ArtistPage = () => {
                 overflow
               />
             ))}
-          </CollectionOverflow>
+          </CollectionGrid>
         </S.Section>
       )}
 
       {relatedArtists.artists?.length > 0 && (
         <S.Section>
           <S.SectionName>Fans also like</S.SectionName>
-          <CollectionOverflow>
+          <CollectionGrid>
             {relatedArtists.artists?.slice(0, 10).map((artist) => (
-              <Card key={artist.id} variant="artist" item={artist} overflow />
+              <Card key={artist.id} variant="artist" item={artist} />
             ))}
-          </CollectionOverflow>
+          </CollectionGrid>
         </S.Section>
       )}
     </div>
