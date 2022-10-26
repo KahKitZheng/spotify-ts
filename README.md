@@ -79,3 +79,7 @@ As for the server side, you need to create another Vercel project as instructed 
 ## Known problems
 
 [] Spotify playback SDK does not work after access token is expired (1 hour).
+
+## Todo
+
+[] Add the user's queue to the application.
