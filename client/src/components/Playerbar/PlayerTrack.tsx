@@ -82,7 +82,15 @@ const PlayerTrack = () => {
     </PlayerTrackWrapper>
   ) : (
     // Render empty div to prevent player grid-areas from shifting
-    <div></div>
+    <PlayerTrackWrapper>
+      <PlaceholderTrackWrapper>
+        <TrackPlaceholder transparent />
+      </PlaceholderTrackWrapper>
+      <TrackInfo>
+        <PlayerTrackName to={``}>...</PlayerTrackName>
+        <PlayerTrackArtists>....</PlayerTrackArtists>
+      </TrackInfo>
+    </PlayerTrackWrapper>
   );
 };
 
