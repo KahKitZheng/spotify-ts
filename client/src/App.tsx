@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { token } from "./spotify/auth";
 import Modal from "react-modal";
 import LoginPage from "./pages/login";
 import AppRouter from "./components/AppRouter";
@@ -17,13 +16,14 @@ function App() {
   );
   const playback = useAppSelector(playerSlice.selectPlayback);
   const track = playback.item;
+  const token = localStorage.getItem("spotify_clone_access_token");
 
   // Get current user info
   useEffect(() => {
     if (currentUserStatus === "idle" && token) {
       dispatch(currentUserSlice.getCurrentUser());
     }
-  }, [currentUserStatus, dispatch]);
+  }, [currentUserStatus, dispatch, token]);
 
   // Change html title to current song
   useEffect(() => {
@@ -46,11 +46,15 @@ function App() {
       : "Spotify-TS";
   }, [playback.is_playing, track?.artists, track?.name]);
 
-  useEffect(() => {
-    dispatch(playerSlice.getPlaybackDevices());
-  }, [dispatch]);
-
-  return <div className="App">{token ? <AppRouter /> : <LoginPage />}</div>;
+  return (
+    <div className="App">
+      {token === "null" || token === "undefined" || !token ? (
+        <LoginPage />
+      ) : (
+        <AppRouter />
+      )}
+    </div>
+  );
 }
 
 export default App;
