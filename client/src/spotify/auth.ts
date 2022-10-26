@@ -7,8 +7,8 @@ const REFRESH_TOKEN = "spotify_clone_refresh_token";
 
 const REFRESH_URI =
   import.meta.env.MODE !== "production"
-    ? `http://localhost:8888/refresh_token?refresh_token=${getLocalRefreshToken()}`
-    : `https://spotify-ts-server.vercel.app/refresh_token?refresh_token=${getLocalRefreshToken()}`;
+    ? `http://localhost:8888/refresh_token?refresh_token=`
+    : `https://spotify-ts-server.vercel.app/refresh_token?refresh_token=`;
 
 // Get tokens from localstorage
 function getTokenTimestamp() {
@@ -39,7 +39,9 @@ function setLocalRefreshToken(token: string) {
 }
 
 export async function interceptRefreshAccessToken(failedRequest: any) {
-  return await axios.get(REFRESH_URI).then((res) => {
+  const refresh_token = getLocalRefreshToken();
+
+  return await axios.get(REFRESH_URI + refresh_token).then((res) => {
     const { access_token } = res.data;
     setLocalAccessToken(access_token);
 
@@ -52,7 +54,8 @@ export async function interceptRefreshAccessToken(failedRequest: any) {
 }
 
 export async function refreshAccessToken() {
-  const { data } = await axios.get(REFRESH_URI);
+  const refresh_token = getLocalRefreshToken();
+  const { data } = await axios.get(REFRESH_URI + refresh_token);
 
   setLocalAccessToken(data.access_token);
 }
@@ -98,6 +101,7 @@ export const getAccessToken = () => {
   // If there is no ACCESS token in local storage, set it and return `access_token` from params
   if (!accessToken || accessToken === "undefined") {
     setLocalAccessToken(access_token as string);
+    return accessToken;
   }
 
   return accessToken;

@@ -6,37 +6,11 @@ import PlayerVolume from "./PlayerVolume";
 import PlayerDevices from "./PlayerDevices";
 import * as playerSlice from "../../slices/playerSlice";
 import { MEDIA } from "../../styles/media";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { token } from "../../spotify/auth";
+import { useAppDispatch } from "../../app/hooks";
 
 const Playbar = () => {
   const dispatch = useAppDispatch();
-  const playerName = "Spotify-ts | Web Playback SDK";
-  const devices = useAppSelector(playerSlice.selectAvailableDevices);
-  const playerExists = devices.some((device) => device.id === getPlayerID());
-
-  function getPlayerID() {
-    return window.localStorage.getItem("spotify_clone_token_player_id") ?? "";
-  }
-
-  function setPlayerID(id: string) {
-    window.localStorage.setItem(
-      "spotify_clone_token_player_id",
-      JSON.stringify(id)
-    );
-  }
-
-  // Prevent player instances from being created if one already exists
-  useEffect(() => {
-    const oldPlayerInstances = devices.filter(
-      (device) => device.id !== getPlayerID()
-    );
-
-    oldPlayerInstances.forEach((device) => {
-      const deviceId = device.id ?? "";
-      dispatch(playerSlice.setPlaybackDevice({ device_ids: [deviceId] }));
-    });
-  }, [devices, dispatch]);
+  const token = localStorage.getItem("spotify_clone_access_token");
 
   // Init the Spotify playback SDK
   useEffect(() => {
@@ -52,9 +26,9 @@ const Playbar = () => {
 
     window.onSpotifyWebPlaybackSDKReady = () => {
       const player = new window.Spotify.Player({
-        name: playerName,
-        getOAuthToken: (cb: any) => cb(token as string),
-        volume: 0.1,
+        name: "Spotify-ts | Web Playback SDK",
+        getOAuthToken: (cb: any) => cb(token),
+        volume: 0.3,
       });
 
       // Error handling
@@ -72,17 +46,8 @@ const Playbar = () => {
       });
 
       player.addListener("ready", ({ device_id }: any) => {
-        console.log("Ready with Device ID", device_id);
-        setPlayerID(device_id);
         dispatch(playerSlice.getPlaybackDevices());
-
-        if (!playerExists) {
-          dispatch(playerSlice.setPlaybackDevice({ device_ids: [device_id] }));
-        } else {
-          dispatch(
-            playerSlice.setPlaybackDevice({ device_ids: [getPlayerID()] })
-          );
-        }
+        dispatch(playerSlice.setPlaybackDevice({ device_ids: [device_id] }));
       });
 
       player.addListener("not_ready", ({ device_id }: any) => {
@@ -96,7 +61,7 @@ const Playbar = () => {
 
       player.connect();
     };
-  }, [dispatch, playerExists]);
+  }, [dispatch, token]);
 
   return (
     <PlaybarWrapper>
