@@ -1,5 +1,6 @@
 import axios from "axios";
-import { refreshAccessToken } from "../spotify/auth";
+import createAuthRefreshInterceptor from "axios-auth-refresh";
+import { interceptRefreshAccessToken } from "../spotify/auth";
 
 axios.defaults.baseURL = "https://api.spotify.com/v1";
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -17,26 +18,9 @@ axios.interceptors.request.use(
   }
 );
 
-// Response interceptor for API calls
-axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async function (error) {
-    const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      console.warn("Access token has expired, refreshing...");
-
-      originalRequest._retry = true;
-      const access_token = await refreshAccessToken();
-
-      originalRequest.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${access_token}`;
-      return axios(originalRequest);
-    }
-    return Promise.reject(error);
-  }
-);
+// Fetch new refresh token if a 401 API response is intercepted
+createAuthRefreshInterceptor(axios, interceptRefreshAccessToken, {
+  statusCodes: [401],
+});
 
 export default axios;
