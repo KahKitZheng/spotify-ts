@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import { MEDIA } from "@/styles/media";

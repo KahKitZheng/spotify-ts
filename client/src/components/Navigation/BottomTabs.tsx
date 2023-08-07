@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { MEDIA } from "@/styles/media";
 import { NavLink, useLocation } from "react-router-dom";

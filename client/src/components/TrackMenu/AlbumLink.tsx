@@ -1,4 +1,3 @@
-import React from "react";
 import * as M from "./TrackMenu.style";
 
 const AlbumLink = (props: { albumId: string }) => {

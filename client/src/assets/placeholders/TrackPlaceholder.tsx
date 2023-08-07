@@ -1,4 +1,3 @@
-import React from "react";
 import { TrackPlaceholderWrapper } from "./Placeholder.style";
 
 export const TrackPlaceholder = (props: { transparent?: boolean }) => (

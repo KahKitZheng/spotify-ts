@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "@/components/Card";
 import Track from "@/components/Track";

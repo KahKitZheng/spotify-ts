@@ -1,4 +1,4 @@
-import React, { Dispatch, Fragment, SetStateAction } from "react";
+import { Dispatch, Fragment, SetStateAction } from "react";
 import styled from "styled-components";
 import * as Tabs from "@/styles/components/tabs";
 import { resultsTabs } from "./SearchPage";

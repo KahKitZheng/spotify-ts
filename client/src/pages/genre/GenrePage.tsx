@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Track from "@/components/Track";
 import { useParams } from "react-router-dom";
@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "@/slices/currentUserSlice";
 import * as genreSlice from "@/slices/genreSlice";
 import { getHeaderHue } from "../../utils";
+import { AppDispatch } from "@/app/store";
 
 const GenrePage = () => {
   const [color, setColor] = useState("");
   const { category, artist } = useParams();
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const genre = useSelector(genreSlice.selectGenreTracks);
   const market = useSelector(selectCurrentUserCountry);
 

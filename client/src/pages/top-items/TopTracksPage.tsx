@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Track from "@/components/Track";
 import * as Tab from "@/styles/components/tabs";
 import * as T from "@/components/Track/Track.style";
 import { useDispatch, useSelector } from "react-redux";
 import * as topItemsSlice from "@/slices/topItemsSlice";
 import { extractTrackId } from "../../utils";
+import { AppDispatch } from "@/app/store";
 
 const TopTracksPage = () => {
   const [filter, setFilter] = useState<topItemsSlice.TimeRange>("short_term");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const topTracks = useSelector(topItemsSlice.selectTopTracks);
 
   useEffect(() => {

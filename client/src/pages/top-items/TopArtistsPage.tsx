@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "@/components/Card";
 import * as Tab from "@/styles/components/tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { getTopArtists, selectTopArtists } from "@/slices/topItemsSlice";
 import { CollectionGrid } from "@/components/Collection";
+import { AppDispatch } from "@/app/store";
 
 type Period = "short_term" | "medium_term" | "long_term";
 
 const TopArtistsPage = () => {
   const [filter, setFilter] = useState<Period>("short_term");
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const topArtists = useSelector(selectTopArtists);
 
   useEffect(() => {

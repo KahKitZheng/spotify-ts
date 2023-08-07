@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "@/components/Card";
 import RenderIfVisible from "react-render-if-visible";

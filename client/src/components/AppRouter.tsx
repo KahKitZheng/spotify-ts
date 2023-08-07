@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import MainViewWrapper from "./MainViewWrapper";
 import Playerbar from "./Playerbar";

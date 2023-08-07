@@ -1,4 +1,3 @@
-import React from "react";
 import styled, { css } from "styled-components";
 import { MEDIA } from "@/styles/media";
 import { IoIosPlay } from "react-icons/io";

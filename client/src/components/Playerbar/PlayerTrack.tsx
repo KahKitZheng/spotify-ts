@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { textOverflow } from "@/styles/utils";

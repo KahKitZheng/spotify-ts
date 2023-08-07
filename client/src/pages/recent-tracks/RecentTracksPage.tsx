@@ -1,12 +1,13 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import Card from "@/components/Card";
 import { useDispatch, useSelector } from "react-redux";
 import { CollectionGrid } from "@/components/Collection";
 import { getRecentTracks, selectRecentTracks } from "@/slices/recentTrackSlice";
+import { AppDispatch } from "@/app/store";
 
 const RecentTracksPage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const recentlyPlayed = useSelector(selectRecentTracks);
 
   useEffect(() => {

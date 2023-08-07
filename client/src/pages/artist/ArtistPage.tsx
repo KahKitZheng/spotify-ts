@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Card from "@/components/Card";
 import Track from "@/components/Track";
 import ActionBar from "@/components/ActionBar";
@@ -12,12 +12,13 @@ import { ArtistPlaceholder } from "@/assets/placeholders";
 import { extractTrackId, getHeaderHue } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentUserCountry } from "@/slices/currentUserSlice";
+import { AppDispatch } from "@/app/store";
 
 const ArtistPage = () => {
   const { id } = useParams();
   const [gradient, setGradient] = useState("");
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const country = useSelector(selectCurrentUserCountry);
   const artist = useSelector(artistSlice.selectArtist);
   const discography = useSelector(artistSlice.selectArtistAlbum);

@@ -1,4 +1,3 @@
-import React from "react";
 import Play from "../Play";
 import * as C from "./Card.style";
 import * as I from "./Card.interface";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { ButtonIcon } from "./Playerbar";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";

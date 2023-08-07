@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Card from "@/components/Card";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -11,10 +11,11 @@ import {
 } from "@/slices/categoriesSlice";
 import { selectCurrentUserCountry } from "@/slices/currentUserSlice";
 import styled from "styled-components";
+import { AppDispatch } from "@/app/store";
 
 const CategoryPage = () => {
   const { id } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const category = useSelector(selectCategory);
   const categoryInfo = useSelector(selectCategoryInfo);
   const userCountry = useSelector(selectCurrentUserCountry);

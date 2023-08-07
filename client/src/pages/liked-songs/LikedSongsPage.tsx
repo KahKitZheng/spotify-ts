@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import Track from "@/components/Track";
 import ActionBar from "@/components/ActionBar";

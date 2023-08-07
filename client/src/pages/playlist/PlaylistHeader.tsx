@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import * as H from "@/styles/components/headers";
 import { formatDuration } from "../../utils";

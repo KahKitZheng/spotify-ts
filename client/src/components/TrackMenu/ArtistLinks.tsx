@@ -1,4 +1,3 @@
-import React from "react";
 import * as M from "./TrackMenu.style";
 import { MdArrowRight } from "react-icons/md";
 import { NestedPopover } from "../Popover";

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useAppSelector } from "../../app/hooks";
 import Track from "@/components/Track";
 import * as P from "./playlist.style";

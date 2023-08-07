@@ -1,4 +1,3 @@
-import React from "react";
 import * as M from "./TrackMenu.style";
 import PlaylistOptionItem from "./PlaylistOptionItem";
 import { MdArrowRight } from "react-icons/md";

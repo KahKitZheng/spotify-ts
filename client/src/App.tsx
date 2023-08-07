@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Modal from "react-modal";
 import LoginPage from "@/pages/login";
 import AppRouter from "@/components/AppRouter";

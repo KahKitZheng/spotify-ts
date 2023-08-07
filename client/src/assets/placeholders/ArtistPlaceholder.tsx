@@ -1,4 +1,3 @@
-import React from "react";
 import { ArtistPlaceholderWrapper } from "./Placeholder.style";
 
 export const ArtistPlaceholder = () => (
