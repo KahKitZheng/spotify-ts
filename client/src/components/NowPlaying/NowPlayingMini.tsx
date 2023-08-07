@@ -44,7 +44,7 @@ const NowPlayingMini = () => {
 
   const setPlayState = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
-    isPlaying ? dispatch(pausePlayback()) : dispatch(startPlayback());
+    isPlaying ? dispatch(pausePlayback()) : dispatch(startPlayback({}));
   };
 
   const handleDeviceModal = (

@@ -35,7 +35,7 @@ const ActionBar = ({ uri, isSaved, handleClick }: Props) => {
     if (uri === playback.context?.uri) {
       isPlayerPlaying
         ? dispatch(playerSlice.pausePlayback())
-        : dispatch(playerSlice.startPlayback());
+        : dispatch(playerSlice.startPlayback({}));
     } else {
       dispatch(playerSlice.startPlayback({ context_uri: uri }));
     }

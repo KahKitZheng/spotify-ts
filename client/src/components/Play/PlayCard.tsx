@@ -47,7 +47,7 @@ const PlayCard = ({ variant, uri }: Props) => {
       if (isPlaying) {
         dispatch(pausePlayback());
       } else {
-        dispatch(startPlayback());
+        dispatch(startPlayback({}));
       }
     } else {
       if (variant === "track") {

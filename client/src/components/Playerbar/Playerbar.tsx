@@ -78,7 +78,7 @@ const Playbar = () => {
       });
 
       player.connect();
-      dispatch(startPlayback()); // Resume immediate playback after renewing the player
+      dispatch(startPlayback({})); // Resume immediate playback after renewing the player
       setCounter(counter + 1);
       removePlayers();
     };

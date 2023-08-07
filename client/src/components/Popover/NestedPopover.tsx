@@ -37,7 +37,7 @@ const Popover: React.FC<Props> = ({ children, render }) => {
       reactDomInteractions.useClick(context),
       reactDomInteractions.useRole(context),
       reactDomInteractions.useDismiss(context),
-      reactDomInteractions.useFocusTrap(context),
+      reactDomInteractions.useFocus(context),
     ]);
 
   useEffect(() => {

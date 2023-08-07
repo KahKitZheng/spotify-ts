@@ -67,7 +67,7 @@ const NowPlayingModal = ({ modal, setModal }: Props) => {
   const setPlayState = () => {
     isPlaying
       ? dispatch(playerSlice.pausePlayback())
-      : dispatch(playerSlice.startPlayback());
+      : dispatch(playerSlice.startPlayback({}));
   };
 
   const handlePreviousTrack = () => {

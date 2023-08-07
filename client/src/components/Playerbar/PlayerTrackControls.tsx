@@ -53,7 +53,7 @@ const PlayerTrackControls = () => {
   }, [isPlaying, seeker]);
 
   const setPlayState = () => {
-    isPlaying ? dispatch(pausePlayback()) : dispatch(startPlayback());
+    isPlaying ? dispatch(pausePlayback()) : dispatch(startPlayback({}));
   };
 
   const handlePreviousTrack = () => {
