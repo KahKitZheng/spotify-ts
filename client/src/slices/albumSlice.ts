@@ -2,7 +2,7 @@ import axios from "../app/axios";
 import { groupBy } from "../utils";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Album, Paging, SimplifiedTrack } from "../types/SpotifyObjects";
+import { Album, Paging, SimplifiedTrack } from "@/types/SpotifyObjects";
 
 interface AlbumState {
   album: Album;

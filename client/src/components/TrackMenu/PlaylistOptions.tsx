@@ -4,13 +4,13 @@ import PlaylistOptionItem from "./PlaylistOptionItem";
 import { MdArrowRight } from "react-icons/md";
 import { NestedPopover } from "../Popover";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectCurrentUserId } from "../../slices/currentUserSlice";
-import { SimplifiedTrack, Track } from "../../types/SpotifyObjects";
-import { addTrackToPlaylist } from "../../slices/playlistSlice";
+import { selectCurrentUserId } from "@/slices/currentUserSlice";
+import { SimplifiedTrack, Track } from "@/types/SpotifyObjects";
+import { addTrackToPlaylist } from "@/slices/playlistSlice";
 import {
   selectUserPlaylists,
   createPlaylist,
-} from "../../slices/userSavedPlaylistsSlice";
+} from "@/slices/userSavedPlaylistsSlice";
 
 interface Props {
   track: Track | SimplifiedTrack;

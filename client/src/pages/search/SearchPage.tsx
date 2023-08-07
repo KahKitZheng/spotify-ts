@@ -3,12 +3,12 @@ import styled from "styled-components";
 import SearchTabs from "./SearchTabs";
 import SearchResults from "./SearchResults";
 import BrowseCategories from "./BrowseCategories";
-import * as Tabs from "../../styles/components/tabs";
+import * as Tabs from "@/styles/components/tabs";
 import { DebounceInput } from "react-debounce-input";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import * as categoriesSlice from "../../slices/categoriesSlice";
-import * as searchResultSlice from "../../slices/searchResultSlice";
-import * as currentUserSlice from "../../slices/currentUserSlice";
+import * as categoriesSlice from "@/slices/categoriesSlice";
+import * as searchResultSlice from "@/slices/searchResultSlice";
+import * as currentUserSlice from "@/slices/currentUserSlice";
 
 const tabs = ["tracks", "artists", "albums", "playlists"];
 export type resultsTabs = "tracks" | "artists" | "albums" | "playlists";

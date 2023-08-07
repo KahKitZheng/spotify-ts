@@ -1,8 +1,8 @@
 import axios from "../app/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Paging, Category } from "../types/SpotifyObjects";
+import { Paging, Category } from "@/types/SpotifyObjects";
 import { RootState } from "../app/store";
-import { GetCategoryPlaylistsResponse } from "../types/SpotifyResponses";
+import { GetCategoryPlaylistsResponse } from "@/types/SpotifyResponses";
 
 interface CategoriesState {
   categories: Paging<Category>;

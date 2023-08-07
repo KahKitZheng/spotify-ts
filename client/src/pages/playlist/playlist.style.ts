@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 
 export const PlaylistDiscovery = styled.section`
   position: relative;

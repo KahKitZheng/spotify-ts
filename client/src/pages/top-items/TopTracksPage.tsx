@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Track from "@/components/Track";
-import * as Tab from "../../styles/components/tabs";
+import * as Tab from "@/styles/components/tabs";
 import * as T from "@/components/Track/Track.style";
 import { useDispatch, useSelector } from "react-redux";
-import * as topItemsSlice from "../../slices/topItemsSlice";
+import * as topItemsSlice from "@/slices/topItemsSlice";
 import { extractTrackId } from "../../utils";
 
 const TopTracksPage = () => {

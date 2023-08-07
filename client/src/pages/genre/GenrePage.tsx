@@ -4,8 +4,8 @@ import Track from "@/components/Track";
 import { useParams } from "react-router-dom";
 import { TrackList } from "@/components/Track/Track.style";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
-import * as genreSlice from "../../slices/genreSlice";
+import { selectCurrentUserCountry } from "@/slices/currentUserSlice";
+import * as genreSlice from "@/slices/genreSlice";
 import { getHeaderHue } from "../../utils";
 
 const GenrePage = () => {

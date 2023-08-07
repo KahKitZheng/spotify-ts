@@ -4,13 +4,13 @@ import AlbumLink from "./AlbumLink";
 import PlaylistOptions from "./PlaylistOptions";
 import * as M from "./TrackMenu.style";
 import * as TrackHooks from "../Track/Track.hooks";
-import * as SpotifyObjects from "../../types/SpotifyObjects";
+import * as SpotifyObjects from "@/types/SpotifyObjects";
 import { BsThreeDots } from "react-icons/bs";
 import { NestedPopover } from "../Popover";
-import { TimeRange } from "../../slices/topItemsSlice";
+import { TimeRange } from "@/slices/topItemsSlice";
 import { useAppSelector } from "../../app/hooks";
-import { selectCurrentUserId } from "../../slices/currentUserSlice";
-import { selectPlaylist } from "../../slices/playlistSlice";
+import { selectCurrentUserId } from "@/slices/currentUserSlice";
+import { selectPlaylist } from "@/slices/playlistSlice";
 
 type GenreMenuVariant = {
   variant: "genre";

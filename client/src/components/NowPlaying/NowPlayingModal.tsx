@@ -1,18 +1,18 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
 import styled, { keyframes } from "styled-components";
-import { MEDIA } from "../../styles/media";
-import { useViewportWidth } from "../../hooks/useViewportWidth";
+import { MEDIA } from "@/styles/media";
+import { useViewportWidth } from "@/hooks/useViewportWidth";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { SimplifiedArtist } from "../../types/SpotifyObjects";
-import * as playerSlice from "../../slices/playerSlice";
+import { SimplifiedArtist } from "@/types/SpotifyObjects";
+import * as playerSlice from "@/slices/playerSlice";
 import * as bi from "react-icons/bi";
 import * as md from "react-icons/md";
 import { BsChevronDown } from "react-icons/bs";
 import { formatDuration } from "../../utils";
 import NowPlayingDevicesModal from "./NowPlayingDevicesModal";
 import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
-import { TrackPlaceholder } from "../../assets/placeholders";
+import { TrackPlaceholder } from "@/assets/placeholders";
 
 interface Props {
   modal: boolean;

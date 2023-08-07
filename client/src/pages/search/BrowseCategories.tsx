@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { getBrowseCardHue } from "../../utils";
 import { CollectionGrid } from "@/components/Collection";
 import { useAppSelector } from "../../app/hooks";
-import { selectCategories } from "../../slices/categoriesSlice";
+import { selectCategories } from "@/slices/categoriesSlice";
 
 const BrowseCategories = () => {
   const categories = useAppSelector(selectCategories);

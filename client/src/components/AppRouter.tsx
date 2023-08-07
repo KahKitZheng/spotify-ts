@@ -3,22 +3,23 @@ import styled from "styled-components";
 import MainViewWrapper from "./MainViewWrapper";
 import Playerbar from "./Playerbar";
 import NowPlayingMini from "./NowPlaying";
-import { MEDIA } from "../styles/media";
+import { MEDIA } from "@/styles/media";
 import { BottomTabs, Sidebar } from "./Navigation";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import HomePage from "../pages/home";
-import PageNotFound from "../pages/404";
-import SearchPage from "../pages/search";
-import LibraryPage from "../pages/library";
-import PlaylistPage from "../pages/playlist";
-import AlbumPage from "../pages/album";
-import ArtistPage from "../pages/artist";
-import RecentTracksPage from "../pages/recent-tracks";
-import CategoryPage from "../pages/category";
-import GenrePage from "../pages/genre";
-import LikedSongsPage from "../pages/liked-songs";
-import { TopArtistsPage, TopTracksPage } from "../pages/top-items/";
+import HomePage from "@/pages/home";
+import PageNotFound from "@/pages/404";
+import SearchPage from "@/pages/search";
+import LibraryPage from "@/pages/library";
+import PlaylistPage from "@/pages/playlist";
+import AlbumPage from "@/pages/album";
+import ArtistPage from "@/pages/artist";
+import RecentTracksPage from "@/pages/recent-tracks";
+import CategoryPage from "@/pages/category";
+import GenrePage from "@/pages/genre";
+import LikedSongsPage from "@/pages/liked-songs";
+import { TopArtistsPage, TopTracksPage } from "@/pages/top-items/";
+import { token } from "@/spotify/auth";
 
 const AppRouter = () => (
   <BrowserRouter>
@@ -45,7 +46,7 @@ const AppRouter = () => (
         <NowPlayingMini />
         <BottomTabs />
       </Bottom>
-      <Playerbar />
+      <Playerbar key={token} />
     </Layout>
   </BrowserRouter>
 );

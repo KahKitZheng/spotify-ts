@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../app/hooks";
-import { selectPlayback } from "../slices/playerSlice";
+import { selectPlayback } from "@/slices/playerSlice";
 
 /**
  *

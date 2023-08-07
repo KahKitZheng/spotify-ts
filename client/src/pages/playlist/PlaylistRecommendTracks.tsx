@@ -3,7 +3,7 @@ import { useAppSelector } from "../../app/hooks";
 import Track from "@/components/Track";
 import * as P from "./playlist.style";
 import * as T from "@/components/Track/Track.style";
-import * as recommendationSlice from "../../slices/recommendationSlice";
+import * as recommendationSlice from "@/slices/recommendationSlice";
 
 interface Props {
   isSearching: boolean;

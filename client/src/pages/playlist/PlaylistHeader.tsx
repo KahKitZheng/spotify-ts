@@ -1,12 +1,12 @@
 import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
-import * as H from "../../styles/components/headers";
+import * as H from "@/styles/components/headers";
 import { formatDuration } from "../../utils";
 import { useAppSelector } from "../../app/hooks";
-import { Playlist } from "../../types/SpotifyObjects";
-import { selectCurrentUserId } from "../../slices/currentUserSlice";
-import { selectPlaylistDuration } from "../../slices/playlistSlice";
-import { TrackPlaceholder } from "../../assets/placeholders";
+import { Playlist } from "@/types/SpotifyObjects";
+import { selectCurrentUserId } from "@/slices/currentUserSlice";
+import { selectPlaylistDuration } from "@/slices/playlistSlice";
+import { TrackPlaceholder } from "@/assets/placeholders";
 
 interface Props {
   bgGradient: string;

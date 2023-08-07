@@ -1,25 +1,22 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import Card from "@/components/Card";
-import * as S from "../../styles/components/section";
+import * as S from "@/styles/components/section";
 import { Link, useLocation } from "react-router-dom";
 import { random } from "../../utils";
 import { CollectionOverflow } from "@/components/Collection";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { selectCurrentUser } from "../../slices/currentUserSlice";
-import { selectUserPlaylists } from "../../slices/userSavedPlaylistsSlice";
-import {
-  getRecentTracks,
-  selectRecentTracks,
-} from "../../slices/recentTrackSlice";
-import * as topItems from "../../slices/topItemsSlice";
-import * as recommend from "../../slices/recommendationSlice";
-import * as savedArtists from "../../slices/userSavedArtistsSlice";
-import { MEDIA } from "../../styles/media";
+import { selectCurrentUser } from "@/slices/currentUserSlice";
+import { selectUserPlaylists } from "@/slices/userSavedPlaylistsSlice";
+import { getRecentTracks, selectRecentTracks } from "@/slices/recentTrackSlice";
+import * as topItems from "@/slices/topItemsSlice";
+import * as recommend from "@/slices/recommendationSlice";
+import * as savedArtists from "@/slices/userSavedArtistsSlice";
+import { MEDIA } from "@/styles/media";
 import { logout } from "../../spotify/auth";
-import { ArtistPlaceholder } from "../../assets/placeholders";
+import { ArtistPlaceholder } from "@/assets/placeholders";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();

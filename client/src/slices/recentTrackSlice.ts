@@ -1,7 +1,7 @@
 import axios from "../app/axios";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CursorBasedPaging, PlayHistory } from "../types/SpotifyObjects";
+import { CursorBasedPaging, PlayHistory } from "@/types/SpotifyObjects";
 
 interface recentTracksState {
   recentTracks: CursorBasedPaging<PlayHistory>;

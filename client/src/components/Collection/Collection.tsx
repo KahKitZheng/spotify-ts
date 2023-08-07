@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { overflowNoScrollbar } from "../../styles/utils";
+import { overflowNoScrollbar } from "@/styles/utils";
 
 interface Props {
   children: React.ReactNode;

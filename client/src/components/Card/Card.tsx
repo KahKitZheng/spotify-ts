@@ -2,12 +2,12 @@ import React from "react";
 import Play from "../Play";
 import * as C from "./Card.style";
 import * as I from "./Card.interface";
-import * as SpotifyObjects from "../../types/SpotifyObjects";
+import * as SpotifyObjects from "@/types/SpotifyObjects";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
-import { selectCurrentUserId } from "../../slices/currentUserSlice";
-import { selectSavedTracks } from "../../slices/savedTracksSlice";
-import { ArtistPlaceholder, TrackPlaceholder } from "../../assets/placeholders";
+import { selectCurrentUserId } from "@/slices/currentUserSlice";
+import { selectSavedTracks } from "@/slices/savedTracksSlice";
+import { ArtistPlaceholder, TrackPlaceholder } from "@/assets/placeholders";
 import { renderCardImg } from "../../utils";
 
 const NewCard = (props: I.CardProps) => {

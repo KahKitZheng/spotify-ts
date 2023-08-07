@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 import { IoIosPlay, IoIosPause } from "react-icons/io";
 import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri";
 import { useLocation } from "react-router-dom";
-import { selectPlayback } from "../../slices/playerSlice";
+import { selectPlayback } from "@/slices/playerSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import * as playerSlice from "../../slices/playerSlice";
+import * as playerSlice from "@/slices/playerSlice";
 
 interface Props {
   uri: string;

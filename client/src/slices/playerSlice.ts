@@ -1,11 +1,7 @@
 import axios from "../app/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-import {
-  CurrentlyPlayingContext,
-  Device,
-  Track,
-} from "../types/SpotifyObjects";
+import { CurrentlyPlayingContext, Device, Track } from "@/types/SpotifyObjects";
 
 interface ArtistState {
   playback: CurrentlyPlayingContext;
@@ -25,7 +21,7 @@ export const initialState: ArtistState = {
   currentTrack: {} as Track,
   deviceId: "",
   devices: [] as Device[],
-  currentVolume: 10,
+  currentVolume: 50,
   shuffle: false,
   repeat_mode: 0,
   saved: { isSaved: false, isChecked: false },

@@ -2,19 +2,19 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Card from "@/components/Card";
 import RenderIfVisible from "react-render-if-visible";
-import * as Tab from "../../styles/components/tabs";
-import { MEDIA } from "../../styles/media";
+import * as Tab from "@/styles/components/tabs";
+import { MEDIA } from "@/styles/media";
 import { BiPlus } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { LikedSongsCard } from "@/components/Card/Card";
 import { CollectionGrid } from "@/components/Collection";
-import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectCurrentUser } from "../../slices/currentUserSlice";
-import * as savedArtists from "../../slices/userSavedArtistsSlice";
-import * as savedAlbums from "../../slices/userSavedAlbumsSlice";
-import * as savedPlaylists from "../../slices/userSavedPlaylistsSlice";
-import * as savedTracksSlice from "../../slices/savedTracksSlice";
+import { selectCurrentUser } from "@/slices/currentUserSlice";
+import * as savedArtists from "@/slices/userSavedArtistsSlice";
+import * as savedAlbums from "@/slices/userSavedAlbumsSlice";
+import * as savedPlaylists from "@/slices/userSavedPlaylistsSlice";
+import * as savedTracksSlice from "@/slices/savedTracksSlice";
 
 type collectionTabs = "playlists" | "artists" | "albums";
 

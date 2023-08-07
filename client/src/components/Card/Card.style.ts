@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { textOverflow } from "../../styles/utils";
+import { textOverflow } from "@/styles/utils";
 import { PlayCardIcon } from "../Play/PlayCard";
 
 export const CardLink = styled(Link)`

@@ -4,13 +4,13 @@ import styled from "styled-components";
 import Track from "@/components/Track";
 import * as P from "./playlist.style";
 import * as T from "@/components/Track/Track.style";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 import { MdClose } from "react-icons/md";
 import { DebounceInput } from "react-debounce-input";
-import { useViewportWidth } from "../../hooks/useViewportWidth";
-import { overflowNoScrollbar } from "../../styles/utils";
+import { useViewportWidth } from "@/hooks/useViewportWidth";
+import { overflowNoScrollbar } from "@/styles/utils";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import * as searchResultSlice from "../../slices/searchResultSlice";
+import * as searchResultSlice from "@/slices/searchResultSlice";
 
 interface Props {
   modal: boolean;

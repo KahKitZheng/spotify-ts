@@ -5,14 +5,14 @@ import TrackMenu from "../TrackMenu/TrackMenu";
 import * as T from "./Track.style";
 import { Link } from "react-router-dom";
 import { BiPlus } from "react-icons/bi";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 import { formatDuration } from "../../utils";
-import { useViewportWidth } from "../../hooks/useViewportWidth";
+import { useViewportWidth } from "@/hooks/useViewportWidth";
 import * as TrackHooks from "./Track.hooks";
-import * as topItemsSlice from "../../slices/topItemsSlice";
-import * as SpotifyObjects from "../../types/SpotifyObjects";
-import { usePlayingTrack } from "../../hooks/usePlayingTrack";
-import { TrackPlaceholder } from "../../assets/placeholders";
+import * as topItemsSlice from "@/slices/topItemsSlice";
+import * as SpotifyObjects from "@/types/SpotifyObjects";
+import { usePlayingTrack } from "@/hooks/usePlayingTrack";
+import { TrackPlaceholder } from "@/assets/placeholders";
 
 type AlbumVariant = {
   variant: "album";

@@ -1,7 +1,7 @@
 import axios from "../app/axios";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { PrivateUser } from "../types/SpotifyObjects";
+import { PrivateUser } from "@/types/SpotifyObjects";
 
 interface CurrentUserState {
   user: PrivateUser;

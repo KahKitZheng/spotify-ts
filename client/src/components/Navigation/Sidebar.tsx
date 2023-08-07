@@ -15,11 +15,11 @@ import {
 } from "react-icons/md";
 import { MdAddBox } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import * as savedPlaylists from "../../slices/userSavedPlaylistsSlice";
-import { overflowNoScrollbar, textOverflow } from "../../styles/utils";
-import { MEDIA } from "../../styles/media";
-import { selectCurrentUser } from "../../slices/currentUserSlice";
-import SpotifySidebarLogo from "../../assets/icons/SpotifySidebarLogo";
+import * as savedPlaylists from "@/slices/userSavedPlaylistsSlice";
+import { overflowNoScrollbar, textOverflow } from "@/styles/utils";
+import { MEDIA } from "@/styles/media";
+import { selectCurrentUser } from "@/slices/currentUserSlice";
+import SpotifySidebarLogo from "@/assets/icons/SpotifySidebarLogo";
 
 const Sidebar = () => {
   const location = useLocation();

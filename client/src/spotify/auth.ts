@@ -58,6 +58,7 @@ export async function refreshAccessToken() {
   const { data } = await axios.get(REFRESH_URI + refresh_token);
 
   setLocalAccessToken(data.access_token);
+  return data.access_token;
 }
 
 function getHashParams() {

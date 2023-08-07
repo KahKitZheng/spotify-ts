@@ -1,22 +1,39 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import PlayerTrack from "./PlayerTrack";
 import PlayerTrackControls from "./PlayerTrackControls";
 import PlayerVolume from "./PlayerVolume";
 import PlayerDevices from "./PlayerDevices";
-import * as playerSlice from "../../slices/playerSlice";
-import { MEDIA } from "../../styles/media";
+import * as playerSlice from "@/slices/playerSlice";
+import { MEDIA } from "@/styles/media";
 import { useAppDispatch } from "../../app/hooks";
+import { refreshAccessToken } from "../../spotify/auth";
+import { startPlayback } from "@/slices/playerSlice";
 
 const Playbar = () => {
   const dispatch = useAppDispatch();
-  const token = localStorage.getItem("spotify_clone_access_token");
+  const checkInterval = 1000 * 60 * 60;
 
-  // Init the Spotify playback SDK
-  useEffect(() => {
+  const [counter, setCounter] = useState(1);
+
+  // Remove duplicate scripts and iframes in index.html
+  const removePlayers = useCallback(() => {
+    const players = document.querySelectorAll(`.spotify-player`);
+    const iframes = document.querySelectorAll(
+      '[alt="Audio Playback Container"]'
+    );
+
+    for (let index = 1; index < counter; index++) {
+      players[index].remove();
+      iframes[index].remove();
+    }
+  }, [counter]);
+
+  // Create new player instanec
+  const connectPlayer = useCallback(() => {
     const script = document.createElement("script");
 
-    script.id = "spotify-player";
+    script.className = `spotify-player`;
     script.type = "text/javascript";
     script.async = true;
     script.defer = true;
@@ -25,13 +42,14 @@ const Playbar = () => {
     document.body.appendChild(script);
 
     window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = localStorage.getItem("spotify_clone_access_token");
+
       const player = new window.Spotify.Player({
         name: "Spotify-ts | Web Playback SDK",
         getOAuthToken: (cb: any) => cb(token),
-        volume: 0.3,
+        volume: 0.5,
       });
 
-      // Error handling
       player.addListener("initialization_error", ({ message }: any) => {
         console.error(message);
       });
@@ -60,8 +78,44 @@ const Playbar = () => {
       });
 
       player.connect();
+      dispatch(startPlayback()); // Resume immediate playback after renewing the player
+      setCounter(counter + 1);
+      removePlayers();
     };
-  }, [dispatch, token]);
+  }, [counter, dispatch, removePlayers]);
+
+  // Connect the first player player
+  useEffect(() => {
+    if (counter === 1) {
+      connectPlayer();
+    }
+  }, [connectPlayer, counter]);
+
+  // Disconnect player with expired token and create new one
+  const replacePlayer = useCallback(() => {
+    const TIMESTAMP_KEY = "spotify_clone_token_timestamp";
+    const tokenTimestamp = localStorage.getItem(TIMESTAMP_KEY);
+
+    const now = new Date();
+    const expireTimestamp = new Date(
+      parseInt(tokenTimestamp ?? "0") + checkInterval
+    );
+
+    console.log(tokenTimestamp, expireTimestamp, now);
+
+    if (tokenTimestamp && expireTimestamp < now) {
+      refreshAccessToken().then((res) => {
+        console.log("new token: ", res);
+        connectPlayer();
+      });
+    }
+  }, [checkInterval, connectPlayer]);
+
+  // Check if access token is still valid
+  useEffect(() => {
+    const timer = setTimeout(() => replacePlayer(), checkInterval);
+    return () => clearTimeout(timer);
+  }, [checkInterval, replacePlayer, connectPlayer]);
 
   return (
     <PlaybarWrapper>

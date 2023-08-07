@@ -1,6 +1,6 @@
 import React, { Dispatch, Fragment, SetStateAction } from "react";
 import styled from "styled-components";
-import * as Tabs from "../../styles/components/tabs";
+import * as Tabs from "@/styles/components/tabs";
 import { resultsTabs } from "./SearchPage";
 
 interface Props {
@@ -16,7 +16,10 @@ const SearchTabs = (props: Props) => {
     <TabHeader>
       {tabs.map((tab) => (
         <Fragment key={tab}>
-          <Tab $isActive={activeTab === tab} onClick={() => setActiveTab(tab as resultsTabs)}>
+          <Tab
+            $isActive={activeTab === tab}
+            onClick={() => setActiveTab(tab as resultsTabs)}
+          >
             {tab}
           </Tab>
         </Fragment>

@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect } from "react";
 import Modal from "react-modal";
 import styled, { keyframes } from "styled-components";
-import { MEDIA } from "../../styles/media";
-import { useViewportWidth } from "../../hooks/useViewportWidth";
+import { MEDIA } from "@/styles/media";
+import { useViewportWidth } from "@/hooks/useViewportWidth";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   selectAvailableDevices,
   selectDeviceId,
   setPlaybackDevice,
-} from "../../slices/playerSlice";
+} from "@/slices/playerSlice";
 import { MdOutlinePhoneIphone, MdComputer, MdClose } from "react-icons/md";
-import { overflowNoScrollbar } from "../../styles/utils";
+import { overflowNoScrollbar } from "@/styles/utils";
 import PlayerVolume from "../Playerbar/PlayerVolume";
 
 interface Props {

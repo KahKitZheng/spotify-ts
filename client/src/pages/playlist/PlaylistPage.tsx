@@ -9,12 +9,12 @@ import SearchTrackModal from "./SearchTrackModal";
 import EditPlaylistModal from "./EditPlaylistModal";
 import * as T from "@/components/Track/Track.style";
 import * as utils from "../../utils";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { selectCurrentUserId } from "../../slices/currentUserSlice";
-import * as playlistSlice from "../../slices/playlistSlice";
-import * as recommendationSlice from "../../slices/recommendationSlice";
+import { selectCurrentUserId } from "@/slices/currentUserSlice";
+import * as playlistSlice from "@/slices/playlistSlice";
+import * as recommendationSlice from "@/slices/recommendationSlice";
 import RenderIfVisible from "react-render-if-visible";
 
 const PlaylistPage = () => {

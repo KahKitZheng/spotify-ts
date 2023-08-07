@@ -6,7 +6,7 @@ import {
   PublicUser,
   Track,
   VideoThumbnail,
-} from "../types/SpotifyObjects";
+} from "@/types/SpotifyObjects";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface PlaylistState {

@@ -1,8 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 import { IoIosPlay } from "react-icons/io";
-import { usePlayingTrack } from "../../hooks/usePlayingTrack";
+import { usePlayingTrack } from "@/hooks/usePlayingTrack";
 
 interface Props {
   uri: string;

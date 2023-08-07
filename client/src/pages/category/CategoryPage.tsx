@@ -8,8 +8,8 @@ import {
   getCategoryPlaylist,
   selectCategory,
   selectCategoryInfo,
-} from "../../slices/categoriesSlice";
-import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
+} from "@/slices/categoriesSlice";
+import { selectCurrentUserCountry } from "@/slices/currentUserSlice";
 import styled from "styled-components";
 
 const CategoryPage = () => {

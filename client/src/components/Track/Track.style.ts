@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 import { TrackSave } from "./TrackSaveButton";
 import { TrackOptionsWrapper } from "../TrackMenu/TrackMenu.style";
-import { textOverflow } from "../../styles/utils";
+import { textOverflow } from "@/styles/utils";
 import { PlayTrackIcon } from "../Play/PlayTrack";
 
 /////////////////////////////////////////

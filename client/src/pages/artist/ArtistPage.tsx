@@ -2,16 +2,16 @@ import React, { Fragment, useEffect, useState } from "react";
 import Card from "@/components/Card";
 import Track from "@/components/Track";
 import ActionBar from "@/components/ActionBar";
-import * as H from "../../styles/components/headers";
-import * as S from "../../styles/components/section";
+import * as H from "@/styles/components/headers";
+import * as S from "@/styles/components/section";
 import * as T from "@/components/Track/Track.style";
-import * as artistSlice from "../../slices/artistSlice";
+import * as artistSlice from "@/slices/artistSlice";
 import { CollectionGrid } from "@/components/Collection";
 import { Link, useParams } from "react-router-dom";
-import { ArtistPlaceholder } from "../../assets/placeholders";
+import { ArtistPlaceholder } from "@/assets/placeholders";
 import { extractTrackId, getHeaderHue } from "../../utils";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentUserCountry } from "../../slices/currentUserSlice";
+import { selectCurrentUserCountry } from "@/slices/currentUserSlice";
 
 const ArtistPage = () => {
   const { id } = useParams();

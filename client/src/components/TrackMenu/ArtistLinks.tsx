@@ -2,7 +2,7 @@ import React from "react";
 import * as M from "./TrackMenu.style";
 import { MdArrowRight } from "react-icons/md";
 import { NestedPopover } from "../Popover";
-import { SimplifiedArtist } from "../../types/SpotifyObjects";
+import { SimplifiedArtist } from "@/types/SpotifyObjects";
 
 const ArtistLinks = (props: { artistIds: SimplifiedArtist[] }) => {
   if (props.artistIds && props.artistIds.length === 1) {

@@ -1,5 +1,5 @@
 import { NavigateFunction } from "react-router-dom";
-import * as SpotifyObjects from "../../types/SpotifyObjects";
+import * as SpotifyObjects from "@/types/SpotifyObjects";
 
 interface RecentlyPLayedBase {
   item: SpotifyObjects.PlayHistory;

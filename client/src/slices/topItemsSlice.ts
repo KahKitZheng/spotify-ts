@@ -1,6 +1,6 @@
 import axios from "../app/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Paging, Track, Artist } from "../types/SpotifyObjects";
+import { Paging, Track, Artist } from "@/types/SpotifyObjects";
 import { RootState } from "../app/store";
 
 export type TimeRange = "short_term" | "medium_term" | "long_term";

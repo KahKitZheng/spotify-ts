@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import Modal from "react-modal";
-import LoginPage from "./pages/login";
-import AppRouter from "./components/AppRouter";
+import LoginPage from "@/pages/login";
+import AppRouter from "@/components/AppRouter";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { SimplifiedArtist } from "./types/SpotifyObjects";
-import * as currentUserSlice from "./slices/currentUserSlice";
-import * as playerSlice from "./slices/playerSlice";
+import { SimplifiedArtist } from "@/types/SpotifyObjects";
+import * as currentUserSlice from "@/slices/currentUserSlice";
+import * as playerSlice from "@/slices/playerSlice";
 
 Modal.setAppElement("#root");
 

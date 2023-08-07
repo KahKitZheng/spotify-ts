@@ -6,11 +6,11 @@ import {
   selectAvailableDevices,
   selectDeviceId,
   setPlaybackDevice,
-} from "../../slices/playerSlice";
+} from "@/slices/playerSlice";
 import { Popover, ArrowContainer } from "react-tiny-popover";
 import { MdComputer, MdOutlinePhoneIphone } from "react-icons/md";
 import { BiDevices } from "react-icons/bi";
-import { overflowNoScrollbar } from "../../styles/utils";
+import { overflowNoScrollbar } from "@/styles/utils";
 
 const PlayerDevices = () => {
   const dispatch = useAppDispatch();

@@ -1,11 +1,11 @@
 import { RefObject } from "react";
-import { MEDIA } from "../styles/media";
+import { MEDIA } from "@/styles/media";
 import {
   SimplifiedTrack,
   Track,
   PlaylistItem,
   SpotifyImage,
-} from "../types/SpotifyObjects";
+} from "@/types/SpotifyObjects";
 
 /**
  * Calculate HSL colors based on string value

@@ -1,8 +1,8 @@
 import React, { Fragment, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { textOverflow } from "../../styles/utils";
-import { SimplifiedArtist } from "../../types/SpotifyObjects";
+import { textOverflow } from "@/styles/utils";
+import { SimplifiedArtist } from "@/types/SpotifyObjects";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   checkCurrentSavedTrack,
@@ -11,9 +11,9 @@ import {
   selectCheckCurrentSavedTrack,
   selectCheckCurrentTrack,
   selectPlayback,
-} from "../../slices/playerSlice";
+} from "@/slices/playerSlice";
 import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
-import { TrackPlaceholder } from "../../assets/placeholders";
+import { TrackPlaceholder } from "@/assets/placeholders";
 
 const PlayerTrack = () => {
   const dispatch = useAppDispatch();

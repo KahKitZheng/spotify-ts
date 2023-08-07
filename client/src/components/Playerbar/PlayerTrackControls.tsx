@@ -20,7 +20,7 @@ import {
   setRepeat,
   setShuffle,
   startPlayback,
-} from "../../slices/playerSlice";
+} from "@/slices/playerSlice";
 import { formatDuration } from "../../utils";
 import debounce from "lodash.debounce";
 

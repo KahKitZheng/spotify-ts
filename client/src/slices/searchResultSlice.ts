@@ -1,7 +1,7 @@
 import axios from "../app/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { SearchResponse } from "../types/SpotifyResponses";
-import { SearchType } from "../types/SpotifyObjects";
+import { SearchResponse } from "@/types/SpotifyResponses";
+import { SearchType } from "@/types/SpotifyObjects";
 import { RootState } from "../app/store";
 
 interface SearchResultState {

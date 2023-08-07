@@ -1,13 +1,13 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import Modal from "react-modal";
 import styled from "styled-components";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 import { MdClose } from "react-icons/md";
 import { useAppDispatch } from "../../app/hooks";
-import { Playlist } from "../../types/SpotifyObjects";
-import { editPlaylistDetails } from "../../slices/userSavedPlaylistsSlice";
-import { editCurrentPlaylistDetails } from "../../slices/playlistSlice";
-import { TrackPlaceholder } from "../../assets/placeholders";
+import { Playlist } from "@/types/SpotifyObjects";
+import { editPlaylistDetails } from "@/slices/userSavedPlaylistsSlice";
+import { editCurrentPlaylistDetails } from "@/slices/playlistSlice";
+import { TrackPlaceholder } from "@/assets/placeholders";
 
 interface Props {
   modal: boolean;

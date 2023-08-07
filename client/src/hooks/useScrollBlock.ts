@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import * as playlistSlice from "../slices/playlistSlice";
+import * as playlistSlice from "@/slices/playlistSlice";
 
 /**
  * Usage: const [blockScroll, allowScroll] = useScrollBlock();

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { MEDIA } from "../styles/media";
+import { MEDIA } from "@/styles/media";
 
 type Props = { children: React.ReactNode };
 

@@ -6,7 +6,7 @@ import {
   pausePlayback,
   selectPlayback,
   startPlayback,
-} from "../../slices/playerSlice";
+} from "@/slices/playerSlice";
 
 interface Props {
   variant: "track" | "artist" | "album" | "playlist" | "liked-songs";

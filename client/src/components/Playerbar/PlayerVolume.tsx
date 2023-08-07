@@ -6,7 +6,7 @@ import {
   BsFillVolumeUpFill,
 } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import * as playerSlice from "../../slices/playerSlice";
+import * as playerSlice from "@/slices/playerSlice";
 import debounce from "lodash.debounce";
 
 const PlayerVolume = () => {

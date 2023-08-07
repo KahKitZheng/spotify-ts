@@ -1,16 +1,16 @@
 import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
-import { Track, SimplifiedTrack } from "../../types/SpotifyObjects";
-import * as albumSlice from "../../slices/albumSlice";
-import * as artistSlice from "../../slices/artistSlice";
-import * as playlistSlice from "../../slices/playlistSlice";
-import * as topItemsSlice from "../../slices/topItemsSlice";
-import * as genreSlice from "../../slices/genreSlice";
-import { replaceRecommendationTrack } from "../../slices/recommendationSlice";
-import { useViewportWidth } from "../../hooks/useViewportWidth";
-import { MEDIA } from "../../styles/media";
-import { startPlayback } from "../../slices/playerSlice";
-import { removeSavedTrack } from "../../slices/savedTracksSlice";
+import { Track, SimplifiedTrack } from "@/types/SpotifyObjects";
+import * as albumSlice from "@/slices/albumSlice";
+import * as artistSlice from "@/slices/artistSlice";
+import * as playlistSlice from "@/slices/playlistSlice";
+import * as topItemsSlice from "@/slices/topItemsSlice";
+import * as genreSlice from "@/slices/genreSlice";
+import { replaceRecommendationTrack } from "@/slices/recommendationSlice";
+import { useViewportWidth } from "@/hooks/useViewportWidth";
+import { MEDIA } from "@/styles/media";
+import { startPlayback } from "@/slices/playerSlice";
+import { removeSavedTrack } from "@/slices/savedTracksSlice";
 
 type SaveTrackProps = {
   track: Track;

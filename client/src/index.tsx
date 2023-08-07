@@ -4,8 +4,8 @@ import ReactDOM from "react-dom/client";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 
-import GlobalStyle from "./styles/global";
-import darkTheme from "./styles/themes/darkTheme";
+import GlobalStyle from "@/styles/global";
+import darkTheme from "@/styles/themes/darkTheme";
 import { ThemeProvider } from "styled-components";
 import "@fontsource/source-sans-3/200.css";
 import "@fontsource/source-sans-3/400.css";

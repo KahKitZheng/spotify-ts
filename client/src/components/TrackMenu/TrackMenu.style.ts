@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { MEDIA } from "../../styles/media";
-import { overflowNoScrollbar, textOverflow } from "../../styles/utils";
+import { MEDIA } from "@/styles/media";
+import { overflowNoScrollbar, textOverflow } from "@/styles/utils";
 
 export const TrackOptionsWrapper = styled.button`
   display: flex;

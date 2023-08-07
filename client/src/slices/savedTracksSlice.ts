@@ -1,7 +1,7 @@
 import axios from "../app/axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-import { GetSavedTracksResponse } from "../types/SpotifyResponses";
+import { GetSavedTracksResponse } from "@/types/SpotifyResponses";
 
 interface GenreState {
   savedTracks: GetSavedTracksResponse;

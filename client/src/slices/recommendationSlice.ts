@@ -2,7 +2,7 @@ import axios from "../app/axios";
 import { random } from "../utils";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Artist, RecommendationSeed, Track } from "../types/SpotifyObjects";
+import { Artist, RecommendationSeed, Track } from "@/types/SpotifyObjects";
 
 interface RecommendationResponse {
   seeds: RecommendationSeed[];

@@ -5,8 +5,8 @@ import {
   GetArtistAlbumsResponse,
   GetArtistTopTracksResponse,
   GetRelatedArtistsResponse,
-} from "../types/SpotifyResponses";
-import { Artist } from "../types/SpotifyObjects";
+} from "@/types/SpotifyResponses";
+import { Artist } from "@/types/SpotifyObjects";
 
 interface ArtistState {
   artist: Artist;

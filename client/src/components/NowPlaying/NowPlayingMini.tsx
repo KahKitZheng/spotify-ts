@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { MEDIA } from "../../styles/media";
+import { MEDIA } from "@/styles/media";
 import { BiPlay, BiPause } from "react-icons/bi";
 import { BiDevices } from "react-icons/bi";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -13,12 +13,12 @@ import {
   selectDeviceId,
   selectPlayback,
   startPlayback,
-} from "../../slices/playerSlice";
-import { SimplifiedArtist } from "../../types/SpotifyObjects";
+} from "@/slices/playerSlice";
+import { SimplifiedArtist } from "@/types/SpotifyObjects";
 import NowPlayingModal from "./NowPlayingModal";
 import NowPlayingDevicesModal from "./NowPlayingDevicesModal";
 import { RiHeart3Fill, RiHeart3Line } from "react-icons/ri";
-import { TrackPlaceholder } from "../../assets/placeholders";
+import { TrackPlaceholder } from "@/assets/placeholders";
 
 const NowPlayingMini = () => {
   const [devicesModal, setDevicesModal] = useState(false);

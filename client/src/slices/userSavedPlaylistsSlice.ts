@@ -1,7 +1,7 @@
 import axios from "../app/axios";
 import { RootState } from "../app/store";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Paging, SimplifiedPlaylist } from "../types/SpotifyObjects";
+import { Paging, SimplifiedPlaylist } from "@/types/SpotifyObjects";
 
 interface UserPlaylistsState {
   userPlaylists: Paging<SimplifiedPlaylist>;

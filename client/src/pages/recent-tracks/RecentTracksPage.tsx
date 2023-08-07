@@ -3,10 +3,7 @@ import styled from "styled-components";
 import Card from "@/components/Card";
 import { useDispatch, useSelector } from "react-redux";
 import { CollectionGrid } from "@/components/Collection";
-import {
-  getRecentTracks,
-  selectRecentTracks,
-} from "../../slices/recentTrackSlice";
+import { getRecentTracks, selectRecentTracks } from "@/slices/recentTrackSlice";
 
 const RecentTracksPage = () => {
   const dispatch = useDispatch();
