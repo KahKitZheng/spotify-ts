@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Card from "../../components/Card";
+import Card from "@/components/Card";
 import * as Tab from "../../styles/components/tabs";
 import { SearchResponse } from "../../types/SpotifyResponses";
-import { CollectionGrid } from "../../components/Collection";
+import { CollectionGrid } from "@/components/Collection";
 
 type Props = {
   query: string;

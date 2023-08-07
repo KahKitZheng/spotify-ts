@@ -1,12 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
-import Card from "../../components/Card";
-import Track from "../../components/Track";
-import ActionBar from "../../components/ActionBar";
+import Card from "@/components/Card";
+import Track from "@/components/Track";
+import ActionBar from "@/components/ActionBar";
 import * as H from "../../styles/components/headers";
 import * as S from "../../styles/components/section";
-import * as T from "../../components/Track/Track.style";
+import * as T from "@/components/Track/Track.style";
 import * as artistSlice from "../../slices/artistSlice";
-import { CollectionGrid } from "../../components/Collection";
+import { CollectionGrid } from "@/components/Collection";
 import { Link, useParams } from "react-router-dom";
 import { ArtistPlaceholder } from "../../assets/placeholders";
 import { extractTrackId, getHeaderHue } from "../../utils";

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Card from "../../components/Card";
+import Card from "@/components/Card";
 import * as Tab from "../../styles/components/tabs";
 import { useDispatch, useSelector } from "react-redux";
 import { getTopArtists, selectTopArtists } from "../../slices/topItemsSlice";
-import { CollectionGrid } from "../../components/Collection";
+import { CollectionGrid } from "@/components/Collection";
 
 type Period = "short_term" | "medium_term" | "long_term";
 

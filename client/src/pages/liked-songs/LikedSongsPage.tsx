@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import Track from "../../components/Track";
-import ActionBar from "../../components/ActionBar";
+import Track from "@/components/Track";
+import ActionBar from "@/components/ActionBar";
 import RenderIfVisible from "react-render-if-visible";
 import * as H from "../../styles/components/headers";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import Track from "../../components/Track";
-import ActionBar from "../../components/ActionBar";
+import Track from "@/components/Track";
+import ActionBar from "@/components/ActionBar";
 import PlaylistHeader from "./PlaylistHeader";
 import PlaylistSearchTracks from "./PlaylistSearchTracks";
 import PlaylistRecommendTracks from "./PlaylistRecommendTracks";
 import SearchTrackModal from "./SearchTrackModal";
 import EditPlaylistModal from "./EditPlaylistModal";
-import * as T from "../../components/Track/Track.style";
+import * as T from "@/components/Track/Track.style";
 import * as utils from "../../utils";
 import { MEDIA } from "../../styles/media";
 import { useParams } from "react-router-dom";

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { getBrowseCardHue } from "../../utils";
-import { CollectionGrid } from "../../components/Collection";
+import { CollectionGrid } from "@/components/Collection";
 import { useAppSelector } from "../../app/hooks";
 import { selectCategories } from "../../slices/categoriesSlice";
 

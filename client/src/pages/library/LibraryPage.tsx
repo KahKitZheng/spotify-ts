@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Card from "../../components/Card";
+import Card from "@/components/Card";
 import RenderIfVisible from "react-render-if-visible";
 import * as Tab from "../../styles/components/tabs";
 import { MEDIA } from "../../styles/media";
 import { BiPlus } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { LikedSongsCard } from "../../components/Card/Card";
-import { CollectionGrid } from "../../components/Collection";
+import { LikedSongsCard } from "@/components/Card/Card";
+import { CollectionGrid } from "@/components/Collection";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectCurrentUser } from "../../slices/currentUserSlice";
